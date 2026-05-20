@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UNMUTE — Designing a Fairer Music System</title>
+    <script>if('scrollRestoration' in history)history.scrollRestoration='manual';</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #000;
+            --purple: #C457D7;
+            --cyan: #00C2CB;
+            --card: #0a0a0a;
+            --border: #1a1a1a;
+            --text: #eee;
+            --muted: #aaa;
+        }
+        html { scroll-behavior: smooth; overflow: hidden; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--text);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        html.scrollable, html.scrollable body { overflow: visible; }
+        html.scrollable body { overflow-y: auto; overflow-x: hidden; }
+
+        /* NOISE + SCAN */
+        .noise { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.03; mix-blend-mode: overlay; }
+        .noise canvas { width: 100%; height: 100%; }
+        .gscan { position: fixed; inset: 0; pointer-events: none; z-index: 9997; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); }
+        .bg-glitch { position: fixed; inset: 0; pointer-events: none; z-index: 9996; opacity: 0; }
+        .bg-glitch.on { animation: bgGlitch 0.25s steps(1) forwards; }
+        @keyframes bgGlitch {
+            0% { opacity: 1; background: transparent; }
+            8% { opacity: 1; background: linear-gradient(0deg, transparent 40%, rgba(196,87,215,0.04) 40.5%, transparent 41%); transform: translate(3px,0); }
+            16% { opacity: 1; background: transparent; transform: translate(-2px,1px); }
+            24% { opacity: 1; background: linear-gradient(0deg, transparent 65%, rgba(0,194,203,0.05) 65.5%, transparent 66%); transform: none; }
+            32% { opacity: 1; background: transparent; transform: translate(1px,-1px); }
+            48% { opacity: 1; background: linear-gradient(0deg, transparent 20%, rgba(196,87,215,0.03) 20.5%, transparent 21%); transform: translate(-1px,0); }
+            60% { opacity: 1; background: transparent; transform: none; }
+            100% { opacity: 0; }
+        }
+
+        /* NAV */
+        nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .nav-logo img { height: 18px; filter: brightness(10); }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.55rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 6px 10px; transition: color 0.3s; }
+        .nav-links a:hover { color: #fff; }
+        .lang-sw { display: flex; gap: 2px; align-items: center; }
+        .lang-btn { background: none; border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); font-family: 'Inter',sans-serif; font-size: 0.45rem; font-weight: 700; letter-spacing: 1px; padding: 4px 7px; cursor: pointer; transition: all 0.3s; border-radius: 52px; text-transform: uppercase; }
+        .lang-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+        .lang-btn.active { color: #fff; border-color: var(--purple); background: rgba(196,87,215,0.15); }
+        @media (max-width: 640px) {
+            .lang-sw { margin-left: 4px; gap: 1px; }
+            .lang-btn { font-size: 0.4rem; padding: 3px 5px; }
+        }
+
+        /* TYPOGRAPHY */
+        .title { font-size: clamp(1.8rem,7vw,3rem); font-weight: 800; line-height: 1.1; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 28px; }
+        .label { font-size: 0.65rem; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; color: var(--purple); margin-bottom: 18px; }
+        .btn { padding: 14px 32px; font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.4s cubic-bezier(0.23,1,0.32,1); border: none; border-radius: 52px; }
+        .btn-fill { background: #fff; color: #000; }
+        .btn-fill:hover { background: var(--purple); color: #fff; }
+        .btn-wire { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+        .btn-wire:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        /* ============ HERO TV WALL ============ */
+        .hero { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
+        .tv-wall { position: absolute; inset: -4%; display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(4,1fr); gap: 2px; z-index: 1; transition: transform 0.8s cubic-bezier(0.23,1,0.32,1); }
+        .tv { position: relative; overflow: hidden; background: #030303; }
+        .tv-img { position: absolute; inset: 0; }
+        .tv-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(1.1) contrast(1.15); transition: filter 0.4s; }
+        .tv-img.mouth img { object-fit: contain; filter: grayscale(1) brightness(1) contrast(1.1); animation: mPulse 4s ease-in-out infinite; }
+        @keyframes mPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .tv-scan { position: absolute; width: 100%; height: 3px; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent); pointer-events: none; animation: scanD 5s linear infinite; }
+        @keyframes scanD { 0% { top: -3px; } 100% { top: 100%; } }
+        .tv-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity 0.08s; }
+        .tv-glitch { position: absolute; left: 0; width: 100%; height: 3px; opacity: 0; pointer-events: none; }
+
+        .hero-fg { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .hero-fg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center,rgba(0,0,0,0.25) 0%,rgba(0,0,0,0.6) 100%); }
+        .hero-logo-img { position: relative; z-index: 2; width: clamp(140px,42vw,320px); filter: brightness(10); animation: logoIn 1.8s cubic-bezier(0.23,1,0.32,1) forwards; opacity: 0; }
+        @keyframes logoIn { 0% { opacity: 0; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
+        .hero-sub { font-size: clamp(0.55rem,2.2vw,0.85rem); font-weight: 600; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.5); position: relative; z-index: 2; margin-top: 16px; animation: fadeUp 1.5s ease 0.8s forwards; opacity: 0; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: none; } }
+        .hero-ctas { display: flex; gap: 12px; margin-top: 36px; position: relative; z-index: 2; animation: fadeUp 1s ease 1.2s forwards; opacity: 0; }
+        .scroll-cue { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; animation: fadeUp 1s ease 1.8s forwards; opacity: 0; }
+        .scroll-cue span { font-size: 0.45rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.2); }
+        .scroll-cue .bar { width: 1px; height: 32px; overflow: hidden; position: relative; }
+        .scroll-cue .bar::after { content: ''; position: absolute; width: 100%; height: 100%; background: linear-gradient(to bottom,transparent,var(--purple)); animation: dropBar 2s ease-in-out infinite; }
+        @keyframes dropBar { 0% { top: -100%; } 100% { top: 100%; } }
+        .corner { position: absolute; width: 28px; height: 28px; z-index: 12; pointer-events: none; animation: fadeUp 1s ease 2s forwards; opacity: 0; }
+        .c-tl { top: 70px; left: 16px; border-top: 1px solid rgba(196,87,215,0.3); border-left: 1px solid rgba(196,87,215,0.3); }
+        .c-tr { top: 70px; right: 16px; border-top: 1px solid rgba(196,87,215,0.3); border-right: 1px solid rgba(196,87,215,0.3); }
+        .c-bl { bottom: 60px; left: 16px; border-bottom: 1px solid rgba(0,194,203,0.2); border-left: 1px solid rgba(0,194,203,0.2); }
+        .c-br { bottom: 60px; right: 16px; border-bottom: 1px solid rgba(0,194,203,0.2); border-right: 1px solid rgba(0,194,203,0.2); }
+
+        /* MARQUEE */
+        .marquee { overflow: hidden; white-space: nowrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 11px 0; }
+        .mq-inner { display: inline-flex; animation: mScroll 22s linear infinite; }
+        .marquee.rev .mq-inner { animation-direction: reverse; }
+        .mq-inner span { font-size: 0.55rem; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; padding: 0 28px; color: #666; }
+        .mq-inner .dot { color: var(--purple); }
+        @keyframes mScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .artist-mq { overflow: hidden; white-space: nowrap; padding: 36px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .artist-mq-inner { display: inline-flex; animation: mScroll 28s linear infinite; }
+        .artist-mq-inner span { font-size: clamp(1.8rem,5vw,3rem); font-weight: 800; text-transform: uppercase; padding: 0 32px; color: rgba(255,255,255,0.08); -webkit-text-stroke: 1px rgba(255,255,255,0.12); transition: all 0.15s; cursor: default; }
+        .artist-mq-inner span:hover { color: #fff; -webkit-text-stroke: 0; filter: drop-shadow(-3px 0 rgba(0,194,203,0.7)) drop-shadow(3px 0 rgba(196,87,215,0.7)); }
+
+        /* SECTIONS */
+        section { padding: 100px 20px; max-width: 800px; margin: 0 auto; }
+
+        /* ABOUT */
+        .about-body { font-size: 0.95rem; line-height: 2; color: var(--muted); }
+        .about-body strong { color: #fff; font-weight: 600; }
+        .about-body .hl { color: var(--purple); font-weight: 600; }
+
+        /* VALUES */
+        .values-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 48px; }
+        .value-card { text-align: center; }
+        .value-card img { width: 100%; max-width: 120px; object-fit: contain; margin-bottom: 12px; }
+        .value-card p { font-size: 0.72rem; color: var(--muted); line-height: 1.6; }
+
+        .quote-block { margin: 56px 0 0; padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; }
+        .quote-block::before { content: '\201C'; position: absolute; top: -10px; left: 0; font-size: 5rem; color: var(--purple); opacity: 0.12; line-height: 1; }
+        .quote-text { font-size: clamp(0.95rem,3.5vw,1.4rem); font-weight: 600; line-height: 1.7; color: var(--muted); }
+        .quote-text .p { color: var(--purple); }
+        .quote-text .c { color: var(--cyan); }
+        .quote-attr { margin-top: 14px; font-size: 0.7rem; font-weight: 400; color: #666; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* CONNECT (combined contact + social) */
+        .connect-row { display: flex; justify-content: center; gap: 24px; margin-top: 32px; }
+        .connect-item { display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; color: var(--muted); transition: all 0.4s; }
+        .connect-item:hover { color: #fff; }
+        .connect-item:hover .connect-icon { border-color: var(--purple); background: rgba(196,87,215,0.1); transform: scale(1.1); }
+        .connect-icon { width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: all 0.4s; }
+        .connect-icon svg { width: 22px; height: 22px; fill: #fff; }
+        .connect-label { font-size: 0.55rem; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* STEPS */
+        .steps { margin-top: 40px; }
+        .step { display: grid; grid-template-columns: 60px 1fr; gap: 16px; padding: 28px 0; border-bottom: 1px solid var(--border); transition: padding 0.3s; }
+        .step:first-child { border-top: 1px solid var(--border); }
+        .step-num { font-size: 1.8rem; font-weight: 800; color: #181818; -webkit-text-stroke: 1px #333; line-height: 1; transition: color 0.3s; }
+        .step:hover .step-num { color: var(--purple); -webkit-text-stroke: none; }
+        .step h3 { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .step p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+        /* EVENT */
+        /* EVENT PHOTO CAROUSEL */
+        .ev-carousel { position: relative; width: 100%; overflow: hidden; margin-bottom: 28px; border: 1px solid var(--border); }
+        .ev-carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.23,1,0.32,1); }
+        .ev-carousel-track img { width: 100%; height: 340px; object-fit: cover; flex-shrink: 0; filter: brightness(0.85) contrast(1.1) saturate(0.7) hue-rotate(280deg); mix-blend-mode: normal; }
+        .ev-carousel-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 2; }
+        .ev-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.25); cursor: pointer; transition: all 0.3s; }
+        .ev-dot.active { background: var(--purple); transform: scale(1.3); }
+        .ev-carousel-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 24px 28px; background: linear-gradient(transparent,rgba(0,0,0,0.85)); z-index: 1; }
+        .ev-carousel-overlay h3 { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .ev-carousel-overlay .ev-date { font-size: 0.6rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 1px; margin-top: 4px; }
+        .ev-carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.7rem; font-weight: 800; transition: all 0.3s; }
+        .ev-carousel-nav:hover { background: var(--purple); border-color: var(--purple); }
+        .ev-carousel-nav.prev { left: 8px; }
+        .ev-carousel-nav.next { right: 8px; }
+
+        .ev-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-bottom: 28px; }
+        .ev-stat { border: 1px solid var(--border); padding: 24px 12px; text-align: center; }
+        .ev-stat-num { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg,var(--purple),var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .ev-stat-label { font-size: 0.5rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+        .ev-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.8; margin-bottom: 28px; }
+        .event-subtitle { font-size: 0.65rem; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; color: #666; margin: 32px 0 16px; }
+
+        .lineup { display: flex; flex-direction: column; gap: 0; margin-bottom: 40px; }
+        .lineup-artist { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--border); transition: all 0.3s; }
+        .lineup-artist:first-child { border-top: 1px solid var(--border); }
+        .lineup-artist:hover { padding-left: 12px; }
+        .lineup-artist:hover .la-name { color: var(--purple); }
+        .la-name { font-size: clamp(1rem,3vw,1.5rem); font-weight: 800; text-transform: uppercase; transition: color 0.3s; }
+        .la-links { display: flex; gap: 12px; align-items: center; }
+        .al { display: inline-flex; align-items: center; cursor: pointer; transition: opacity 0.3s; opacity: 0.3; text-decoration: none; }
+        .al:hover { opacity: 1; }
+        .al svg { width: 24px; height: 24px; fill: #fff; }
+
+        .perks-showcase { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; }
+        .perk-card { position: relative; overflow: hidden; aspect-ratio: 3/4; cursor: pointer; border-radius: 12px; }
+        .perk-card img { width: 100%; height: 100%; object-fit: cover; transition: all 0.5s; }
+        .perk-card:hover img { filter: brightness(0.2); transform: scale(1.05); }
+        .perk-card .perk-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; opacity: 0; transition: opacity 0.4s; z-index: 2; background: rgba(0,0,0,0.7); }
+        .perk-card:hover .perk-overlay { opacity: 1; }
+        .perk-overlay h4 { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+        .perk-basic { font-size: 0.58rem; color: var(--muted); line-height: 1.6; margin-bottom: 8px; text-align: center; }
+        .perk-basic::before { content: 'BASIC'; display: block; color: #555; font-weight: 700; font-size: 0.45rem; letter-spacing: 1px; margin-bottom: 2px; }
+        .perk-premium { font-size: 0.58rem; color: var(--cyan); line-height: 1.6; text-align: center; }
+        .perk-premium::before { content: 'PREMIUM'; display: block; color: var(--purple); font-weight: 700; font-size: 0.45rem; letter-spacing: 1px; margin-bottom: 2px; }
+
+        .future-events { display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; margin-top: 16px; }
+        .future-ev { border: 1px solid var(--border); padding: 28px 20px; transition: all 0.3s; position: relative; overflow: hidden; }
+        .future-ev::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg,var(--purple),var(--cyan)); transform: scaleX(0); transition: transform 0.4s; }
+        .future-ev:hover::before { transform: scaleX(1); }
+        .future-ev:hover { background: #060606; }
+        .future-ev-tag { font-size: 0.6rem; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; display: block; }
+        .future-ev h4 { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .future-ev p { font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+        .ev-ticket { display: inline-block; margin-top: 12px; font-size: 0.55rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; color: var(--cyan); border: 1px solid var(--cyan); padding: 6px 16px; transition: all 0.3s; }
+        .ev-ticket:hover { background: var(--cyan); color: #000; }
+
+        /* ROULETTE */
+        .roulette { text-align: center; padding: 100px 20px; max-width: 800px; margin: 0 auto; }
+        .wheel-wrap { position: relative; display: inline-block; margin-top: 40px; }
+        .wheel-wrap canvas { display: block; max-width: 100%; height: auto; }
+        .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 28px solid var(--cyan); z-index: 2; filter: drop-shadow(0 0 8px var(--cyan)); }
+        .wheel-spin-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 70px; height: 70px; border-radius: 50%; background: #000; border: 2px solid var(--purple); color: #fff; font-family: 'Inter',sans-serif; font-size: 0.6rem; font-weight: 800; letter-spacing: 1px; cursor: pointer; z-index: 2; transition: all 0.3s; }
+        .wheel-spin-btn:hover { background: var(--purple); }
+        .wheel-spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .wheel-result { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 80%; max-width: 320px; text-align: center; z-index: 3; pointer-events: none; opacity: 0; transition: opacity 0.4s; padding: 28px 20px; }
+        .wheel-result.show { opacity: 1; pointer-events: auto; }
+        .wheel-result .wr-problem { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--purple); margin-bottom: 12px; line-height: 1.3; }
+        .wheel-result .wr-solution { font-size: 0.75rem; color: rgba(255,255,255,0.9); line-height: 1.7; }
+        .wheel-result .wr-tap { font-size: 0.5rem; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; }
+        .wheel-result-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 92%; height: 55%; border-radius: 24px; background: rgba(0,0,0,0.92); border: 1px solid rgba(255,255,255,0.06); z-index: 2; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+        .wheel-result-bg.show { opacity: 1; }
+
+        /* CAROUSEL GLITCH */
+        .ev-carousel.glitching { animation: carouselGlitch 0.3s steps(1); }
+        @keyframes carouselGlitch {
+            0% { filter: none; }
+            10% { filter: hue-rotate(90deg) saturate(3); transform: translate(2px,-1px); }
+            20% { filter: none; transform: none; }
+            30% { filter: hue-rotate(180deg) brightness(1.5); transform: translate(-3px,1px); }
+            40% { filter: none; transform: none; }
+            60% { filter: invert(0.1) hue-rotate(270deg); transform: translate(1px,2px); }
+            70% { filter: none; transform: none; }
+            100% { filter: none; transform: none; }
+        }
+
+        /* PROFILES */
+        .profiles { display: grid; grid-template-columns: repeat(2,1fr); margin-top: 40px; }
+        .prof { border: 1px solid var(--border); padding: 40px 18px; text-align: center; cursor: pointer; transition: all 0.4s; position: relative; overflow: hidden; border-radius: 52px; }
+        .prof::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg,var(--purple),var(--cyan)); transform: scaleX(0); transition: transform 0.4s; }
+        .prof:hover::after { transform: scaleX(1); }
+        .prof:hover { background: #060606; }
+        .prof h3 { font-size: 0.7rem; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+        .prof p { font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+
+        /* TEAM */
+        .team-founder { display: flex; align-items: center; gap: 24px; border: 1px solid var(--border); border-radius: 20px; padding: 32px 28px; margin-top: 40px; transition: all 0.4s; }
+        .team-founder:hover { border-color: var(--purple); background: #060606; }
+        .team-founder img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; filter: grayscale(1); transition: filter 0.4s; }
+        .team-founder:hover img { filter: grayscale(0); }
+        .team-founder-info { text-align: left; }
+        .team-founder-info .tm-name { font-size: 1rem; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
+        .team-founder-info .tm-role { font-size: 0.6rem; font-weight: 400; color: var(--purple); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+        .team-founder-info .tm-link { font-size: 0.55rem; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; color: var(--cyan); text-decoration: none; transition: opacity 0.3s; }
+        .team-founder-info .tm-link:hover { opacity: 0.7; }
+        .team-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 16px; }
+        .tm { border: 1px solid var(--border); padding: 32px 12px; text-align: center; transition: all 0.3s; border-radius: 20px; }
+        .tm:hover { background: #060606; border-color: #222; }
+        .tm-name { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .tm-role { font-size: 0.65rem; font-weight: 400; color: var(--purple); letter-spacing: 1px; text-transform: uppercase; }
+
+        /* WAITLIST */
+        .waitlist { margin: 0 20px; max-width: 800px; margin-left: auto; margin-right: auto; border: 1px solid var(--border); padding: 64px 24px; text-align: center; position: relative; }
+        .waitlist::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center,rgba(196,87,215,0.03) 0%,transparent 70%); }
+        .waitlist h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; position: relative; }
+        .waitlist p { color: var(--muted); font-size: 0.8rem; margin-bottom: 28px; position: relative; }
+        .wl-count { font-size: 0.65rem; font-weight: 400; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; margin-top: 20px; position: relative; }
+
+        /* SUPPORT */
+        .support-section { padding: 100px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
+        .support-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.8; margin-top: 20px; margin-bottom: 36px; }
+        .support-slider-wrap { margin: 0 auto; max-width: 500px; }
+        .support-amount-display { font-size: clamp(2.5rem,8vw,4rem); font-weight: 800; background: linear-gradient(135deg,var(--purple),var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; transition: transform 0.15s; }
+        .support-amount-display.bump { transform: scale(1.08); }
+        .support-slider { width: 100%; -webkit-appearance: none; appearance: none; height: 4px; background: #222; outline: none; border-radius: 52px; margin: 28px 0; }
+        .support-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--purple); cursor: pointer; box-shadow: 0 0 16px rgba(196,87,215,0.5); transition: transform 0.2s; }
+        .support-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .support-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--purple); cursor: pointer; border: none; box-shadow: 0 0 16px rgba(196,87,215,0.5); }
+        .support-impact { margin-top: 36px; margin-bottom: 36px; }
+        .impact-card { opacity: 0; transform: translateY(6px); transition: all 0.3s; text-align: center; }
+        .impact-card.show { opacity: 1; transform: translateY(0); }
+        .impact-title { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; color: var(--cyan); }
+        .impact-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.7; }
+
+        /* WAITLIST POPUP */
+        .wl-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 1; transition: opacity 0.5s; }
+        .wl-overlay.hidden { opacity: 0; pointer-events: none; }
+        .wl-popup { text-align: center; max-width: 420px; width: 100%; position: relative; background: rgba(10,10,10,0.85); border: 1px solid rgba(255,255,255,0.04); border-radius: 24px; padding: 48px 32px 40px; }
+        .wl-popup img { width: clamp(100px,30vw,180px); filter: brightness(10); margin-bottom: 24px; }
+        .wl-popup h2 { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .wl-popup p { font-size: 0.8rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+        .wl-popup .wl-count { font-size: 0.65rem; font-weight: 400; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; margin-top: 16px; }
+        .wl-skip { position: absolute; top: 16px; right: 24px; background: none; border: none; color: #444; font-family: 'Inter',sans-serif; font-size: 0.6rem; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: color 0.3s; z-index: 2; }
+        .wl-skip:hover { color: #fff; }
+        .wl-form { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+        .wl-form input { background: #111; border: 1px solid var(--border); color: #fff; font-family: 'Inter',sans-serif; font-size: 0.8rem; padding: 14px 16px; outline: none; transition: border-color 0.3s; border-radius: 52px; }
+        .wl-form input:focus { border-color: var(--purple); }
+        .wl-form input::placeholder { color: #555; }
+        .wl-check { display: flex; align-items: flex-start; gap: 8px; font-size: 0.6rem; color: var(--muted); text-align: left; line-height: 1.5; cursor: pointer; }
+        .wl-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; min-width: 16px; border: 1px solid var(--border); background: transparent; cursor: pointer; position: relative; margin-top: 1px; border-radius: 3px; }
+        .wl-check input[type="checkbox"]:checked { border-color: var(--purple); background: var(--purple); }
+        .wl-check input[type="checkbox"]:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 10px; color: #fff; }
+        .wl-msg { font-size: 0.75rem; margin-top: 12px; min-height: 1.2em; }
+        .wl-msg.ok { color: var(--cyan); }
+        .wl-msg.err { color: #e55; }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 40px 20px; border-top: 1px solid var(--border); margin-top: 80px; }
+        footer .fl { font-weight: 800; font-size: 0.7rem; letter-spacing: 8px; text-transform: uppercase; color: #1a1a1a; }
+        footer p { font-size: 0.5rem; color: #141414; letter-spacing: 3px; margin-top: 4px; }
+
+        /* MODAL */
+        .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
+        .modal-bg.on { display: flex; }
+        .mdl { background: var(--card); border: 1px solid var(--border); padding: 44px 28px; max-width: 400px; width: 100%; text-align: center; position: relative; }
+        .mdl-x { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #666; font-size: 0.65rem; font-weight: 800; cursor: pointer; letter-spacing: 2px; }
+        .mdl h2 { font-size: 1rem; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+        .mdl .mdl-sub { color: var(--muted); font-size: 0.72rem; margin-bottom: 24px; }
+        .mdl form { display: flex; flex-direction: column; gap: 8px; }
+        .mdl input,.mdl select,.mdl textarea { background: var(--black); border: 1px solid var(--border); padding: 13px 14px; color: var(--text); font-family: 'Inter',sans-serif; font-size: 0.75rem; outline: none; transition: border-color 0.3s; width: 100%; box-sizing: border-box; border-radius: 52px; }
+        .mdl input:focus,.mdl select:focus,.mdl textarea:focus { border-color: var(--purple); }
+        .mdl textarea { resize: vertical; min-height: 56px; border-radius: 20px !important; }
+        .mdl select option { background: var(--black); }
+        .mdl .chk-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+        .mdl .chk-group-label { font-size: 0.6rem; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 2px; }
+        .mdl .chk-row { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text); cursor: pointer; }
+        .mdl .chk-row input[type="checkbox"],.mdl .chk-row input[type="radio"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; min-width: 16px; border: 1px solid var(--border); background: var(--black); cursor: pointer; position: relative; }
+        .mdl .chk-row input[type="radio"] { border-radius: 50%; }
+        .mdl .chk-row input[type="checkbox"]:checked,.mdl .chk-row input[type="radio"]:checked { border-color: var(--purple); background: var(--purple); }
+        .mdl .chk-row input[type="checkbox"]:checked::after,.mdl .chk-row input[type="radio"]:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 10px; color: #fff; }
+        .mdl .city-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .mdl .city-chip { padding: 8px 14px; border: 1px solid var(--border); background: var(--black); font-family: 'Inter',sans-serif; font-size: 0.7rem; color: var(--muted); cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; border-radius: 52px; }
+        .mdl .city-chip.sel { border-color: var(--purple); color: #fff; background: rgba(196,87,215,0.15); }
+        .mdl .opt-tag { font-size: 0.55rem; color: #444; font-weight: 400; }
+
+        /* REVEAL */
+        .rv { opacity: 0; transform: translateY(40px); transition: opacity 0.9s cubic-bezier(0.23,1,0.32,1),transform 0.9s cubic-bezier(0.23,1,0.32,1); }
+        .rv.vis { opacity: 1; transform: none; }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            .profiles { grid-template-columns: 1fr; }
+            .connect-grid { grid-template-columns: 1fr; }
+            .values-row { grid-template-columns: 1fr; }
+            .future-events { grid-template-columns: 1fr !important; }
+            .team-grid { grid-template-columns: repeat(2,1fr); }
+            .ev-carousel-track img { height: 260px; }
+            .ev-stats { grid-template-columns: repeat(2,1fr); }
+            .hero-ctas { flex-direction: column; align-items: center; }
+            .perks-showcase { grid-template-columns: repeat(2,1fr) !important; }
+            .support-slider-wrap { padding: 0 10px; }
+            .la-name { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body><script>if('scrollRestoration' in history)history.scrollRestoration='manual';document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);</script>
+<div class="wl-overlay" id="wlOverlay">
+    <div class="wl-popup">
+        <button class="wl-skip" onclick="closeWl()" data-i18n="wl_skip">Skip &rarr;</button>
+        <img src="images/logo.png" alt="UNMUTE">
+        <h2 data-i18n="wl_title">JOIN THE MOVEMENT</h2>
+        <p data-i18n="wl_desc">Be among the first when UNMUTE launches. Get early access to the platform, events, and exclusive perks.</p>
+        <form id="wlForm" class="wl-form" onsubmit="submitWl(event)">
+            <input type="text" name="name" data-i18n-ph="wl_ph_name" placeholder="Your name" required>
+            <input type="email" name="email" data-i18n-ph="wl_ph_email" placeholder="Your email" required>
+            <label class="wl-check"><input type="checkbox" name="consent" required> <span data-i18n="wl_consent">I agree to receive emails from UNMUTE about events, updates, and exclusive perks.</span></label>
+            <button type="submit" class="btn btn-fill" style="width:100%" id="wlBtn" data-i18n="wl_btn">JOIN WAITLIST</button>
+        </form>
+        <div class="wl-msg" id="wlMsg"></div>
+        <div class="wl-count" data-i18n="wl_count">100+ already waiting</div>
+    </div>
+</div>
+
+<div class="noise"><canvas id="noiseC"></canvas></div>
+<div class="gscan"></div>
+<div class="bg-glitch" id="bgGlitch"></div>
+
+<nav>
+    <div class="lang-sw" id="langSw">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" onclick="setLang('ca')">CA</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
+    <div class="nav-links">
+        <a href="#about" data-i18n="nav_about">About</a>
+        <a href="#events" data-i18n="nav_events">Events</a>
+        <a href="#connect" data-i18n="nav_connect">Connect</a>
+        <a href="javascript:void(0)" onclick="openM('artist')" style="color:var(--cyan);" data-i18n="nav_apply">Apply</a>
+    </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section class="hero" id="hero">
+    <div class="tv-wall" id="tvWall">
+        <div class="tv"><div class="tv-img mouth"><img src="images/mouth-cyan.png" alt=""></div><div class="tv-scan" style="animation-delay:-1s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img"><img src="images/party-live.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-3s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img"><img src="images/party-dj.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-0.5s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+
+        <div class="tv"><div class="tv-img"><img src="images/party-perform.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-2s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img mouth hue-purple"><img src="images/mouth-cyan.png" alt=""></div><div class="tv-scan" style="animation-delay:-4s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img"><img src="images/party-stage.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-1.5s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+
+        <div class="tv"><div class="tv-img"><img src="images/party-mic.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-3.5s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img"><img src="images/party-fans.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-0.8s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img mouth hue-lavender"><img src="images/mouth-cyan.png" alt=""></div><div class="tv-scan" style="animation-delay:-5s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+
+        <div class="tv"><div class="tv-img"><img src="images/party-crowd.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-2.5s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img mouth hue-light"><img src="images/mouth-cyan.png" alt=""></div><div class="tv-scan" style="animation-delay:-4.5s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+        <div class="tv"><div class="tv-img"><img src="images/party-sing.jpg" alt=""></div><div class="tv-scan" style="animation-delay:-1.8s"></div><div class="tv-flash"></div><div class="tv-glitch"></div></div>
+    </div>
+    <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
+    <div class="hero-fg">
+        <img class="hero-logo-img" src="images/logo.png" alt="UNMUTE">
+        <p class="hero-sub" data-i18n="hero_sub">Designing a Fairer Music System</p>
+        <div class="hero-ctas">
+            <a href="javascript:void(0)" onclick="openM('artist')" class="btn btn-fill" data-i18n="hero_artist">I'M AN ARTIST</a>
+            <a href="https://entradium.com/events/unmute-project-barcelona-edition" target="_blank" rel="noopener" class="btn btn-wire" style="border-color:var(--cyan);color:var(--cyan);" data-i18n="hero_tickets">BARCELONA — GET TICKETS</a>
+        </div>
+    </div>
+    <div class="scroll-cue"><span data-i18n="hero_scroll">Scroll</span><div class="bar"></div></div>
+</section>
+
+<div class="marquee"><div class="mq-inner" id="mq1">
+    <span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span><span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span><span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span><span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span>
+    <span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span><span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span><span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span><span data-i18n="mq_stars">UNMUTE The Stars Of Tomorrow</span><span class="dot">/</span>
+</div></div>
+
+<!-- ====== ABOUT ====== -->
+<section id="about" class="rv">
+    <div class="label" data-i18n="about_label">Who We Are</div>
+    <h2 class="title" data-i18n-html="about_title">THE AUDIENCE DECIDES.<br>THE ARTIST RISES.</h2>
+    <p class="about-body" data-i18n-html="about_body">
+        UNMUTE <strong>put the audience at the heart of the music industry</strong>. We connect fans directly to the artists they believe in.<br><br>
+        On our platform, <strong>anyone can discover and support the next wave of talent</strong>. The more an artist is funded, the more visibility they gain. No algorithm decides who gets seen &mdash; <strong>the people do</strong>. Fans become the new A&amp;Rs, choosing who rises based on pure talent. When you fund an artist, you collect points &mdash; and as more people fund them after you, <span class="hl">your points keep growing</span>. Use them to unlock exclusive perks: unreleased music, concert access, merch, and more.<br><br>
+        We also host <strong>live events</strong> where emerging artists perform on stage and the audience votes for their favourites. Discover new talent in real life, support the artists you believe in, and walk away with <strong>exclusive perks</strong>.
+    </p>
+
+    <div class="values-row">
+        <div class="value-card">
+            <img src="images/1.png" alt="Equity">
+            <p data-i18n="val_equity">Every artist deserves a fair chance, regardless of connections or budget.</p>
+        </div>
+        <div class="value-card">
+            <img src="images/2.png" alt="Transparency">
+            <p data-i18n="val_transparency">Every contribution is traceable. Artists and fans see where the money goes.</p>
+        </div>
+        <div class="value-card">
+            <img src="images/3.png" alt="Belief">
+            <p data-i18n="val_belief">The public is the best judge of talent.</p>
+        </div>
+    </div>
+
+    <div class="quote-block">
+        <p class="quote-text" data-i18n-html="quote_text">I don't want to be signed to a label. I would lose my <span class="p">artistic freedom</span>, risk losing money, and give up the <span class="c">rights to my music</span>.</p>
+        <p class="quote-attr" data-i18n="quote_attr">&mdash; Nate Skies, Independent Artist</p>
+    </div>
+</section>
+
+<!-- ====== ROULETTE ====== -->
+<section id="play" class="roulette rv">
+    <div class="label" style="justify-content:center;" data-i18n="roul_label">Spin The Wheel</div>
+    <h2 class="title" style="text-align:center;" data-i18n-html="roul_title">WHAT PROBLEMS<br>DOES UNMUTE SOLVE?</h2>
+    <p style="color:var(--muted); font-size:0.82rem;" data-i18n="roul_desc">Spin the wheel and discover the issues we're tackling in the music industry.</p>
+    <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <canvas id="wheelCanvas" width="600" height="600"></canvas>
+        <button class="wheel-spin-btn" id="spinBtn" onclick="spinWheel()" data-i18n="roul_spin">SPIN</button>
+        <div class="wheel-result-bg" id="wheelResultBg"></div>
+        <div class="wheel-result" id="wheelResult"></div>
+    </div>
+</section>
+
+<!-- ====== STEPS ====== -->
+<section class="rv">
+    <div class="label" data-i18n="steps_label">How It Works</div>
+    <h2 class="title" data-i18n="steps_title">SIMPLE BY DESIGN.</h2>
+    <div class="steps">
+        <div class="step"><div class="step-num">01</div><div><h3 data-i18n="step1_h">DISCOVER AN ARTIST</h3><p data-i18n="step1_p">Browse emerging independent talent on the platform or at our live events.</p></div></div>
+        <div class="step"><div class="step-num">02</div><div><h3 data-i18n="step2_h">CONTRIBUTE ANY AMOUNT</h3><p data-i18n="step2_p">Support an artist you believe in from any amount. Simple, direct, no hassle.</p></div></div>
+        <div class="step"><div class="step-num">03</div><div><h3 data-i18n="step3_h">COLLECT POINTS</h3><p data-i18n="step3_p">Every time you fund an artist, you collect points. When others fund the same artist, your points grow too.</p></div></div>
+        <div class="step"><div class="step-num">04</div><div><h3 data-i18n="step4_h">WATCH THE ARTIST RISE</h3><p data-i18n="step4_p">Your funding directly boosts the artist's visibility on the platform. More support means more exposure and a bigger fanbase.</p></div></div>
+        <div class="step"><div class="step-num">05</div><div><h3 data-i18n="step5_h">UNLOCK EXCLUSIVE PERKS</h3><p data-i18n="step5_p">Use the points you've collected to unlock exclusive rewards — unreleased tracks, concert tickets, backstage access, merch, and more.</p></div></div>
+    </div>
+</section>
+
+<!-- ====== SUPPORT ====== -->
+<section class="support-section rv" id="support">
+    <div class="label" data-i18n="sup_label">Support The Project</div>
+    <h2 class="title" data-i18n-html="sup_title">HELP US BUILD<br>THE PLATFORM.</h2>
+    <p class="support-desc" data-i18n="sup_desc">Every contribution brings us closer to a fairer music industry.</p>
+    <div style="font-size:0.6rem;font-weight:400;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:32px;" data-i18n-html="sup_raised">Already raised: <span style="color:var(--cyan);font-weight:700;">£430</span> / £5,000</div>
+    <div class="support-slider-wrap">
+        <div class="support-amount-display" id="supAmount">£5</div>
+        <input type="range" min="5" max="100" value="5" step="5" class="support-slider" id="supSlider">
+        <a href="https://buy.stripe.com/3cI5kxf1y1q525vcr087K05" target="_blank" rel="noopener" class="btn btn-fill" style="margin-top:28px;width:100%;" id="supBtn">SUPPORT WITH £5</a>
+    </div>
+</section>
+
+
+<div class="artist-mq"><div class="artist-mq-inner">
+    <span>Nate Skies</span><span>Jada Maya</span><span>WKDAIZ</span><span>wellasblue</span><span>Charlie Blitz</span>
+    <span>Nate Skies</span><span>Jada Maya</span><span>WKDAIZ</span><span>wellasblue</span><span>Charlie Blitz</span>
+</div></div>
+<div style="text-align:center;padding:20px 0;border-bottom:1px solid var(--border);"><a href="https://open.spotify.com/playlist/3eLu2Ki7UtY2pUHHRgjsca" target="_blank" rel="noopener" style="color:var(--cyan);font-size:0.65rem;font-weight:400;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:color 0.3s;">Listen to our playlist on Spotify &rarr;</a></div>
+
+<!-- ====== EVENT ====== -->
+<section id="events" class="rv">
+    <div class="label" data-i18n="ev_label">Events</div>
+    <h2 class="title" data-i18n="ev_title">WHERE IT HAPPENS.</h2>
+    <div class="ev-carousel" id="evCarousel">
+        <div class="ev-carousel-track" id="evTrack">
+            <img src="images/party-crowd.jpg" alt="Launch Night Crowd">
+            <img src="images/party-live.jpg" alt="Live Performance">
+            <img src="images/party-perform.jpg" alt="Artist Performing">
+            <img src="images/party-dj.jpg" alt="DJ Set">
+            <img src="images/party-stage.jpg" alt="Stage">
+            <img src="images/party-sing.jpg" alt="Singing">
+            <img src="images/party-fans.jpg" alt="Fans">
+            <img src="images/party-mic.jpg" alt="On the Mic">
+        </div>
+        <div class="ev-carousel-overlay">
+            <h3 data-i18n="ev_launch">UNMUTE LAUNCH NIGHT</h3>
+            <div class="ev-date" data-i18n="ev_date">April 10, 2026 &mdash; Dreambags Jaguar Shoes, London</div>
+        </div>
+        <div class="ev-carousel-dots" id="evDots"></div>
+        <button class="ev-carousel-nav prev" onclick="slideEv(-1)">&larr;</button>
+        <button class="ev-carousel-nav next" onclick="slideEv(1)">&rarr;</button>
+    </div>
+
+    <p class="ev-desc" data-i18n="ev_desc">Our first event brought together 5 independent artists performing live on stage. The audience voted in real-time for their favourites — and every voter walked away with exclusive perks from the artists they supported.</p>
+
+    <div class="event-subtitle" data-i18n="ev_lineup">The Lineup</div>
+    <div class="lineup">
+        <div class="lineup-artist"><span class="la-name">Nate Skies</span><span class="la-links"><a href="https://www.instagram.com/nateskiess/" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a><a href="https://open.spotify.com/search/nate%20skies" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a></span></div>
+        <div class="lineup-artist"><span class="la-name">Jada Maya</span><span class="la-links"><a href="https://www.instagram.com/jadamayaa/" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a><a href="https://open.spotify.com/search/jada%20maya" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a></span></div>
+        <div class="lineup-artist"><span class="la-name">WKDAIZ</span><span class="la-links"><a href="https://www.instagram.com/wkdaiz/" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a><a href="https://open.spotify.com/search/wkdaiz" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a></span></div>
+        <div class="lineup-artist"><span class="la-name">wellasblue</span><span class="la-links"><a href="https://www.instagram.com/wellasblue/" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a><a href="https://open.spotify.com/search/wellasblue" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a></span></div>
+        <div class="lineup-artist"><span class="la-name">Charlie Blitz</span><span class="la-links"><a href="https://www.instagram.com/charlieblitzz/" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a><a href="https://open.spotify.com/search/charlie%20blitz" target="_blank" rel="noopener" class="al"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a></span></div>
+    </div>
+
+    <div class="event-subtitle" data-i18n="ev_perks_tap">Tap to reveal the perks</div>
+    <div class="perks-showcase">
+        <div class="perk-card">
+            <img src="images/artist-jada.jpg" alt="Jada Maya">
+
+            <div class="perk-overlay"><h4>Jada Maya</h4><p class="perk-basic">Exclusive music on Untitled</p><p class="perk-premium">Featured in upcoming music visuals</p></div>
+        </div>
+        <div class="perk-card">
+            <img src="images/artist-charlie.jpg" alt="Charlie Blitz">
+
+            <div class="perk-overlay"><h4>Charlie Blitz</h4><p class="perk-basic">Exclusive unreleased track</p><p class="perk-premium">Studio session + feature on a track</p></div>
+        </div>
+        <div class="perk-card">
+            <img src="images/artist-wkdaiz.jpg" alt="WKDAIZ">
+
+            <div class="perk-overlay"><h4>WKDAIZ</h4><p class="perk-basic">Special shoutout</p><p class="perk-premium">Signed CD</p></div>
+        </div>
+        <div class="perk-card">
+            <img src="images/artist-wellas.jpg" alt="wellasblue">
+
+            <div class="perk-overlay"><h4>wellasblue</h4><p class="perk-basic">Early access to next song</p><p class="perk-premium">2 tickets to next show</p></div>
+        </div>
+        <div class="perk-card">
+            <img src="images/artist-nate.jpg" alt="Nate Skies">
+
+            <div class="perk-overlay"><h4>Nate Skies</h4><p class="perk-basic">Q&amp;A about how he made a song</p><p class="perk-premium">Minecraft session on Discord</p></div>
+        </div>
+    </div>
+
+    <div class="event-subtitle" data-i18n="ev_next">What's Next</div>
+    <div class="future-events" style="grid-template-columns:repeat(3,1fr);">
+        <div class="future-ev"><span class="future-ev-tag">June 2026</span><h4>PRIMAVERA PRO</h4><p data-i18n="ev_prima_desc">Selected for Ideas Showroom at one of Europe's most prestigious music conferences.</p><a href="https://www.primaverasound.com/en/artist/unmute-project?e=ideas-showroom-pro-2026" target="_blank" rel="noopener" class="ev-ticket" data-i18n="ev_prima_link">Learn More</a></div>
+        <div class="future-ev"><span class="future-ev-tag">June 5, 2026</span><h4>OASYS BARCELONA</h4><p data-i18n="ev_oasys_desc">Live event in Barcelona. New artists, new city, same energy.</p><a href="https://entradium.com/events/unmute-project-barcelona-edition" target="_blank" rel="noopener" class="ev-ticket" data-i18n="ev_oasys_link">Get Tickets</a></div>
+        <div class="future-ev"><span class="future-ev-tag">July 4, 2026</span><h4>JAGUAR SHOES LONDON</h4><p data-i18n="ev_jag_desc">Live event in London. Independent artists, real fans, one stage.</p><a href="javascript:void(0)" onclick="openM('artist')" class="ev-ticket" data-i18n="ev_jag_link">Apply as Artist</a></div>
+    </div>
+</section>
+
+
+<div class="marquee rev"><div class="mq-inner" id="mq2">
+    <span data-i18n="mq2_discover">Discover</span><span class="dot">/</span><span data-i18n="mq2_support">Support</span><span class="dot">/</span><span data-i18n="mq2_connect">Connect</span><span class="dot">/</span><span data-i18n="mq2_grow">Grow</span><span class="dot">/</span><span data-i18n="mq2_empower">Empower</span><span class="dot">/</span><span data-i18n="mq2_create">Create</span><span class="dot">/</span>
+    <span data-i18n="mq2_discover">Discover</span><span class="dot">/</span><span data-i18n="mq2_support">Support</span><span class="dot">/</span><span data-i18n="mq2_connect">Connect</span><span class="dot">/</span><span data-i18n="mq2_grow">Grow</span><span class="dot">/</span><span data-i18n="mq2_empower">Empower</span><span class="dot">/</span><span data-i18n="mq2_create">Create</span><span class="dot">/</span>
+</div></div>
+
+<!-- ====== PROFILES ====== -->
+<section id="connect" class="rv">
+    <div class="label" data-i18n="conn_label">Let's Connect</div>
+    <h2 class="title" data-i18n-html="conn_title">WE WANT TO<br>HEAR FROM YOU.</h2>
+    <div class="profiles">
+        <div class="prof" onclick="openM('artist')"><h3>ARTIST</h3><p data-i18n="conn_artist">I want funding and visibility without giving up my rights.</p></div>
+        <div class="prof" onclick="document.getElementById('wlOverlay').classList.remove('hidden');document.documentElement.classList.remove('scrollable');"><h3>MUSIC LOVER</h3><p data-i18n="conn_fan">I want to discover and support emerging talent early.</p></div>
+        <div class="prof" onclick="openM('partner')"><h3>PARTNER</h3><p data-i18n="conn_partner">Venues, associations, media &mdash; let's build together.</p></div>
+        <div class="prof" onclick="openM('investor')"><h3>INVESTOR</h3><p data-i18n="conn_investor">I want to invest in the future of music.</p></div>
+    </div>
+    <div class="connect-row">
+        <a href="mailto:unmute.office@gmail.com" class="connect-item">
+            <div class="connect-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <span class="connect-label" data-i18n="conn_email">Email</span>
+        </a>
+        <a href="https://www.instagram.com/_unmuteproject_/" target="_blank" rel="noopener" class="connect-item">
+            <div class="connect-icon"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+            <span class="connect-label" data-i18n="conn_insta">Instagram</span>
+        </a>
+        <a href="https://www.linkedin.com/company/unmuteproject/?viewAsMember=true" target="_blank" rel="noopener" class="connect-item">
+            <div class="connect-icon"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div>
+            <span class="connect-label" data-i18n="conn_li">LinkedIn</span>
+        </a>
+    </div>
+</section>
+
+<!-- ====== TEAM ====== -->
+<section class="rv">
+    <div class="label" data-i18n="team_label">The Team</div>
+    <h2 class="title" data-i18n="team_title">WHO'S BEHIND UNMUTE.</h2>
+    <a href="https://www.linkedin.com/in/alex-garnier-/" target="_blank" rel="noopener" class="team-founder" style="text-decoration:none;color:inherit;">
+        <img src="images/alex.jpg" alt="Alex Garnier">
+        <div class="team-founder-info">
+            <div class="tm-name">Alex Garnier</div>
+            <div class="tm-role" data-i18n="role_founder">Founder</div>
+            <span class="tm-link" data-i18n="team_linkedin">View LinkedIn →</span>
+        </div>
+    </a>
+    <div class="team-grid">
+        <div class="tm"><div class="tm-name">Sarah Franco</div><div class="tm-role" data-i18n="role_ar">Artist Relations</div></div>
+        <div class="tm"><div class="tm-name">Maria Cavescu</div><div class="tm-role" data-i18n="role_ar">Artist Relations</div></div>
+        <div class="tm"><div class="tm-name">Asra Polili</div><div class="tm-role" data-i18n="role_community">Community</div></div>
+        <div class="tm"><div class="tm-name">Queralt Dachs</div><div class="tm-role" data-i18n="role_event">Event</div></div>
+        <div class="tm"><div class="tm-name">Carlota Vieira</div><div class="tm-role" data-i18n="role_event">Event</div></div>
+        <div class="tm"><div class="tm-name">Paula Antic</div><div class="tm-role" data-i18n="role_pc">Project Coordinator</div></div>
+    </div>
+</section>
+
+<footer>
+    <div class="fl">UNMUTE</div>
+    <p data-i18n-html="footer_copy">&copy; 2026 &mdash; DESIGNING A FAIRER MUSIC SYSTEM</p>
+</footer>
+
+<div class="modal-bg" id="mBg" onclick="if(event.target===this)closeM()">
+    <div class="mdl" id="mdlArtist" style="display:none;max-height:85vh;overflow-y:auto;">
+        <button class="mdl-x" onclick="closeM()">CLOSE</button>
+        <h2 data-i18n="ma_title">HEY ARTIST</h2>
+        <p class="mdl-sub" data-i18n="ma_sub">Interested in being part of UNMUTE Project?</p>
+        <form onsubmit="submitArtist(event)">
+            <input type="text" name="name" data-i18n-ph="ma_ph_name" placeholder="Your name / artist name *" required>
+            <input type="email" name="email" data-i18n-ph="ma_ph_email" placeholder="Your email *" required>
+            <input type="text" name="instagram" data-i18n-ph="ma_ph_ig" placeholder="Instagram @ *" required>
+            <input type="text" name="spotify" data-i18n-ph="ma_ph_spotify" placeholder="Spotify link (optional)">
+            <div class="chk-group">
+                <div class="chk-group-label" data-i18n="ma_interest">I'm interested in *</div>
+                <label class="chk-row"><input type="radio" name="interest" value="platform+perform" required> <span data-i18n="ma_opt_both">Joining the platform & performing at UNMUTE events</span></label>
+                <label class="chk-row"><input type="radio" name="interest" value="platform"> <span data-i18n="ma_opt_platform">Joining the platform</span></label>
+                <label class="chk-row"><input type="radio" name="interest" value="info"> <span data-i18n="ma_opt_info">Just learning more</span></label>
+            </div>
+            <div class="chk-group">
+                <div class="chk-group-label" data-i18n-html="ma_where">Where? <span class="opt-tag">(max 2, optional)</span></div>
+                <div class="city-chips" id="cityChips">
+                    <div class="city-chip" onclick="toggleCity(this)" data-city="London">London</div>
+                    <div class="city-chip" onclick="toggleCity(this)" data-city="Paris">Paris</div>
+                    <div class="city-chip" onclick="toggleCity(this)" data-city="Barcelona">Barcelona</div>
+                </div>
+            </div>
+            <textarea name="message" data-i18n-ph="ma_ph_msg" placeholder="Anything else? (optional)"></textarea>
+            <button type="submit" class="btn btn-fill" style="width:100%;" data-i18n="modal_send">SEND</button>
+        </form>
+    </div>
+    <div class="mdl" id="mdlPartner" style="display:none;max-height:85vh;overflow-y:auto;">
+        <button class="mdl-x" onclick="closeM()">CLOSE</button>
+        <h2 data-i18n="mp_title">LET'S BUILD TOGETHER</h2>
+        <p class="mdl-sub" data-i18n="mp_sub">Venues, media, associations — tell us about your organisation.</p>
+        <form onsubmit="submitPartner(event)">
+            <input type="text" name="company" data-i18n-ph="mp_ph_company" placeholder="Company / Organisation name *" required>
+            <input type="text" name="name" data-i18n-ph="mp_ph_name" placeholder="Your name *" required>
+            <input type="text" name="position" data-i18n-ph="mp_ph_role" placeholder="Your role / title *" required>
+            <input type="email" name="email" data-i18n-ph="mp_ph_email" placeholder="Your email *" required>
+            <select name="partnertype" id="selPartnerType" required>
+                <option value="" disabled selected data-i18n="mp_sel_default">Type of partnership *</option>
+                <option value="venue" data-i18n="mp_sel_venue">Venue</option>
+                <option value="media" data-i18n="mp_sel_media">Media / Press</option>
+                <option value="association" data-i18n="mp_sel_ngo">Association / NGO</option>
+                <option value="brand" data-i18n="mp_sel_brand">Brand / Sponsor</option>
+                <option value="agency" data-i18n="mp_sel_agency">Agency / Management</option>
+                <option value="other" data-i18n="mp_sel_other">Other</option>
+            </select>
+            <textarea name="message" data-i18n-ph="mp_ph_msg" placeholder="Tell us about yourself and how you'd like to collaborate..."></textarea>
+            <button type="submit" class="btn btn-fill" style="width:100%;" data-i18n="modal_send">SEND</button>
+        </form>
+    </div>
+    <div class="mdl" id="mdlInvestor" style="display:none;max-height:85vh;overflow-y:auto;">
+        <button class="mdl-x" onclick="closeM()">CLOSE</button>
+        <h2 data-i18n="mi_title">LET'S TALK</h2>
+        <p class="mdl-sub" data-i18n="mi_sub">We'd love to tell you more about UNMUTE.</p>
+        <form onsubmit="submitInvestor(event)">
+            <input type="text" name="name" data-i18n-ph="mi_ph_name" placeholder="Your name *" required>
+            <input type="email" name="email" data-i18n-ph="mi_ph_email" placeholder="Your email *" required>
+            <input type="text" name="firm" data-i18n-ph="mi_ph_fund" placeholder="Fund / Company (optional)">
+            <select name="investortype" id="selInvestorType" required>
+                <option value="" disabled selected data-i18n="mi_sel_default">I'm interested as... *</option>
+                <option value="angel" data-i18n="mi_sel_angel">Angel Investor</option>
+                <option value="vc" data-i18n="mi_sel_vc">VC / Fund</option>
+                <option value="advisor" data-i18n="mi_sel_advisor">Advisor / Mentor</option>
+                <option value="curious" data-i18n="mi_sel_curious">Just curious for now</option>
+            </select>
+            <select name="ticket" id="selTicket" required>
+                <option value="" disabled selected data-i18n="mi_sel_range">Investment range *</option>
+                <option value="<1k" data-i18n="mi_sel_u1k">Under £1,000</option>
+                <option value="1k-5k" data-i18n="mi_sel_1k5k">£1,000 – £5,000</option>
+                <option value="5k-25k" data-i18n="mi_sel_5k25k">£5,000 – £25,000</option>
+                <option value="25k+" data-i18n="mi_sel_25k">£25,000+</option>
+                <option value="tbd" data-i18n="mi_sel_tbd">Not sure yet</option>
+            </select>
+            <textarea name="message" data-i18n-ph="mi_ph_msg" placeholder="Anything you'd like us to know..."></textarea>
+            <button type="submit" class="btn btn-fill" style="width:100%;" data-i18n="modal_send">SEND</button>
+        </form>
+    </div>
+</div>
+
+<script>
+// NOISE
+const nc=document.getElementById('noiseC'),nctx=nc.getContext('2d');
+function renderNoise(){nc.width=window.innerWidth/4;nc.height=window.innerHeight/4;const img=nctx.createImageData(nc.width,nc.height),d=img.data;for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;}nctx.putImageData(img,0,0);}
+renderNoise();setInterval(renderNoise,120);
+
+// WAITLIST POPUP
+function closeWl(){document.getElementById('wlOverlay').classList.add('hidden');document.documentElement.classList.add('scrollable');window.scrollTo(0,0);}
+
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxn5gV0_OwklrCUKbWwF_s62jT_6rpU70Lw_grBpUuK3d3zgeC3mMDpQcg3EDEVbZQF/exec';
+const ARTIST_SHEET_URL='https://script.google.com/macros/s/AKfycbwfnAwgiejAxJez-NTcWNA1ZbZL7R4eFf9CPbajtdrUANAZ9AEE0mG6Wx2D5qZZw8GJ/exec';
+const PARTNER_SHEET_URL='https://script.google.com/macros/s/AKfycbyzl_cepE4_3kYRjBsoH9RuPYI9fYonfaEtyFzPs-aq01Ti-AuOxqtf_WTIsCZAUxWcSQ/exec';
+function submitWl(e){
+    e.preventDefault();
+    const btn=document.getElementById('wlBtn'),msg=document.getElementById('wlMsg');
+    const name=e.target.name.value.trim(),email=e.target.email.value.trim();
+    btn.textContent='SENDING...';btn.disabled=true;
+    msg.textContent='';msg.className='wl-msg';
+    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,date:new Date().toISOString()})})
+    .then(()=>{const t=i18n[currentLang]||i18n.en;msg.textContent=t.wl_success;msg.className='wl-msg ok';btn.textContent='JOINED ✓';e.target.reset();setTimeout(closeWl,2000);})
+    .catch(()=>{const t=i18n[currentLang]||i18n.en;msg.textContent=t.wl_error;msg.className='wl-msg err';btn.textContent=t.wl_btn;btn.disabled=false;});
+}
+
+// BG GLITCH
+const bgG=document.getElementById('bgGlitch');
+function triggerBgGlitch(){bgG.classList.remove('on');void bgG.offsetWidth;bgG.classList.add('on');}
+setInterval(()=>{if(Math.random()>0.6)triggerBgGlitch();},3000+Math.random()*4000);
+let lastScY=0;
+window.addEventListener('scroll',()=>{if(Math.abs(window.scrollY-lastScY)>200){triggerBgGlitch();lastScY=window.scrollY;}},{passive:true});
+
+// SCROLL
+const wall=document.getElementById('tvWall'),hero=document.getElementById('hero'),tvs=document.querySelectorAll('.tv');
+const imgs=[
+    {src:'images/mouth-cyan.png',m:true},
+    {src:'images/party-live.jpg',m:false},{src:'images/party-dj.jpg',m:false},{src:'images/party-perform.jpg',m:false},
+    {src:'images/party-stage.jpg',m:false},{src:'images/party-mic.jpg',m:false},{src:'images/party-fans.jpg',m:false},
+    {src:'images/party-crowd.jpg',m:false},{src:'images/party-sing.jpg',m:false},{src:'images/party-portrait.jpg',m:false}
+];
+function onScroll(){const sy=window.scrollY,hH=hero.offsetHeight;if(sy<hH*1.5){const p=sy/hH;wall.style.transform=`scale(${1.08+p*0.15}) translateY(${sy*0.15}px)`;document.querySelector('.hero-fg').style.opacity=Math.max(0,1-p*1.8);}}
+window.addEventListener('scroll',onScroll,{passive:true});
+
+function swapTV(){const i=Math.floor(Math.random()*tvs.length),tv=tvs[i],fl=tv.querySelector('.tv-flash'),c=tv.querySelector('.tv-img');fl.style.opacity='0.2';setTimeout(()=>{const p=imgs[Math.floor(Math.random()*imgs.length)];c.innerHTML=`<img src="${p.src}" alt="">`;c.className='tv-img'+(p.m?' mouth':'');fl.style.opacity='0';},120);}
+setInterval(swapTV,2800);setInterval(()=>setTimeout(swapTV,200),4500);
+
+function autoGlitch(){const i=Math.floor(Math.random()*tvs.length),g=tvs[i].querySelector('.tv-glitch');g.style.top=Math.random()*100+'%';g.style.height=(2+Math.random()*6)+'px';g.style.background=Math.random()>0.5?'rgba(196,87,215,0.25)':'rgba(0,194,203,0.2)';g.style.opacity='1';setTimeout(()=>{g.style.opacity='0';},120);}
+setInterval(autoGlitch,900);
+
+function autoFlicker(){const i=Math.floor(Math.random()*tvs.length),img=tvs[i].querySelector('img');if(img){img.style.filter=`brightness(${0.4+Math.random()*0.5}) contrast(1.5)`;setTimeout(()=>{img.style.filter='';},100);}}
+setInterval(autoFlicker,1500);
+
+const logoImg=document.querySelector('.hero-logo-img');
+function logoGlitch(){logoImg.style.filter=`brightness(10) drop-shadow(${-3-Math.random()*3}px 0 rgba(0,194,203,0.7)) drop-shadow(${3+Math.random()*3}px 0 rgba(196,87,215,0.7))`;setTimeout(()=>{logoImg.style.filter='brightness(10)';},100);}
+setInterval(logoGlitch,3500+Math.random()*3000);
+
+// REVEAL
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:0.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// MODAL
+function openM(t){
+    document.querySelectorAll('#mBg .mdl').forEach(m=>m.style.display='none');
+    if(t==='artist') document.getElementById('mdlArtist').style.display='block';
+    else if(t==='partner') document.getElementById('mdlPartner').style.display='block';
+    else if(t==='investor') document.getElementById('mdlInvestor').style.display='block';
+    document.getElementById('mBg').classList.add('on');document.documentElement.classList.remove('scrollable');
+}
+function closeM(){document.getElementById('mBg').classList.remove('on');document.documentElement.classList.add('scrollable');document.querySelectorAll('.mdl form').forEach(f=>f.reset());document.querySelectorAll('.city-chip').forEach(c=>c.classList.remove('sel'));}
+function toggleCity(el){
+    const sel=document.querySelectorAll('.city-chip.sel');
+    if(el.classList.contains('sel')){el.classList.remove('sel');}
+    else if(sel.length<2){el.classList.add('sel');}
+}
+function submitArtist(e){
+    e.preventDefault();const f=e.target;
+    const interest=f.querySelector('input[name="interest"]:checked');
+    if(!interest){alert('Please select what you\'re interested in.');return;}
+    const btn=f.querySelector('button[type="submit"]');
+    btn.textContent='SENDING...';btn.disabled=true;
+    const cities=[...document.querySelectorAll('.city-chip.sel')].map(c=>c.dataset.city);
+    const data={name:f.name.value,email:f.email.value,instagram:f.instagram.value,spotify:f.spotify.value||'',interest:interest.value,cities:cities.join(', '),message:f.message.value||'',date:new Date().toISOString(),role:'artist'};
+    fetch(ARTIST_SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)})
+    .then(()=>{btn.textContent='SENT ✓';f.reset();document.querySelectorAll('.city-chip').forEach(c=>c.classList.remove('sel'));setTimeout(closeM,1500);setTimeout(()=>{btn.textContent='SEND';btn.disabled=false;},2000);})
+    .catch(()=>{btn.textContent='ERROR — TRY AGAIN';btn.disabled=false;});
+}
+function submitPartner(e){
+    e.preventDefault();const f=e.target;
+    const btn=f.querySelector('button[type="submit"]');
+    btn.textContent='SENDING...';btn.disabled=true;
+    const data={name:f.name.value,email:f.email.value,company:f.company.value,position:f.position.value,type:f.partnertype.value,range:'',message:f.message.value||'',date:new Date().toISOString(),role:'partner'};
+    fetch(PARTNER_SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)})
+    .then(()=>{btn.textContent='SENT ✓';f.reset();setTimeout(closeM,1500);setTimeout(()=>{btn.textContent='SEND';btn.disabled=false;},2000);})
+    .catch(()=>{btn.textContent='ERROR — TRY AGAIN';btn.disabled=false;});
+}
+function submitInvestor(e){
+    e.preventDefault();const f=e.target;
+    const btn=f.querySelector('button[type="submit"]');
+    btn.textContent='SENDING...';btn.disabled=true;
+    const ticketVal=f.querySelector('[name="ticket"]').value;
+    const typeVal=f.querySelector('[name="investortype"]').value;
+    const data={name:f.name.value,email:f.email.value,company:f.querySelector('[name="firm"]').value||'',position:'',type:typeVal,ticket:ticketVal,message:f.querySelector('[name="message"]').value||'',date:new Date().toISOString(),role:'investor'};
+    fetch(PARTNER_SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)})
+    .then(()=>{btn.textContent='SENT ✓';f.reset();setTimeout(closeM,1500);setTimeout(()=>{btn.textContent='SEND';btn.disabled=false;},2000);})
+    .catch(()=>{btn.textContent='ERROR — TRY AGAIN';btn.disabled=false;});
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+
+// EVENT CAROUSEL
+let evIdx=0;const evTrack=document.getElementById('evTrack'),evSlides=evTrack?evTrack.querySelectorAll('img'):[],evDotsC=document.getElementById('evDots');
+if(evSlides.length){
+    evSlides.forEach((_,i)=>{const d=document.createElement('div');d.className='ev-dot'+(i===0?' active':'');d.onclick=()=>goEv(i);evDotsC.appendChild(d);});
+    let evAuto=setInterval(()=>slideEv(1),3500);
+    document.getElementById('evCarousel').addEventListener('pointerenter',()=>clearInterval(evAuto));
+    document.getElementById('evCarousel').addEventListener('pointerleave',()=>{evAuto=setInterval(()=>slideEv(1),3500);});
+    let touchX=0;
+    evTrack.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX;},{passive:true});
+    evTrack.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>40)slideEv(dx>0?-1:1);},{passive:true});
+}
+function goEv(i){
+    evIdx=i;evTrack.style.transform=`translateX(-${evIdx*100}%)`;evDotsC.querySelectorAll('.ev-dot').forEach((d,j)=>d.classList.toggle('active',j===evIdx));
+    const car=document.getElementById('evCarousel');car.classList.add('glitching');setTimeout(()=>car.classList.remove('glitching'),300);
+}
+function slideEv(dir){goEv((evIdx+dir+evSlides.length)%evSlides.length);}
+
+// ANIMATED COUNTERS
+const statNums=document.querySelectorAll('.ev-stat-num');
+const statObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,target=parseInt(el.dataset.count);let cur=0;const step=Math.max(1,Math.floor(target/40));const iv=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(iv);}el.textContent=cur+(el.closest('.ev-stat').querySelector('.ev-stat-label').textContent.includes('%')?'%':'+');},30);statObs.unobserve(el);}});},{threshold:0.5});
+statNums.forEach(el=>statObs.observe(el));
+
+// SUPPORT SLIDER
+const supSlider=document.getElementById('supSlider'),supAmount=document.getElementById('supAmount'),supBtn=document.getElementById('supBtn');
+let currentLang='en';
+function updateSupport(val){
+    supAmount.textContent='£'+val;
+    let tpl='SUPPORT WITH £{val}';try{tpl=i18n[currentLang].sup_btn;}catch(e){}
+    supBtn.textContent=tpl.replace('{val}',val);
+    supAmount.classList.add('bump');setTimeout(()=>supAmount.classList.remove('bump'),150);
+}
+supSlider.addEventListener('input',()=>updateSupport(parseInt(supSlider.value)));
+updateSupport(5);
+
+// WHEEL
+const wheelData=[
+    {tag:'Direct Funding',problem:'Streaming pays artists almost nothing',solution:'On UNMUTE, fans put money directly in artists\' pockets.'},
+    {tag:'Fan Economy',problem:'Music has been completely devalued',solution:'When fans invest directly in artists they believe in, music becomes valuable again. Every contribution says: your art matters.'},
+    {tag:'Blockchain',problem:'Artists don\'t know who their fans are',solution:'Artists give fans access to exclusive perks, bringing them closer. Every contribution on UNMUTE is traceable on the blockchain — artists know exactly who supported them.'},
+    {tag:'Community',problem:'The industry keeps pushing the same music',solution:'On UNMUTE, we prioritise talent and real community support, not volume. The more fans back you, the more you rise.'},
+    {tag:'Crowdfunding',problem:'Lack of real artist development',solution:'UNMUTE replaces the label model with crowdfunding. Fans become the investors, funding artist development from day one.'},
+    {tag:'Public Choice',problem:'Industry prioritizes numbers over art',solution:'The public decides who rises with UNMUTE. We don\'t use algorithms to push artists — talent is the only metric that matters to the audience.'},
+    {tag:'Community',problem:'Everyone chasing virality',solution:'UNMUTE gives artists the opportunity to build a strong, loyal fanbase — sharing unique moments, away from social media.'},
+    {tag:'Independence',problem:'Artists trapped by platform dependence',solution:'Artists grow through the fanbase they discover on UNMUTE. No algorithm is used, so nothing influences who gets seen. Your community comes to you naturally.'},
+    {tag:'Infrastructure',problem:'Nothing works for independent artists',solution:'UNMUTE is built for independent artists. Direct funding, live events, community — everything is transparent, and artists keep their freedom.'},
+    {tag:'Fair Revenue',problem:'Pay structures don\'t reward artists',solution:'Fans contribute directly to artists with no middlemen. Artists keep what they receive, grow their community, and gain more visibility from it.'},
+    {tag:'Public Choice',problem:'Algorithms dictating success',solution:'On UNMUTE, the public votes and decides who gets visibility. We trust real human taste over algorithms.'},
+    {tag:'Live Events',problem:'Algorithms discourage exploration',solution:'UNMUTE lets you discover artists through live events, community, and real experiences — no algorithms needed.'},
+    {tag:'Open Access',problem:'Too much gatekeeping',solution:'Any independent artist can join UNMUTE and receive support. All you need is your music and people who believe in it.'},
+    {tag:'Curation',problem:'Too little gatekeeping',solution:'The community is the filter. They believe in you, they want to help you, and live unique experiences with you. Real talent rises.'},
+    {tag:'Fan Rewards',problem:'No incentives for fans to go deeper',solution:'The earlier you back an artist that will grow on UNMUTE, the more you unlock — exclusive tracks, concert access, merch, experiences.'},
+    {tag:'Artistry First',problem:'Decline in music quality',solution:'When fans fund artists directly, they invest in craft and talent. Quality wins because the audience demands it.'},
+    {tag:'Micro £1',problem:'No support for middle-class artists',solution:'UNMUTE makes contributing accessible from any amount. Any fan can support any artist.'},
+    {tag:'Live Discovery',problem:'New artist discovery is broken',solution:'UNMUTE rewards fans with exclusive perks from their favourite artists. UNMUTE combines a discovery platform and live events to build a strong community.'},
+    {tag:'Verified',problem:'Streaming fraud undermines real artists',solution:'Every contribution on UNMUTE is verified on the blockchain. Every fan is real, every transaction is transparent. The way we operate is public.'}
+];
+const wCanvas=document.getElementById('wheelCanvas'),wCtx=wCanvas.getContext('2d');
+const wColors=['#C457D7','#111','#00C2CB','#1a1a1a','#9b30a0','#0a0a0a','#00959c','#151515','#C457D7','#111','#00C2CB','#1a1a1a','#9b30a0','#0a0a0a','#00959c','#151515','#C457D7','#111','#00C2CB'];
+let wAngle=0,wSpinning=false;
+function drawWheel(){
+    const cx=wCanvas.width/2,cy=wCanvas.height/2,r=cx-10,arc=2*Math.PI/wheelData.length;
+    wCtx.clearRect(0,0,wCanvas.width,wCanvas.height);
+    wheelData.forEach((d,i)=>{
+        const a=wAngle+i*arc;
+        wCtx.beginPath();wCtx.moveTo(cx,cy);wCtx.arc(cx,cy,r,a,a+arc);wCtx.closePath();
+        wCtx.fillStyle=wColors[i%wColors.length];wCtx.fill();
+        wCtx.strokeStyle='rgba(255,255,255,0.06)';wCtx.lineWidth=1;wCtx.stroke();
+        wCtx.save();wCtx.translate(cx,cy);wCtx.rotate(a+arc/2);
+        wCtx.fillStyle='#fff';wCtx.font='bold 10px Inter,sans-serif';wCtx.textAlign='left';wCtx.textBaseline='middle';
+        const words=d.problem.split(' ');let line='',ly=-6*(Math.ceil(d.problem.length/16)>1?1:0);
+        words.forEach(w=>{const test=line+w+' ';if(wCtx.measureText(test).width>r*0.44&&line){wCtx.fillText(line.trim(),r*0.28,ly);ly+=12;line=w+' ';}else{line=test;}});
+        wCtx.fillText(line.trim(),r*0.28,ly);
+        wCtx.restore();
+    });
+    wCtx.beginPath();wCtx.arc(cx,cy,36,0,2*Math.PI);wCtx.fillStyle='#000';wCtx.fill();
+    wCtx.strokeStyle='#C457D7';wCtx.lineWidth=2;wCtx.stroke();
+}
+drawWheel();
+function spinWheel(){
+    if(wSpinning)return;wSpinning=true;
+    document.getElementById('spinBtn').disabled=true;
+    document.getElementById('wheelResult').innerHTML='';
+    document.getElementById('wheelResult').classList.remove('show');
+    document.getElementById('wheelResultBg').classList.remove('show');
+    document.getElementById('spinBtn').style.opacity='1';
+    const spins=4+Math.random()*4,target=spins*2*Math.PI+Math.random()*2*Math.PI;
+    const duration=4000;let start=null;
+    function animate(ts){
+        if(!start)start=ts;const p=Math.min((ts-start)/duration,1);
+        const ease=1-Math.pow(1-p,3);
+        wAngle=ease*target;drawWheel();
+        if(p<1){requestAnimationFrame(animate);}
+        else{
+            wSpinning=false;document.getElementById('spinBtn').disabled=false;
+            const arc=2*Math.PI/wheelData.length;
+            const norm=((2*Math.PI-(wAngle%(2*Math.PI)))%(2*Math.PI));
+            const idx=Math.floor(norm/arc)%wheelData.length;
+            const d=wheelData[idx];
+            document.getElementById('spinBtn').style.opacity='0';
+            const tapText=(i18n[currentLang]||i18n.en).roul_tap;
+            document.getElementById('wheelResult').innerHTML=`<div class="wr-problem">${d.problem}</div><div class="wr-solution">${d.solution}</div><div class="wr-tap">${tapText}</div>`;
+            document.getElementById('wheelResultBg').classList.add('show');
+            document.getElementById('wheelResult').classList.add('show');
+            document.getElementById('wheelResultBg').onclick=function(){
+                this.classList.remove('show');this.onclick=null;
+                document.getElementById('wheelResult').classList.remove('show');
+                document.getElementById('spinBtn').style.opacity='1';
+            };
+            document.getElementById('wheelResult').onclick=function(){
+                document.getElementById('wheelResultBg').click();
+            };
+        }
+    }
+    requestAnimationFrame(animate);
+}
+
+// ===== I18N =====
+const wheelTranslations={
+en:[
+{tag:'Direct Funding',problem:'Streaming pays artists almost nothing',solution:'On UNMUTE, fans put money directly in artists\' pockets.'},
+{tag:'Fan Economy',problem:'Music has been completely devalued',solution:'When fans invest directly in artists they believe in, music becomes valuable again. Every contribution says: your art matters.'},
+{tag:'Blockchain',problem:'Artists don\'t know who their fans are',solution:'Artists give fans access to exclusive perks, bringing them closer. Every contribution on UNMUTE is traceable on the blockchain — artists know exactly who supported them.'},
+{tag:'Community',problem:'The industry keeps pushing the same music',solution:'On UNMUTE, we prioritise talent and real community support, not volume. The more fans back you, the more you rise.'},
+{tag:'Crowdfunding',problem:'Lack of real artist development',solution:'UNMUTE replaces the label model with crowdfunding. Fans become the investors, funding artist development from day one.'},
+{tag:'Public Choice',problem:'Industry prioritizes numbers over art',solution:'The public decides who rises with UNMUTE. We don\'t use algorithms to push artists — talent is the only metric that matters to the audience.'},
+{tag:'Community',problem:'Everyone chasing virality',solution:'UNMUTE gives artists the opportunity to build a strong, loyal fanbase — sharing unique moments, away from social media.'},
+{tag:'Independence',problem:'Artists trapped by platform dependence',solution:'Artists grow through the fanbase they discover on UNMUTE. No algorithm is used, so nothing influences who gets seen. Your community comes to you naturally.'},
+{tag:'Infrastructure',problem:'Nothing works for independent artists',solution:'UNMUTE is built for independent artists. Direct funding, live events, community — everything is transparent, and artists keep their freedom.'},
+{tag:'Fair Revenue',problem:'Pay structures don\'t reward artists',solution:'Fans contribute directly to artists with no middlemen. Artists keep what they receive, grow their community, and gain more visibility from it.'},
+{tag:'Public Choice',problem:'Algorithms dictating success',solution:'On UNMUTE, the public votes and decides who gets visibility. We trust real human taste over algorithms.'},
+{tag:'Live Events',problem:'Algorithms discourage exploration',solution:'UNMUTE lets you discover artists through live events, community, and real experiences — no algorithms needed.'},
+{tag:'Open Access',problem:'Too much gatekeeping',solution:'Any independent artist can join UNMUTE and receive support. All you need is your music and people who believe in it.'},
+{tag:'Curation',problem:'Too little gatekeeping',solution:'The community is the filter. They believe in you, they want to help you, and live unique experiences with you. Real talent rises.'},
+{tag:'Fan Rewards',problem:'No incentives for fans to go deeper',solution:'The earlier you back an artist that will grow on UNMUTE, the more you unlock — exclusive tracks, concert access, merch, experiences.'},
+{tag:'Artistry First',problem:'Decline in music quality',solution:'When fans fund artists directly, they invest in craft and talent. Quality wins because the audience demands it.'},
+{tag:'Micro £1',problem:'No support for middle-class artists',solution:'UNMUTE makes contributing accessible from any amount. Any fan can support any artist.'},
+{tag:'Live Discovery',problem:'New artist discovery is broken',solution:'UNMUTE rewards fans with exclusive perks from their favourite artists. UNMUTE combines a discovery platform and live events to build a strong community.'},
+{tag:'Verified',problem:'Streaming fraud undermines real artists',solution:'Every contribution on UNMUTE is verified on the blockchain. Every fan is real, every transaction is transparent. The way we operate is public.'}
+],
+es:[
+{tag:'Financiación Directa',problem:'El streaming no paga a los artistas',solution:'En UNMUTE, el dinero de los fans va directo al artista. Sin rodeos.'},
+{tag:'Economía Fan',problem:'La música ha perdido todo su valor',solution:'Cuando los fans apuestan por los artistas en los que creen, la música recupera su valor. Cada aportación dice: tu arte importa.'},
+{tag:'Blockchain',problem:'Los artistas no conocen a sus fans',solution:'Los artistas ofrecen acceso exclusivo a sus fans y los acercan de verdad. Cada aportación en UNMUTE queda registrada en blockchain — sabes exactamente quién te apoya.'},
+{tag:'Comunidad',problem:'La industria repite siempre lo mismo',solution:'En UNMUTE lo que cuenta es el talento y el apoyo real, no los números. Cuantos más fans te respaldan, más creces.'},
+{tag:'Crowdfunding',problem:'No hay apuesta real por los artistas',solution:'UNMUTE sustituye el modelo discográfico por crowdfunding. Los fans son los inversores y financian al artista desde el día uno.'},
+{tag:'Elección Pública',problem:'La industria antepone los números al arte',solution:'En UNMUTE es el público quien decide quién sube. Nada de algoritmos — el talento es lo único que importa.'},
+{tag:'Comunidad',problem:'Todo el mundo va detrás de la viralidad',solution:'UNMUTE da a los artistas un espacio para crear una comunidad fiel — momentos únicos, lejos del ruido de las redes.'},
+{tag:'Independencia',problem:'Artistas atrapados por las plataformas',solution:'En UNMUTE los artistas crecen con los fans que les descubren. Sin algoritmos, sin trampas. Tu comunidad llega sola.'},
+{tag:'Infraestructura',problem:'Nada funciona para los independientes',solution:'UNMUTE está hecho para artistas independientes. Financiación directa, eventos en directo, comunidad — todo transparente, sin perder tu libertad.'},
+{tag:'Ingresos Justos',problem:'El modelo actual no recompensa a los artistas',solution:'Los fans aportan directamente al artista, sin intermediarios. Te quedas con lo que recibes, haces crecer tu comunidad y consigues más visibilidad.'},
+{tag:'Elección Pública',problem:'Los algoritmos deciden quién triunfa',solution:'En UNMUTE, el público vota y decide quién se ve. Confiamos en el criterio de la gente, no en los algoritmos.'},
+{tag:'Eventos en Vivo',problem:'Los algoritmos te impiden explorar',solution:'UNMUTE te lleva a descubrir artistas en directo, en comunidad, con experiencias reales — sin algoritmos de por medio.'},
+{tag:'Acceso Abierto',problem:'Demasiadas puertas cerradas',solution:'Cualquier artista independiente puede unirse a UNMUTE y recibir apoyo. Solo necesitas tu música y gente que crea en ti.'},
+{tag:'Curación',problem:'Falta de filtro real',solution:'La comunidad es el filtro. Creen en ti, quieren ayudarte y vivir algo único contigo. El talento de verdad se abre camino.'},
+{tag:'Recompensas Fan',problem:'Ser fan no tiene recompensa',solution:'Cuanto antes apoyes a un artista que va a crecer en UNMUTE, más desbloqueas — temas exclusivos, entradas, merch, experiencias.'},
+{tag:'Arte Primero',problem:'La calidad de la música está cayendo',solution:'Cuando los fans financian al artista directamente, apuestan por el talento y el oficio. La calidad se impone porque el público la exige.'},
+{tag:'Micro £1',problem:'Los artistas intermedios no tienen apoyo',solution:'UNMUTE permite aportar desde cualquier cantidad. Cualquier fan puede apoyar a cualquier artista.'},
+{tag:'Descubrimiento en Vivo',problem:'Descubrir artistas nuevos está roto',solution:'UNMUTE premia a los fans con acceso exclusivo a sus artistas favoritos. Plataforma de descubrimiento + eventos en directo = comunidad de verdad.'},
+{tag:'Verificado',problem:'El fraude en streaming hunde a los artistas reales',solution:'Cada aportación en UNMUTE está verificada en blockchain. Cada fan es real, cada transacción es transparente. Operamos a la vista de todos.'}
+],
+ca:[
+{tag:'Finançament Directe',problem:'L\'streaming no paga als artistes',solution:'A UNMUTE, els diners dels fans van directament a l\'artista. Sense voltes.'},
+{tag:'Economia Fan',problem:'La música ha perdut tot el seu valor',solution:'Quan els fans aposten pels artistes en què creuen, la música torna a valer. Cada aportació diu: el teu art compta.'},
+{tag:'Blockchain',problem:'Els artistes no saben qui els escolta',solution:'Els artistes ofereixen accés exclusiu als seus fans i els acosten de debò. Cada aportació a UNMUTE queda registrada a la blockchain — saps exactament qui et dona suport.'},
+{tag:'Comunitat',problem:'La indústria repeteix sempre el mateix',solution:'A UNMUTE el que importa és el talent i el suport real, no els números. Com més fans et recolzen, més amunt arribes.'},
+{tag:'Crowdfunding',problem:'No hi ha aposta real pels artistes',solution:'UNMUTE canvia el model discogràfic pel crowdfunding. Els fans fan d\'inversors i financen l\'artista des del primer dia.'},
+{tag:'Elecció Pública',problem:'La indústria posa els números per davant de l\'art',solution:'A UNMUTE el públic decideix qui puja. Res d\'algorismes — el talent és l\'únic que compta.'},
+{tag:'Comunitat',problem:'Tothom va darrere la viralitat',solution:'UNMUTE dona als artistes un espai per crear una comunitat fidel — moments únics, lluny del soroll de les xarxes.'},
+{tag:'Independència',problem:'Artistes atrapats per les plataformes',solution:'A UNMUTE els artistes creixen amb els fans que els descobreixen. Sense algorismes, sense trampes. La teva comunitat arriba sola.'},
+{tag:'Infraestructura',problem:'Res no funciona pels independents',solution:'UNMUTE està fet per a artistes independents. Finançament directe, concerts en directe, comunitat — tot transparent, sense perdre la teva llibertat.'},
+{tag:'Ingressos Justos',problem:'El model actual no recompensa els artistes',solution:'Els fans aporten directament a l\'artista, sense intermediaris. Et quedes amb el que reps, fas créixer la teva comunitat i aconsegueixes més visibilitat.'},
+{tag:'Elecció Pública',problem:'Els algorismes decideixen qui triomfa',solution:'A UNMUTE, el públic vota i decideix qui es veu. Confiem en el criteri de la gent, no en els algorismes.'},
+{tag:'Esdeveniments en Viu',problem:'Els algorismes no et deixen explorar',solution:'UNMUTE et porta a descobrir artistes en directe, en comunitat, amb experiències reals — sense algorismes pel mig.'},
+{tag:'Accés Obert',problem:'Massa portes tancades',solution:'Qualsevol artista independent pot unir-se a UNMUTE i rebre suport. Només cal la teva música i gent que hi cregui.'},
+{tag:'Curació',problem:'Falta un filtre de veritat',solution:'La comunitat és el filtre. Creuen en tu, et volen ajudar i viure alguna cosa única amb tu. El talent de debò s\'obre camí.'},
+{tag:'Recompenses Fan',problem:'Ser fan no té cap recompensa',solution:'Com abans donis suport a un artista que creixerà a UNMUTE, més coses desbloquegis — temes exclusius, entrades, merch, experiències.'},
+{tag:'Art Primer',problem:'La qualitat de la música està caient',solution:'Quan els fans financen l\'artista directament, aposten pel talent i l\'ofici. La qualitat s\'imposa perquè el públic l\'exigeix.'},
+{tag:'Micro £1',problem:'Els artistes intermedis no tenen suport',solution:'UNMUTE permet aportar des de qualsevol quantitat. Qualsevol fan pot donar suport a qualsevol artista.'},
+{tag:'Descobriment en Viu',problem:'Descobrir artistes nous no funciona',solution:'UNMUTE premia els fans amb accés exclusiu als seus artistes preferits. Plataforma de descobriment + concerts en directe = comunitat de debò.'},
+{tag:'Verificat',problem:'El frau a l\'streaming enfonsa els artistes reals',solution:'Cada aportació a UNMUTE està verificada a la blockchain. Cada fan és real, cada transacció és transparent. Operem a la vista de tothom.'}
+],
+fr:[
+{tag:'Financement Direct',problem:'Le streaming ne paie pas les artistes',solution:'Sur UNMUTE, l\'argent des fans va directement à l\'artiste. Sans intermédiaire.'},
+{tag:'Économie Fan',problem:'La musique a perdu toute sa valeur',solution:'Quand les fans soutiennent directement les artistes en qui ils croient, la musique reprend de la valeur. Chaque contribution compte.'},
+{tag:'Blockchain',problem:'Les artistes ne connaissent pas leurs fans',solution:'Sur UNMUTE, les artistes offrent des avantages exclusifs à leurs fans. Chaque contribution est tracée sur la blockchain — l\'artiste sait exactement qui le soutient.'},
+{tag:'Communauté',problem:'L\'industrie pousse toujours la même musique',solution:'Sur UNMUTE, c\'est le talent et le soutien réel qui comptent. Plus les fans te soutiennent, plus tu gagnes en visibilité.'},
+{tag:'Crowdfunding',problem:'Aucun vrai investissement dans les artistes',solution:'UNMUTE remplace le modèle des labels par du crowdfunding. Les fans deviennent les investisseurs et financent l\'artiste dès le premier jour.'},
+{tag:'Choix du Public',problem:'L\'industrie fait passer les chiffres avant l\'art',solution:'Sur UNMUTE, c\'est le public qui décide qui monte. Pas d\'algorithme — seul le talent compte.'},
+{tag:'Communauté',problem:'Tout le monde court après la viralité',solution:'UNMUTE permet aux artistes de construire une communauté fidèle — des moments uniques, loin du bruit des réseaux sociaux.'},
+{tag:'Indépendance',problem:'Les artistes sont prisonniers des plateformes',solution:'Sur UNMUTE, les artistes grandissent grâce aux fans qui les découvrent. Aucun algorithme ne décide qui est visible. Ta communauté vient naturellement.'},
+{tag:'Infrastructure',problem:'Rien ne fonctionne pour les indépendants',solution:'UNMUTE est pensé pour les artistes indépendants. Financement direct, événements live, communauté — tout est transparent et tu gardes ta liberté.'},
+{tag:'Revenus Justes',problem:'Le modèle actuel ne rémunère pas les artistes',solution:'Les fans contribuent directement, sans intermédiaire. L\'artiste garde ce qu\'il reçoit, fait grandir sa communauté et gagne en visibilité.'},
+{tag:'Choix du Public',problem:'Les algorithmes décident qui réussit',solution:'Sur UNMUTE, le public vote et décide qui mérite d\'être mis en avant. On fait confiance aux gens, pas aux algorithmes.'},
+{tag:'Événements Live',problem:'Les algorithmes empêchent la découverte',solution:'UNMUTE te permet de découvrir des artistes en live, en communauté, à travers des expériences réelles — sans algorithme.'},
+{tag:'Accès Ouvert',problem:'Trop de portes fermées',solution:'N\'importe quel artiste indépendant peut rejoindre UNMUTE et recevoir du soutien. Il suffit d\'avoir de la musique et des gens qui y croient.'},
+{tag:'Curation',problem:'Pas assez de filtre',solution:'La communauté joue le rôle de filtre. Les fans croient en toi, veulent t\'aider et vivre des moments uniques avec toi. Le vrai talent finit toujours par émerger.'},
+{tag:'Récompenses Fan',problem:'Être fan ne donne accès à rien',solution:'Plus tôt tu soutiens un artiste sur UNMUTE, plus tu débloques d\'avantages — morceaux exclusifs, places de concert, merch, expériences.'},
+{tag:'L\'Art d\'Abord',problem:'La qualité de la musique baisse',solution:'Quand les fans financent directement un artiste, ils misent sur le talent. La qualité s\'impose parce que le public l\'exige.'},
+{tag:'Micro £1',problem:'Aucun soutien pour les artistes émergents',solution:'Sur UNMUTE, on peut contribuer à partir de n\'importe quel montant. Tout fan peut soutenir tout artiste.'},
+{tag:'Découverte Live',problem:'Découvrir de nouveaux artistes ne marche plus',solution:'UNMUTE offre aux fans des avantages exclusifs de leurs artistes préférés. Plateforme de découverte + événements live = une vraie communauté.'},
+{tag:'Vérifié',problem:'La fraude au streaming pénalise les vrais artistes',solution:'Chaque contribution sur UNMUTE est vérifiée sur la blockchain. Chaque fan est réel, chaque transaction est transparente. On fonctionne en toute transparence.'}
+]
+};
+const i18n={
+en:{
+wl_skip:'Skip →',wl_title:'JOIN THE MOVEMENT',wl_desc:'Be among the first when UNMUTE launches. Get early access to the platform, events, and exclusive perks.',wl_ph_name:'Your name',wl_ph_email:'Your email',wl_consent:'I agree to receive emails from UNMUTE about events, updates, and exclusive perks.',wl_btn:'JOIN WAITLIST',wl_count:'100+ already waiting',wl_success:"You're on the list!",wl_error:'Something went wrong — try again.',
+nav_about:'About',nav_events:'Events',nav_spin:'Spin',nav_connect:'Connect',nav_apply:'Apply',
+hero_sub:'Designing a Fairer Music System',hero_artist:"I'M AN ARTIST",hero_tickets:'BARCELONA — GET TICKETS',hero_scroll:'Scroll',
+mq_stars:'UNMUTE The Stars Of Tomorrow',
+about_label:'Who We Are',about_title:'THE AUDIENCE DECIDES.<br>THE ARTIST RISES.',
+about_body:'UNMUTE <strong>put the audience at the heart of the music industry</strong>. We connect fans directly to the artists they believe in.<br><br>On our platform, <strong>anyone can discover and support the next wave of talent</strong>. The more an artist is funded, the more visibility they gain. No algorithm decides who gets seen — <strong>the people do</strong>. Fans become the new A&Rs, choosing who rises based on pure talent. When you fund an artist, you collect points — and as more people fund them after you, <span class="hl">your points keep growing</span>. Use them to unlock exclusive perks: unreleased music, concert access, merch, and more.<br><br>We also host <strong>live events</strong> where emerging artists perform on stage and the audience votes for their favourites. Discover new talent in real life, support the artists you believe in, and walk away with <strong>exclusive perks</strong>.',
+val_equity:'Every artist deserves a fair chance, regardless of connections or budget.',val_transparency:'Every contribution is traceable. Artists and fans see where the money goes.',val_belief:'The public is the best judge of talent.',
+quote_text:'I don\'t want to be signed to a label. I would lose my <span class="p">artistic freedom</span>, risk losing money, and give up the <span class="c">rights to my music</span>.',quote_attr:'— Nate Skies, Independent Artist',
+roul_label:'Spin The Wheel',roul_title:'WHAT PROBLEMS<br>DOES UNMUTE SOLVE?',roul_desc:'Spin the wheel and discover the issues we\'re tackling in the music industry.',roul_spin:'SPIN',roul_tap:'Tap to spin again',
+steps_label:'How It Works',steps_title:'SIMPLE BY DESIGN.',
+step1_h:'DISCOVER AN ARTIST',step1_p:'Browse emerging independent talent on the platform or at our live events.',
+step2_h:'CONTRIBUTE ANY AMOUNT',step2_p:'Support an artist you believe in from any amount. Simple, direct, no hassle.',
+step3_h:'COLLECT POINTS',step3_p:'Every time you fund an artist, you collect points. When others fund the same artist, your points grow too.',
+step4_h:'WATCH THE ARTIST RISE',step4_p:'Your funding directly boosts the artist\'s visibility on the platform. More support means more exposure and a bigger fanbase.',
+step5_h:'UNLOCK EXCLUSIVE PERKS',step5_p:'Use the points you\'ve collected to unlock exclusive rewards — unreleased tracks, concert tickets, backstage access, merch, and more.',
+sup_label:'Support The Project',sup_title:'HELP US BUILD<br>THE PLATFORM.',sup_desc:'Every contribution brings us closer to a fairer music industry.',sup_raised:'Already raised: <span style="color:var(--cyan);font-weight:700;">£430</span> / £5,000',sup_btn:'SUPPORT WITH £{val}',
+ev_label:'Events',ev_title:'WHERE IT HAPPENS.',ev_launch:'UNMUTE LAUNCH NIGHT',ev_date:'April 10, 2026 — Dreambags Jaguar Shoes, London',ev_desc:'Our first event brought together 5 independent artists performing live on stage. The audience voted in real-time for their favourites — and every voter walked away with exclusive perks from the artists they supported.',ev_lineup:'The Lineup',ev_perks_tap:'Tap to reveal the perks',ev_next:'What\'s Next',
+ev_prima_desc:'Selected for Ideas Showroom at one of Europe\'s most prestigious music conferences.',ev_prima_link:'Learn More',ev_oasys_desc:'Live event in Barcelona. New artists, new city, same energy.',ev_oasys_link:'Get Tickets',ev_jag_desc:'Live event in London. Independent artists, real fans, one stage.',ev_jag_link:'Apply as Artist',
+mq2_discover:'Discover',mq2_support:'Support',mq2_connect:'Connect',mq2_grow:'Grow',mq2_empower:'Empower',mq2_create:'Create',
+conn_label:'Let\'s Connect',conn_title:'WE WANT TO<br>HEAR FROM YOU.',conn_artist:'I want funding and visibility without giving up my rights.',conn_fan:'I want to discover and support emerging talent early.',conn_partner:'Venues, associations, media — let\'s build together.',conn_investor:'I want to invest in the future of music.',conn_email:'Email',conn_insta:'Instagram',conn_li:'LinkedIn',
+team_label:'The Team',team_title:'WHO\'S BEHIND UNMUTE.',team_linkedin:'View LinkedIn →',role_founder:'Founder',role_ar:'Artist Relations',role_community:'Community',role_event:'Event',role_pc:'Project Coordinator',
+footer_copy:'© 2026 — DESIGNING A FAIRER MUSIC SYSTEM',
+ma_title:'HEY ARTIST',ma_sub:'Interested in being part of UNMUTE Project?',ma_ph_name:'Your name / artist name *',ma_ph_email:'Your email *',ma_ph_ig:'Instagram @ *',ma_ph_spotify:'Spotify link (optional)',ma_interest:'I\'m interested in *',ma_opt_both:'Joining the platform & performing at UNMUTE events',ma_opt_platform:'Joining the platform',ma_opt_info:'Just learning more',ma_where:'Where? <span class="opt-tag">(max 2, optional)</span>',ma_ph_msg:'Anything else? (optional)',modal_send:'SEND',
+mp_title:'LET\'S BUILD TOGETHER',mp_sub:'Venues, media, associations — tell us about your organisation.',mp_ph_company:'Company / Organisation name *',mp_ph_name:'Your name *',mp_ph_role:'Your role / title *',mp_ph_email:'Your email *',mp_sel_default:'Type of partnership *',mp_sel_venue:'Venue',mp_sel_media:'Media / Press',mp_sel_ngo:'Association / NGO',mp_sel_brand:'Brand / Sponsor',mp_sel_agency:'Agency / Management',mp_sel_other:'Other',mp_ph_msg:'Tell us about yourself and how you\'d like to collaborate...',
+mi_title:'LET\'S TALK',mi_sub:'We\'d love to tell you more about UNMUTE.',mi_ph_name:'Your name *',mi_ph_email:'Your email *',mi_ph_fund:'Fund / Company (optional)',mi_sel_default:'I\'m interested as... *',mi_sel_angel:'Angel Investor',mi_sel_vc:'VC / Fund',mi_sel_advisor:'Advisor / Mentor',mi_sel_curious:'Just curious for now',mi_sel_range:'Investment range *',mi_sel_u1k:'Under £1,000',mi_sel_1k5k:'£1,000 – £5,000',mi_sel_5k25k:'£5,000 – £25,000',mi_sel_25k:'£25,000+',mi_sel_tbd:'Not sure yet',mi_ph_msg:'Anything you\'d like us to know...'
+},
+es:{
+wl_skip:'Saltar →',wl_title:'ÚNETE AL MOVIMIENTO',wl_desc:'Sé de los primeros en acceder a UNMUTE. Acceso anticipado a la plataforma, eventos y ventajas exclusivas.',wl_ph_name:'Tu nombre',wl_ph_email:'Tu email',wl_consent:'Acepto recibir emails de UNMUTE sobre eventos, novedades y ventajas exclusivas.',wl_btn:'APUNTARME',wl_count:'Más de 100 ya apuntados',wl_success:'¡Ya estás dentro!',wl_error:'Ha habido un error, inténtalo de nuevo.',
+nav_about:'Nosotros',nav_events:'Eventos',nav_spin:'Ruleta',nav_connect:'Contacto',nav_apply:'Participar',
+hero_sub:'Por una industria musical más justa',hero_artist:'SOY ARTISTA',hero_tickets:'BARCELONA — ENTRADAS',hero_scroll:'Scroll',
+mq_stars:'UNMUTE Las Estrellas Del Mañana',
+about_label:'Quiénes somos',about_title:'EL PÚBLICO DECIDE.<br>EL ARTISTA CRECE.',
+about_body:'UNMUTE <strong>pone al público en el centro de la industria musical</strong>. Conectamos a los fans directamente con los artistas en los que creen.<br><br>En nuestra plataforma, <strong>cualquiera puede descubrir y apoyar a la nueva generación de artistas</strong>. Cuanto más apoyo recibe un artista, más visibilidad consigue. Ningún algoritmo decide quién destaca: <strong>lo decide la gente</strong>. Los fans se convierten en los nuevos A&Rs, eligiendo quién sube según su talento. Cuando apoyas a un artista, acumulas puntos, y cuando otros le apoyan después de ti, <span class="hl">tus puntos siguen subiendo</span>. Úsalos para desbloquear ventajas exclusivas: música inédita, acceso a conciertos, merch y mucho más.<br><br>También organizamos <strong>eventos en directo</strong> donde artistas emergentes suben al escenario y el público vota por sus favoritos. Descubre talento nuevo en persona, apoya a los artistas en los que crees y llévate <strong>ventajas exclusivas</strong>.',
+val_equity:'Todo artista merece una oportunidad real, sin importar sus contactos ni su presupuesto.',val_transparency:'Cada aportación es rastreable.',val_belief:'El público es el mejor juez del talento.',
+quote_text:'No quiero firmar con un sello. Perdería mi <span class="p">libertad artística</span>, arriesgaría mi dinero y cedería los <span class="c">derechos de mi música</span>.',quote_attr:'— Nate Skies, Artista Independiente',
+roul_label:'Gira la ruleta',roul_title:'¿QUÉ PROBLEMAS<br>RESUELVE UNMUTE?',roul_desc:'Gira la ruleta y descubre los retos de la industria musical.',roul_spin:'SPIN',roul_tap:'Toca para girar de nuevo',
+steps_label:'Cómo funciona',steps_title:'SIMPLE POR DISEÑO.',
+step1_h:'DESCUBRE UN ARTISTA',step1_p:'Explora artistas independientes emergentes en la plataforma o en nuestros eventos en directo.',
+step2_h:'APORTA LO QUE QUIERAS',step2_p:'Apoya a un artista en el que crees con la cantidad que quieras. Fácil, directo, sin complicaciones.',
+step3_h:'ACUMULA PUNTOS',step3_p:'Cada vez que apoyas a un artista, acumulas puntos. Y cuando otros también le apoyan, tus puntos siguen subiendo.',
+step4_h:'MIRA CÓMO CRECE',step4_p:'Tu apoyo aumenta directamente la visibilidad del artista en la plataforma. Más apoyo significa más exposición y más fans.',
+step5_h:'DESBLOQUEA VENTAJAS EXCLUSIVAS',step5_p:'Usa tus puntos para acceder a recompensas exclusivas: temas inéditos, entradas a conciertos, acceso backstage, merch y mucho más.',
+sup_label:'Apoya el proyecto',sup_title:'CONTRIBUYE AL<br>PROYECTO.',sup_desc:'Cada aportación nos acerca a una industria musical más justa.',sup_raised:'Ya recaudado: <span style="color:var(--cyan);font-weight:700;">£430</span> / £5,000',sup_btn:'APORTAR £{val}',
+ev_label:'Eventos',ev_title:'EN DIRECTO.',ev_launch:'UNMUTE LAUNCH PARTY',ev_date:'10 de abril de 2026, Dreambags Jaguar Shoes, Londres',ev_desc:'Nuestro primer evento reunió a 5 artistas independientes en directo. El público votó en tiempo real por sus favoritos y cada votante se llevó ventajas exclusivas de los artistas a los que apoyó.',ev_lineup:'El Lineup',ev_perks_tap:'Toca para ver las ventajas',ev_next:'Próximamente',
+ev_prima_desc:'Seleccionados para el Ideas Showroom en una de las conferencias musicales más importantes de Europa.',ev_prima_link:'Saber más',ev_oasys_desc:'Evento en directo en Barcelona. Nuevos artistas, nueva ciudad, misma energía.',ev_oasys_link:'Conseguir entradas',ev_jag_desc:'Evento en directo en Londres. Artistas independientes.',ev_jag_link:'Participa como artista',
+mq2_discover:'Descubrir',mq2_support:'Apoyar',mq2_connect:'Conectar',mq2_grow:'Crecer',mq2_empower:'Impulsar',mq2_create:'Crear',
+conn_label:'Hablemos',conn_title:'CONTÁCTANOS.',conn_artist:'Quiero financiación y visibilidad sin ceder mis derechos.',conn_fan:'Quiero descubrir y apoyar artistas emergentes desde el principio.',conn_partner:'Salas, asociaciones, medios: construyamos juntos.',conn_investor:'Quiero invertir en el futuro de la música.',conn_email:'Email',conn_insta:'Instagram',conn_li:'LinkedIn',
+team_label:'El equipo',team_title:'EL BACKSTAGE DE UNMUTE.',team_linkedin:'Ver LinkedIn →',role_founder:'Fundador',role_ar:'Relaciones con Artistas',role_community:'Comunidad',role_event:'Eventos',role_pc:'Coordinación',
+footer_copy:'© 2026 — POR UNA INDUSTRIA MUSICAL MÁS JUSTA',
+ma_title:'HEY ARTISTA',ma_sub:'¿Te interesa formar parte de UNMUTE?',ma_ph_name:'Tu nombre / nombre artístico *',ma_ph_email:'Tu email *',ma_ph_ig:'Instagram @ *',ma_ph_spotify:'Enlace de Spotify (opcional)',ma_interest:'Me interesa *',ma_opt_both:'Unirme a la plataforma y actuar en eventos UNMUTE',ma_opt_platform:'Unirme a la plataforma',ma_opt_info:'Solo quiero información',ma_where:'¿Dónde? <span class="opt-tag">(máx. 2, opcional)</span>',ma_ph_msg:'¿Algo más? (opcional)',modal_send:'ENVIAR',
+mp_title:'CONSTRUYAMOS JUNTOS',mp_sub:'Salas, medios, asociaciones: cuéntanos quién eres.',mp_ph_company:'Empresa / organización *',mp_ph_name:'Tu nombre *',mp_ph_role:'Tu cargo *',mp_ph_email:'Tu email *',mp_sel_default:'Tipo de colaboración *',mp_sel_venue:'Sala',mp_sel_media:'Medios / Prensa',mp_sel_ngo:'Asociación / ONG',mp_sel_brand:'Marca / Patrocinador',mp_sel_agency:'Agencia / Management',mp_sel_other:'Otro',mp_ph_msg:'Cuéntanos quién eres y cómo te gustaría colaborar...',
+mi_title:'HABLEMOS',mi_sub:'Nos encantaría contarte más sobre UNMUTE.',mi_ph_name:'Tu nombre *',mi_ph_email:'Tu email *',mi_ph_fund:'Fondo / Empresa (opcional)',mi_sel_default:'Me interesa como... *',mi_sel_angel:'Business Angel',mi_sel_vc:'VC / Fondo',mi_sel_advisor:'Asesor / Mentor',mi_sel_curious:'Solo por curiosidad',mi_sel_range:'Rango de inversión *',mi_sel_u1k:'Menos de £1.000',mi_sel_1k5k:'£1.000 – £5.000',mi_sel_5k25k:'£5.000 – £25.000',mi_sel_25k:'£25.000+',mi_sel_tbd:'Aún no lo sé',mi_ph_msg:'¿Algo que quieras contarnos?'
+},
+ca:{
+wl_skip:'Saltar →',wl_title:'UNEIX-TE AL MOVIMENT',wl_desc:'Sigues dels primers en accedir a UNMUTE. Accés anticipat a la plataforma, als esdeveniments i als avantatges exclusius.',wl_ph_name:'El teu nom',wl_ph_email:'El teu email',wl_consent:'Accepto rebre emails d\'UNMUTE sobre esdeveniments, novetats i avantatges exclusius.',wl_btn:'APUNTA\'M',wl_count:'Més de 100 ja apuntats',wl_success:'Ja hi ets!',wl_error:'Hi ha hagut un error, torna-ho a provar.',
+nav_about:'Nosaltres',nav_events:'Esdeveniments',nav_spin:'Ruleta',nav_connect:'Contacte',nav_apply:'Participa',
+hero_sub:'Per una indústria musical més justa',hero_artist:'SÓC ARTISTA',hero_tickets:'BARCELONA — ENTRADES',hero_scroll:'Scroll',
+mq_stars:'UNMUTE Les Estrelles Del Demà',
+about_label:'Qui som',about_title:'EL PÚBLIC DECIDEIX.<br>L\'ARTISTA CREIX.',
+about_body:'UNMUTE <strong>posa el públic al centre de la indústria musical</strong>. Connectem els fans directament amb els artistes en els quals creuen.<br><br>A la nostra plataforma, <strong>tothom pot descobrir i donar suport a la nova generació d\'artistes</strong>. Com més suport rep un artista, més visibilitat aconsegueix. Cap algoritme decideix qui destaca: <strong>ho decideix la gent</strong>. Els fans es converteixen en els nous A&Rs, triant qui puja pel seu talent. Quan dones suport a un artista, acumules punts, i quan altres també li donen suport després de tu, <span class="hl">els teus punts segueixen pujant</span>. Fes-los servir per desbloquejar avantatges exclusius: música inèdita, accés a concerts, merch i molt més.<br><br>També organitzem <strong>concerts en directe</strong> on artistes emergents pugen a l\'escenari i el públic vota pels seus preferits. Descobreix talent nou en persona, dona suport als artistes en els quals creus i enduu-te <strong>avantatges exclusius</strong>.',
+val_equity:'Tot artista mereix una oportunitat real, independentment dels seus contactes o pressupost.',val_transparency:'Cada aportació és traçable.',val_belief:'El públic és el millor jutge del talent.',
+quote_text:'No vull signar amb cap segell. Perdria la meva <span class="p">llibertat artística</span>, arriscaria els meus diners i cederia els <span class="c">drets de la meva música</span>.',quote_attr:'— Nate Skies, Artista Independent',
+roul_label:'Gira la roda',roul_title:'QUINS PROBLEMES<br>RESOL UNMUTE?',roul_desc:'Gira la roda i descobreix els reptes de la indústria musical.',roul_spin:'SPIN',roul_tap:'Toca per tornar a girar',
+steps_label:'Com funciona',steps_title:'SIMPLE PER DISSENY.',
+step1_h:'DESCOBREIX UN ARTISTA',step1_p:'Explora artistes independents emergents a la plataforma o als nostres concerts en directe.',
+step2_h:'APORTA EL QUE VULGUIS',step2_p:'Dona suport a un artista en el qual creus amb la quantitat que vulguis. Fàcil, directe, sense complicacions.',
+step3_h:'ACUMULA PUNTS',step3_p:'Cada cop que dones suport a un artista, acumules punts. I quan altres també li donen suport, els teus punts segueixen pujant.',
+step4_h:'MIRA COM CREIX',step4_p:'El teu suport augmenta directament la visibilitat de l\'artista a la plataforma. Més suport significa més exposició i més fans.',
+step5_h:'DESBLOQUEJA AVANTATGES EXCLUSIUS',step5_p:'Fes servir els teus punts per accedir a recompenses exclusives: temes inèdits, entrades a concerts, accés backstage, merch i molt més.',
+sup_label:'Dona suport al projecte',sup_title:'CONTRIBUEIX AL<br>PROJECTE.',sup_desc:'Cada aportació ens acosta a una indústria musical més justa.',sup_raised:'Ja recaptat: <span style="color:var(--cyan);font-weight:700;">£430</span> / £5,000',sup_btn:'APORTAR £{val}',
+ev_label:'Esdeveniments',ev_title:'EN DIRECTE.',ev_launch:'UNMUTE LAUNCH PARTY',ev_date:'10 d\'abril de 2026, Dreambags Jaguar Shoes, Londres',ev_desc:'El nostre primer esdeveniment va reunir 5 artistes independents en directe. El públic va votar en temps real pels seus preferits i cada votant es va endur avantatges exclusius dels artistes als quals va donar suport.',ev_lineup:'El Lineup',ev_perks_tap:'Toca per veure els avantatges',ev_next:'Pròximament',
+ev_prima_desc:'Seleccionats per al Ideas Showroom en una de les conferències musicals més importants d\'Europa.',ev_prima_link:'Saber-ne més',ev_oasys_desc:'Concert en directe a Barcelona. Nous artistes, nova ciutat, mateixa energia.',ev_oasys_link:'Aconseguir entrades',ev_jag_desc:'Concert en directe a Londres. Artistes independents.',ev_jag_link:'Participa com a artista',
+mq2_discover:'Descobrir',mq2_support:'Donar suport',mq2_connect:'Connectar',mq2_grow:'Créixer',mq2_empower:'Impulsar',mq2_create:'Crear',
+conn_label:'Parlem',conn_title:'CONTACTA\'NS.',conn_artist:'Vull finançament i visibilitat sense cedir els meus drets.',conn_fan:'Vull descobrir i donar suport a artistes emergents des del principi.',conn_partner:'Sales, associacions, mitjans: construïm junts.',conn_investor:'Vull invertir en el futur de la música.',conn_email:'Email',conn_insta:'Instagram',conn_li:'LinkedIn',
+team_label:'L\'equip',team_title:'EL BACKSTAGE D\'UNMUTE.',team_linkedin:'Veure LinkedIn →',role_founder:'Fundador',role_ar:'Relacions amb Artistes',role_community:'Comunitat',role_event:'Esdeveniments',role_pc:'Coordinació',
+footer_copy:'© 2026 — PER UNA INDÚSTRIA MUSICAL MÉS JUSTA',
+ma_title:'HEY ARTISTA',ma_sub:'T\'interessa formar part d\'UNMUTE?',ma_ph_name:'El teu nom / nom artístic *',ma_ph_email:'El teu email *',ma_ph_ig:'Instagram @ *',ma_ph_spotify:'Enllaç de Spotify (opcional)',ma_interest:'M\'interessa *',ma_opt_both:'Unir-me a la plataforma i actuar en esdeveniments UNMUTE',ma_opt_platform:'Unir-me a la plataforma',ma_opt_info:'Només vull informació',ma_where:'On? <span class="opt-tag">(màx. 2, opcional)</span>',ma_ph_msg:'Alguna cosa més? (opcional)',modal_send:'ENVIAR',
+mp_title:'CONSTRUÏM JUNTS',mp_sub:'Sales, mitjans, associacions: explica\'ns qui sou.',mp_ph_company:'Empresa / organització *',mp_ph_name:'El teu nom *',mp_ph_role:'El teu càrrec *',mp_ph_email:'El teu email *',mp_sel_default:'Tipus de col·laboració *',mp_sel_venue:'Sala',mp_sel_media:'Mitjans / Premsa',mp_sel_ngo:'Associació / ONG',mp_sel_brand:'Marca / Patrocinador',mp_sel_agency:'Agència / Management',mp_sel_other:'Altre',mp_ph_msg:'Explica\'ns qui ets i com t\'agradaria col·laborar...',
+mi_title:'PARLEM',mi_sub:'Ens encantaria explicar-te més sobre UNMUTE.',mi_ph_name:'El teu nom *',mi_ph_email:'El teu email *',mi_ph_fund:'Fons / Empresa (opcional)',mi_sel_default:'M\'interessa com a... *',mi_sel_angel:'Business Angel',mi_sel_vc:'VC / Fons',mi_sel_advisor:'Assessor / Mentor',mi_sel_curious:'Només per curiositat',mi_sel_range:'Rang d\'inversió *',mi_sel_u1k:'Menys de £1.000',mi_sel_1k5k:'£1.000 – £5.000',mi_sel_5k25k:'£5.000 – £25.000',mi_sel_25k:'£25.000+',mi_sel_tbd:'Encara no ho sé',mi_ph_msg:'Alguna cosa que ens vulguis dir?'
+},
+fr:{
+wl_skip:'Passer →',wl_title:'REJOINS LE MOUVEMENT',wl_desc:'Fais partie des premiers à tester UNMUTE. Accès en avant-première à la plateforme, aux événements et aux avantages exclusifs.',wl_ph_name:'Ton prénom',wl_ph_email:'Ton email',wl_consent:'J\'accepte de recevoir des emails d\'UNMUTE concernant les événements, les nouveautés et les avantages exclusifs.',wl_btn:'JE M\'INSCRIS',wl_count:'100+ déjà inscrits',wl_success:'T\'es sur la liste !',wl_error:'Ça n\'a pas marché, réessaie.',
+nav_about:'À propos',nav_events:'Événements',nav_spin:'Roue',nav_connect:'Contact',nav_apply:'Participer',
+hero_sub:'Pour une industrie musicale plus juste',hero_artist:'JE SUIS ARTISTE',hero_tickets:'BARCELONE — BILLETS',hero_scroll:'Scroll',
+mq_stars:'UNMUTE Les Étoiles De Demain',
+about_label:'Qui sommes-nous',about_title:'LE PUBLIC DÉCIDE.<br>L\'ARTISTE ÉMERGE.',
+about_body:'UNMUTE <strong>place le public au cœur de l\'industrie musicale</strong>. Nous connectons les fans directement aux artistes en qui ils croient.<br><br>Sur notre plateforme, <strong>tout le monde peut découvrir et soutenir la nouvelle vague de talents</strong>. Plus un artiste reçoit de soutien, plus il gagne en visibilité. Aucun algorithme ne décide qui est vu : <strong>c\'est le public qui choisit</strong>. Les fans deviennent les nouveaux A&Rs et misent sur le talent. Quand tu soutiens un artiste, tu accumules des points, et quand d\'autres le soutiennent après toi, <span class="hl">tes points continuent de grimper</span>. Utilise-les pour débloquer des avantages exclusifs : musique inédite, accès aux concerts, merch et bien plus.<br><br>Nous organisons également des <strong>événements live</strong> où des artistes émergents se produisent sur scène et le public vote pour ses favoris. Découvre de nouveaux talents en vrai, soutiens ceux en qui tu crois et repars avec des <strong>avantages exclusifs</strong>.',
+val_equity:'Chaque artiste mérite sa chance, peu importe ses contacts ou son budget.',val_transparency:'Chaque contribution est traçable.',val_belief:'Le public est le meilleur juge du talent.',
+quote_text:'Je ne veux pas signer en label. Je perdrais ma <span class="p">liberté artistique</span>, je risquerais de perdre de l\'argent et je céderais les <span class="c">droits sur ma musique</span>.',quote_attr:'— Nate Skies, Artiste Indépendant',
+roul_label:'La roue',roul_title:'QUELS PROBLÈMES<br>UNMUTE RÉSOUT ?',roul_desc:'Lance la roue et découvre les enjeux de l\'industrie musicale.',roul_spin:'SPIN',roul_tap:'Touche pour relancer',
+steps_label:'Comment ça marche',steps_title:'PENSÉ SIMPLE.',
+step1_h:'DÉCOUVRE UN ARTISTE',step1_p:'Explore les talents indépendants sur la plateforme ou lors de nos événements live.',
+step2_h:'CONTRIBUE LIBREMENT',step2_p:'Soutiens un artiste en qui tu crois, avec le montant de ton choix. Simple, direct, sans prise de tête.',
+step3_h:'ACCUMULE DES POINTS',step3_p:'À chaque soutien, tu accumules des points. Et quand d\'autres soutiennent le même artiste après toi, tes points continuent de monter.',
+step4_h:'REGARDE L\'ARTISTE GRANDIR',step4_p:'Ton soutien booste directement sa visibilité sur la plateforme. Plus il est soutenu, plus il est visible.',
+step5_h:'DÉBLOQUE DES AVANTAGES EXCLUSIFS',step5_p:'Utilise tes points pour accéder à des récompenses exclusives : morceaux inédits, places de concert, accès backstage, merch et bien plus.',
+sup_label:'Soutiens le projet',sup_title:'CONTRIBUE AU<br>PROJET.',sup_desc:'Chaque contribution nous rapproche d\'une industrie musicale plus juste.',sup_raised:'Déjà collecté : <span style="color:var(--cyan);font-weight:700;">£430</span> / £5,000',sup_btn:'SOUTENIR AVEC £{val}',
+ev_label:'Événements',ev_title:'EN LIVE.',ev_launch:'UNMUTE LAUNCH PARTY',ev_date:'10 avril 2026, Dreambags Jaguar Shoes, Londres',ev_desc:'Notre premier événement a réuni 5 artistes indépendants sur scène. Le public a voté en temps réel pour ses favoris et chaque votant est reparti avec des avantages exclusifs offerts par les artistes qu\'il a soutenus.',ev_lineup:'Le Lineup',ev_perks_tap:'Appuie pour voir les avantages',ev_next:'À venir',
+ev_prima_desc:'Sélectionnés pour le Ideas Showroom de l\'une des plus grandes conférences musicales en Europe.',ev_prima_link:'En savoir plus',ev_oasys_desc:'Événement live à Barcelone. Nouveaux artistes, nouvelle ville, même énergie.',ev_oasys_link:'Prendre des billets',ev_jag_desc:'Événement live à Londres. Artistes indépendants.',ev_jag_link:'Postuler en tant qu\'artiste',
+mq2_discover:'Découvrir',mq2_support:'Soutenir',mq2_connect:'Connecter',mq2_grow:'Grandir',mq2_empower:'Propulser',mq2_create:'Créer',
+conn_label:'Contacte-nous',conn_title:'CONTACTEZ-<br>NOUS.',conn_artist:'Je veux du financement et de la visibilité sans céder mes droits.',conn_fan:'Je veux découvrir et soutenir des talents émergents avant tout le monde.',conn_partner:'Salles, associations, médias : construisons ensemble.',conn_investor:'Je veux investir dans l\'avenir de la musique.',conn_email:'Email',conn_insta:'Instagram',conn_li:'LinkedIn',
+team_label:'L\'équipe',team_title:'LES BACKSTAGE D\'UNMUTE.',team_linkedin:'Voir LinkedIn →',role_founder:'Fondateur',role_ar:'Relations Artistes',role_community:'Communauté',role_event:'Événementiel',role_pc:'Coordination',
+footer_copy:'© 2026 — POUR UNE INDUSTRIE MUSICALE PLUS JUSTE',
+ma_title:'HEY ARTISTE',ma_sub:'Envie de rejoindre UNMUTE ?',ma_ph_name:'Ton nom / nom d\'artiste *',ma_ph_email:'Ton email *',ma_ph_ig:'Instagram @ *',ma_ph_spotify:'Lien Spotify (optionnel)',ma_interest:'Je suis intéressé(e) par *',ma_opt_both:'Rejoindre la plateforme et jouer aux événements UNMUTE',ma_opt_platform:'Rejoindre la plateforme',ma_opt_info:'Juste en savoir plus',ma_where:'Où ? <span class="opt-tag">(max 2, optionnel)</span>',ma_ph_msg:'Autre chose ? (optionnel)',modal_send:'ENVOYER',
+mp_title:'CONSTRUISONS ENSEMBLE',mp_sub:'Salles, médias, associations : présentez-vous.',mp_ph_company:'Entreprise / organisation *',mp_ph_name:'Votre nom *',mp_ph_role:'Votre poste *',mp_ph_email:'Votre email *',mp_sel_default:'Type de partenariat *',mp_sel_venue:'Salle',mp_sel_media:'Médias / Presse',mp_sel_ngo:'Association / ONG',mp_sel_brand:'Marque / Sponsor',mp_sel_agency:'Agence / Management',mp_sel_other:'Autre',mp_ph_msg:'Présentez-vous et dites-nous comment vous aimeriez collaborer...',
+mi_title:'PARLONS',mi_sub:'On aimerait t\'en dire plus sur UNMUTE.',mi_ph_name:'Ton nom *',mi_ph_email:'Ton email *',mi_ph_fund:'Fonds / Entreprise (optionnel)',mi_sel_default:'Je suis intéressé(e) en tant que... *',mi_sel_angel:'Business Angel',mi_sel_vc:'VC / Fonds',mi_sel_advisor:'Conseiller / Mentor',mi_sel_curious:'Juste curieux pour l\'instant',mi_sel_range:'Fourchette d\'investissement *',mi_sel_u1k:'Moins de £1,000',mi_sel_1k5k:'£1,000 – £5,000',mi_sel_5k25k:'£5,000 – £25,000',mi_sel_25k:'£25,000+',mi_sel_tbd:'Pas encore décidé',mi_ph_msg:'Quelque chose à nous dire ?'
+}
+};
+
+function setLang(lang){
+    currentLang=lang;
+    localStorage.setItem('unmute_lang',lang);
+    document.documentElement.lang=lang;
+    const t=i18n[lang]||i18n.en;
+    // Update lang buttons
+    document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim().toLowerCase()===lang);});
+    // Text content
+    document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(t[k]!==undefined)el.textContent=t[k];});
+    // HTML content
+    document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.getAttribute('data-i18n-html');if(t[k]!==undefined)el.innerHTML=t[k];});
+    // Placeholders
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{const k=el.getAttribute('data-i18n-ph');if(t[k]!==undefined)el.placeholder=t[k];});
+    // Rebuild wheel data
+    if(wheelTranslations[lang]){wheelData.length=0;wheelTranslations[lang].forEach(d=>wheelData.push(d));drawWheel();}
+    // Update support button
+    updateSupport(parseInt(supSlider.value));
+}
+// Restore saved language on load
+(function(){const saved=localStorage.getItem('unmute_lang');if(saved&&i18n[saved]){setLang(saved);}})();
+</script>
+</body>
+</html>
