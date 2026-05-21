@@ -275,18 +275,18 @@
             background: #000;
         }
 
-        .tv-wall {
-            position: absolute;
+        .tv-wall { 
+            position: absolute; 
             top: -2vh;
-            left: -2vw;
-            width: 104vw;
-            height: 104vh;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 4px;
-            z-index: 1;
-            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            left: -10vw;   /* Augmentat a -10vw per moure la graella més a l'esquerra en PC */
+            width: 120vw;  /* Augmentat a 120vw perquè es fiqui un 20% per sota dels laterals del monitor */
+            height: 104vh; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(4, 1fr); 
+            gap: 4px;      
+            z-index: 1; 
+            transition: transform 0.8s cubic-bezier(0.23,1,0.32,1); 
         }
 
         .tv {
