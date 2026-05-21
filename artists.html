@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARTISTS — UNMUTE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #000;
+            --purple: #C457D7;
+            --cyan: #00C2CB;
+            --card: #0a0a0a;
+            --border: #1a1a1a;
+            --text: #eee;
+            --muted: #aaa;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* NOISE + SCAN EFFECT */
+        .noise { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.03; mix-blend-mode: overlay; }
+        .noise canvas { width: 100%; height: 100%; }
+        .gscan { position: fixed; inset: 0; pointer-events: none; z-index: 9997; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); }
+
+        /* NAV */
+        nav { 
+            position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 40px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255,255,255,0.04); 
+        }
+        .nav-logo a { color: #fff; text-decoration: none; font-weight: 800; letter-spacing: 4px; font-size: 0.9rem; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 8px 14px; transition: color 0.3s; }
+        .nav-links a:hover { color: #fff; }
+
+        /* HEADER SECCIÓ */
+        .header-section { padding: 160px 20px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+        .label { font-size: 0.65rem; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--purple); margin-bottom: 18px; }
+        .title { font-size: clamp(2rem, 7vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+        .subtitle { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+
+        /* ARTISTS GRID */
+        .artists-container { padding: 40px 20px 100px; max-width: 1200px; margin: 0 auto; }
+        .artists-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        
+        /* TARGETA D'ARTISTA */
+        .artist-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 24px; 
+            overflow: hidden; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+            position: relative; 
+        }
+        .artist-card:hover { border-color: var(--purple); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(196,87,215,0.1); }
+        
+        .artist-img-wrap { width: 100%; aspect-ratio: 1/1; overflow: hidden; background: #111; position: relative; }
+        .artist-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: all 0.5s; }
+        .artist-card:hover .artist-img-wrap img { filter: grayscale(0) brightness(0.9); transform: scale(1.03); }
+        
+        /* Badge de Punts / Rànquing */
+        .artist-badge { 
+            position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.75); 
+            border: 1px solid var(--cyan); color: var(--cyan); font-size: 0.6rem; 
+            font-weight: 700; padding: 6px 12px; border-radius: 52px; letter-spacing: 1px; 
+        }
+
+        .artist-info { padding: 24px; text-align: left; }
+        .artist-name { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .artist-genre { font-size: 0.65rem; color: var(--purple); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .artist-bio { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; min-height: 3.2em; }
+        
+        /* Botons i Xarxes de la Targeta */
+        .artist-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px; }
+        .artist-socials { display: flex; gap: 12px; }
+        .artist-socials a { opacity: 0.4; transition: opacity 0.3s; display: flex; align-items: center; }
+        .artist-socials a:hover { opacity: 1; }
+        .artist-socials svg { width: 18px; height: 18px; fill: #fff; }
+        
+        .btn-sm { 
+            padding: 8px 16px; font-size: 0.55rem; font-weight: 700; letter-spacing: 2px; 
+            text-transform: uppercase; text-decoration: none; border-radius: 52px; 
+            background: #fff; color: #000; transition: all 0.3s; border: none; cursor: pointer;
+        }
+        .btn-sm:hover { background: var(--purple); color: #fff; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .artists-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+        @media (max-width: 640px) {
+            nav { padding: 12px 16px; }
+            .nav-links { gap: 2px; }
+            .nav-links a { font-size: 0.5rem; padding: 4px 6px; letter-spacing: 0.5px; }
+            .header-section { padding: 12px 20px 40px; }
+            .artists-grid { grid-template-columns: 1fr; gap: 24px; }
+            .artist-info { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="noise"><canvas id="noiseC"></canvas></div>
+<div class="gscan"></div>
+
+<nav>
+    <div class="nav-logo">
+        <a href="index.html">UNMUTE</a>
+    </div>
+    <div class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="index.html#events">Events</a>
+        <a href="artists.html" style="color: var(--purple);">Artists</a>
+        <a href="index.html#connect">Connect</a>
+    </div>
+</nav>
+
+<section class="header-section">
+    <div class="label">The Next Wave</div>
+    <h1 class="title">UNMUTE INDEPENDENT TALENT</h1>
+    <p class="subtitle">Discover emerging stars backed directly by the community. Real craft, zero algorithms.</p>
+</section>
+
+<main class="artists-container">
+    <div class="artists-grid">
+        
+        <div class="artist-card">
+            <div class="artist-badge">RANK #1</div>
+            <div class="artist-img-wrap">
+                <img src="images/artist-nate.jpg" alt="Nate Skies">
+            </div>
+            <div class="artist-info">
+                <h3 class="artist-name">Nate Skies</h3>
+                <div class="artist-genre">Alternative Hip-Hop</div>
+                <p class="artist-bio">Breaking boundaries with raw poetic lyrics and heavy futuristic independent electronic beats.</p>
+                <div class="artist-footer">
+                    <div class="artist-socials">
+                        <a href="https://www.instagram.com/nateskiess/" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                    </div>
+                    <a href="index.html#support" class="btn-sm">Support</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="artist-card">
+            <div class="artist-badge">RANK #2</div>
+            <div class="artist-img-wrap">
+                <img src="images/artist-jada.jpg" alt="Jada Maya">
+            </div>
+            <div class="artist-info">
+                <h3 class="artist-name">Jada Maya</h3>
+                <div class="artist-genre">Neo-Soul / R&B</div>
+                <p class="artist-bio">Velvety R&B vocals mixed with deep jazz arrangements that explore modern human connection.</p>
+                <div class="artist-footer">
+                    <div class="artist-socials">
+                        <a href="https://www.instagram.com/jadamayaa/" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                    </div>
+                    <a href="index.html#support" class="btn-sm">Support</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="artist-card">
+            <div class="artist-badge">RANK #3</div>
+            <div class="artist-img-wrap">
+                <img src="images/artist-wkdaiz.jpg" alt="WKDAIZ">
+            </div>
+            <div class="artist-info">
+                <h3 class="artist-name">WKDAIZ</h3>
+                <div class="artist-genre">Hyperpop / Glitchcore</div>
+                <p class="artist-bio">High energy beats, heavily distorted vocals and synthesizers that capture the internet era essence.</p>
+                <div class="artist-footer">
+                    <div class="artist-socials">
+                        <a href="https://www.instagram.com/wkdaiz/" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                    </div>
+                    <a href="index.html#support" class="btn-sm">Support</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script>
+// NOISE GENERATOR
+const nc=document.getElementById('noiseC'),nctx=nc.getContext('2d');
+function renderNoise(){nc.width=window.innerWidth/4;nc.height=window.innerHeight/4;const img=nctx.createImageData(nc.width,nc.height),d=img.data;for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;}nctx.putImageData(img,0,0);}
+renderNoise();setInterval(renderNoise,120);
+</script>
+</body>
+</html>
