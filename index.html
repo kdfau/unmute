@@ -71,28 +71,28 @@
         /* ============ HERO TV WALL ============ */
         /* ============ HERO TV WALL ============ */
         /* ============ HERO TV WALL ============ */
+        /* ============ HERO TV WALL ============ */
         .hero { 
             position: relative; 
             height: 100vh; 
             height: 100svh; 
             width: 100vw; 
             overflow: hidden;
-            display: flex;         /* Força a que el contingut s'estengui */
-            justify-content: center;
-            align-items: center;
             background: #000;
         }
 
         .tv-wall { 
             position: absolute; 
-            top: -5%;
-            left: -5%;
-            width: 110vw;          /* Força l'amplada total del navegador de PC */
-            height: 110vh;         /* Força l'alçada total del navegador de PC */
+            /* Deixem un marge de seguretat del -2% perquè el glitch i el zoom no ensenyin fons negre */
+            top: -2vh;
+            left: -2vw;
+            width: 104vw;  /* Força a la quadrícula a mesurar el 104% de l'amplada de la pantalla */
+            height: 104vh; /* Força a la quadrícula a mesurar el 104% de l'alçada de la pantalla */
             display: grid; 
+            /* El truc és aquí: dividim l'amplada i alçada total entre les columnes i files */
             grid-template-columns: repeat(3, 1fr); 
             grid-template-rows: repeat(4, 1fr); 
-            gap: 2px; 
+            gap: 4px;      /* Una mica més de separació perquè es noti més la quadrícula en PC */
             z-index: 1; 
             transition: transform 0.8s cubic-bezier(0.23,1,0.32,1); 
         }
@@ -115,7 +115,7 @@
         .tv-img img { 
             width: 100%; 
             height: 100%; 
-            object-fit: cover;     /* Això retalla les fotos perquè omplin cada tele sense deformar-se */
+            object-fit: cover; /* Manté les fotos encaixades dins de cada "tele" sense deformar-les */
             filter: grayscale(1) brightness(1.1) contrast(1.15); 
             transition: filter 0.4s; 
         }
