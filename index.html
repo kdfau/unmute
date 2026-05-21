@@ -70,51 +70,55 @@
 
         /* ============ HERO TV WALL ============ */
         /* ============ HERO TV WALL ============ */
-.hero { 
-    position: relative; 
-    height: 100vh; 
-    height: 100svh; 
-    width: 100vw; /* Força a ocupar tota l'amplada del PC */
-    overflow: hidden; 
-}
+        /* ============ HERO TV WALL ============ */
+        .hero { 
+            position: relative; 
+            height: 100vh; 
+            height: 100svh; 
+            width: 100vw; 
+            overflow: hidden;
+            display: flex;         /* Força a que el contingut s'estengui */
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
 
-.tv-wall { 
-    position: absolute; 
-    /* En lloc d'inset: -4%, usem coordenades per estirar la graella */
-    top: -5%;
-    left: -5%;
-    width: 110%;  /* Una mica més gran per absorbir l'efecte de glitch i moviment */
-    height: 110%; /* Una mica més gran per absorbir l'efecte de glitch i moviment */
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    grid-template-rows: repeat(4, 1fr); 
-    gap: 2px; 
-    z-index: 1; 
-    transition: transform 0.8s cubic-bezier(0.23,1,0.32,1); 
-}
+        .tv-wall { 
+            position: absolute; 
+            top: -5%;
+            left: -5%;
+            width: 110vw;          /* Força l'amplada total del navegador de PC */
+            height: 110vh;         /* Força l'alçada total del navegador de PC */
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(4, 1fr); 
+            gap: 2px; 
+            z-index: 1; 
+            transition: transform 0.8s cubic-bezier(0.23,1,0.32,1); 
+        }
 
-.tv { 
-    position: relative; 
-    overflow: hidden; 
-    background: #030303; 
-    width: 100%;
-    height: 100%;
-}
+        .tv { 
+            position: relative; 
+            overflow: hidden; 
+            background: #030303; 
+            width: 100%;
+            height: 100%;
+        }
 
-.tv-img { 
-    position: absolute; 
-    inset: 0; 
-    width: 100%;
-    height: 100%;
-}
+        .tv-img { 
+            position: absolute; 
+            inset: 0; 
+            width: 100%;
+            height: 100%;
+        }
 
-.tv-img img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; /* Això és màgic: retalla i estira la foto perquè ompli la tele sense deformar-se */
-    filter: grayscale(1) brightness(1.1) contrast(1.15); 
-    transition: filter 0.4s; 
-}
+        .tv-img img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;     /* Això retalla les fotos perquè omplin cada tele sense deformar-se */
+            filter: grayscale(1) brightness(1.1) contrast(1.15); 
+            transition: filter 0.4s; 
+        }
         .tv-img.mouth img { object-fit: contain; filter: grayscale(1) brightness(1) contrast(1.1); animation: mPulse 4s ease-in-out infinite; }
         @keyframes mPulse { 0%,100% { transform: scale(1); } 0.5% { transform: scale(1.05); } }
         .tv-scan { position: absolute; width: 100%; height: 3px; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent); pointer-events: none; animation: scanD 5s linear infinite; }
@@ -826,9 +830,17 @@ const imgs=[
 function onScroll(){const sy=window.scrollY,hH=hero.offsetHeight;if(sy<hH*1.5){const p=sy/hH;wall.style.transform=`scale(${1.08+p*0.15}) translateY(${sy*0.15}px)`;document.querySelector('.hero-fg').style.opacity=Math.max(0,1-p*1.8);}}
 window.addEventListener('scroll',onScroll,{passive:true});
 
-function swapTV(){const i=Math.floor(Math.random()*tvs.length),tv=tvs[i],fl=tv.querySelector('.tv-flash'),c=tv.querySelector('.tv-img');fl.style.opacity='0.2';setTimeout(()=>{const p=imgs[Math.floor(Math.random()*imgs.length)];c.innerHTML=`<img src="${p.src}" alt="">`;c.className='tv-img'+(p.m?' mouth':'');fl.style.opacity='0';},120);}
-setInterval(swapTV,2800);setInterval(()=>setTimeout(swapTV,200),4500);
-
+function swapTV(){
+    const i=Math.floor(Math.random()*tvs.length),tv=tvs[i],fl=tv.querySelector('.tv-flash'),c=tv.querySelector('.tv-img');
+    fl.style.opacity='0.2';
+    setTimeout(()=>{
+        const p=imgs[Math.floor(Math.random()*imgs.length)];
+        c.innerHTML=`<img src="${p.src}" alt="">`;
+        // CORRECCIÓ: Manté la classe 'tv-img' sempre i afegeix 'mouth' o els efectes de color segons toqui
+        c.className='tv-img'+(p.m?' mouth':'');
+        fl.style.opacity='0';
+    },120);
+}
 function autoGlitch(){const i=Math.floor(Math.random()*tvs.length),g=tvs[i].querySelector('.tv-glitch');g.style.top=Math.random()*100+'%';g.style.height=(2+Math.random()*6)+'px';g.style.background=Math.random()>0.5?'rgba(196,87,215,0.25)':'rgba(0,194,203,0.2)';g.style.opacity='1';setTimeout(()=>{g.style.opacity='0';},120);}
 setInterval(autoGlitch,900);
 
