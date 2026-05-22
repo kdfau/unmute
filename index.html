@@ -282,6 +282,10 @@
             grid-template-rows: repeat(4, 1fr);
             gap: 2px;
             z-index: 1;
+            /* Línies clau per l'efecte 3D original de la imatge: */
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            will-change: transform;
             transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
@@ -2159,7 +2163,8 @@
             <a href="#about" data-i18n="nav_about">About</a>
             <a href="#events" data-i18n="nav_events">Events</a>
             <a href="#connect" data-i18n="nav_connect">Connect</a>
-            <a href="artists.html" style="color: var(--purple);">Artists</a> <a href="#connect" data-i18n="nav_connect">Connect</a>
+            <a href="artists.html" style="color: var(--purple);">Artists</a> <a href="#connect"
+                data-i18n="nav_connect">Connect</a>
             <a href="javascript:void(0)" onclick="openM('artist')" style="color:var(--cyan);"
                 data-i18n="nav_apply">Apply</a>
         </div>
