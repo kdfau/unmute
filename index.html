@@ -184,10 +184,10 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             color: rgba(255, 255, 255, 0.3);
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 700;
             letter-spacing: 1px;
-            padding: 6px 10px;
+            padding: 10px 14px;
             cursor: pointer;
             transition: all 0.3s;
             border-radius: 52px;
@@ -2070,6 +2070,29 @@
                 /* Més separació entre ells per poder clicar bé */
                 letter-spacing: 2px;
             }
+
+            .lang-btn {
+                font-size: 0.75rem !important;
+                padding: 6px 12px !important;
+                letter-spacing: 1px;
+            }
+
+            /* 2. Enllaços del menú de la dreta (About, Events...) més grans */
+            .nav-links {
+                gap: 16px !important;
+                /* Més separació entre botons */
+            }
+
+            .nav-links a {
+                font-size: 0.8rem !important;
+                padding: 8px 14px !important;
+                letter-spacing: 2px;
+            }
+
+            /* 3. El logotip d'UNMUTE si el vols una mica més imponent */
+            .nav-logo img {
+                height: 24px !important;
+            }
         }
     </style>
 </head>
@@ -2267,7 +2290,8 @@
         <div class="quote-block">
             <p class="quote-text" data-i18n-html="quote_text">I don't want to be signed to a label. I would lose my
                 <span class="p">artistic freedom</span>, risk losing money, and give up the <span class="c">rights to my
-                    music</span>.</p>
+                    music</span>.
+            </p>
             <p class="quote-attr" data-i18n="quote_attr">&mdash; Nate Skies, Independent Artist</p>
         </div>
     </section>
