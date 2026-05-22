@@ -282,7 +282,7 @@
             grid-template-rows: repeat(4, 1fr);
             gap: 2px;
             z-index: 1;
-            /* Línies clau per l'efecte 3D original de la imatge: */
+            /* Estils 3D originals obligatoris per l'efecte de la lent: */
             transform-style: preserve-3d;
             backface-visibility: hidden;
             will-change: transform;
@@ -2803,19 +2803,46 @@
             { src: 'images/party-stage.jpg', m: false }, { src: 'images/party-mic.jpg', m: false }, { src: 'images/party-fans.jpg', m: false },
             { src: 'images/party-crowd.jpg', m: false }, { src: 'images/party-sing.jpg', m: false }, { src: 'images/party-portrait.jpg', m: false }
         ];
-        function onScroll() { const sy = window.scrollY, hH = hero.offsetHeight; if (sy < hH * 1.5) { const p = sy / hH; wall.style.transform = `scale(${1.08 + p * 0.15}) translateY(${sy * 0.15}px)`; document.querySelector('.hero-fg').style.opacity = Math.max(0, 1 - p * 1.8); } }
-        window.addEventListener('scroll', onScroll, { passive: true });
+        function onScroll() {// VARIABLES DE CONTROL DE MOVIMENT
+            let currentX = window.innerWidth / 2;
+            let currentY = window.innerHeight / 2;
 
-        function swapTV() {
-            const i = Math.floor(Math.random() * tvs.length), tv = tvs[i], fl = tv.querySelector('.tv-flash'), c = tv.querySelector('.tv-img');
-            fl.style.opacity = '0.2';
-            setTimeout(() => {
-                const p = imgs[Math.floor(Math.random() * imgs.length)];
-                c.innerHTML = `<img src="${p.src}" alt="">`;
-                // CORRECCIÓ: Manté la classe 'tv-img' sempre i afegeix 'mouth' o els efectes de color segons toqui
-                c.className = 'tv-img' + (p.m ? ' mouth' : '');
-                fl.style.opacity = '0';
-            }, 120);
+            // Escoltador del ratolí per PC (Registra la posició en temps real)
+            window.addEventListener('mousemove', (e) => {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            });
+
+            // Escoltador per a dispositius mòbils (Utilitza el moviment/touch per moure la quadrícula)
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    currentX = e.touches[0].clientX;
+                    currentY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            // LA FUNCIÓ EXACTA DE LA TEVA CAPTURA DE PANTALLA
+            function updateWallPosition() {
+                // 1. Calculem el desplaçament horitzontal i vertical respecte al centre de la pantalla
+                const xMove = (currentX - window.innerWidth / 2) * 0.15;
+                const yMove = (currentY - window.innerHeight / 2) * 0.15;
+
+                // 2. Les fórmules matemàtiques originals per a l'efecte de distorsió d'estil "peix"
+                const scale = 1 + (Math.abs(xMove) + Math.abs(yMove)) * 0.0005;
+                const rotateX = -yMove * 0.05;
+                const rotateY = xMove * 0.05;
+
+                // 3. Apliquem la matriu de transformació tridimensional combinada a la quadrícula
+                if (wall) {
+                    wall.style.transform = `translate3d(${xMove}px, ${yMove}px, 0px) scale3d(${scale}, ${scale}, 1) rotate3d(1, 0, 0, ${rotateX}deg) rotate3d(0, 1, 0, ${rotateY}deg)`;
+                }
+
+                // Creem el bucle d'animació suau i fluid de 60fps
+                requestAnimationFrame(updateWallPosition);
+            }
+
+            // Inicialitzem el bucle interactiu al carregar la pàgina
+            requestAnimationFrame(updateWallPosition);
         }
         function autoGlitch() { const i = Math.floor(Math.random() * tvs.length), g = tvs[i].querySelector('.tv-glitch'); g.style.top = Math.random() * 100 + '%'; g.style.height = (2 + Math.random() * 6) + 'px'; g.style.background = Math.random() > 0.5 ? 'rgba(196,87,215,0.25)' : 'rgba(0,194,203,0.2)'; g.style.opacity = '1'; setTimeout(() => { g.style.opacity = '0'; }, 120); }
         setInterval(autoGlitch, 900);
