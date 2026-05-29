@@ -222,7 +222,7 @@
             font-size: clamp(1.8rem, 7vw, 3rem);
             font-weight: 800;
             line-height: 1.1;
-            letter-spacing: 1px;
+            letter-spacing: 0px;
             text-transform: uppercase;
             margin-bottom: 28px;
         }
@@ -241,7 +241,7 @@
             font-family: 'Inter', sans-serif;
             font-size: 0.6rem;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             text-decoration: none;
             cursor: pointer;
@@ -407,7 +407,7 @@
         .hero-sub {
             font-size: clamp(0.55rem, 2.2vw, 0.85rem);
             font-weight: 600;
-            letter-spacing: 6px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.5);
             position: relative;
@@ -546,7 +546,7 @@
         .mq-inner span {
             font-size: 0.55rem;
             font-weight: 700;
-            letter-spacing: 5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             padding: 0 28px;
             color: #666;
@@ -1374,7 +1374,7 @@
         .prof h3 {
             font-size: 0.7rem;
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 0px;
             text-transform: uppercase;
             margin-bottom: 6px;
         }
@@ -1506,7 +1506,7 @@
         .waitlist h2 {
             font-size: 1.4rem;
             font-weight: 800;
-            letter-spacing: 4px;
+            letter-spacing: 0px;
             text-transform: uppercase;
             margin-bottom: 8px;
             position: relative;
@@ -1808,7 +1808,7 @@
         footer .fl {
             font-weight: 800;
             font-size: 0.7rem;
-            letter-spacing: 8px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             color: #1a1a1a;
         }
@@ -1864,7 +1864,7 @@
         .mdl h2 {
             font-size: 1rem;
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 0px;
             text-transform: uppercase;
             margin-bottom: 4px;
         }
@@ -2232,7 +2232,7 @@
                     AN ARTIST</a>
                 <a href="https://entradium.com/events/unmute-project-barcelona-edition" target="_blank" rel="noopener"
                     class="btn btn-wire" style="border-color:var(--cyan);color:var(--cyan);"
-                    data-i18n="hero_tickets">BARCELONA — GET TICKETS</a>
+                    data-i18n="hero_tickets">BARCELONA EDITION TICKETS</a>
             </div>
         </div>
         <div class="scroll-cue"><span data-i18n="hero_scroll">Scroll</span>
@@ -2287,13 +2287,13 @@
             </div>
         </div>
 
-        <div class="quote-block">
+        <!-- <div class="quote-block">
             <p class="quote-text" data-i18n-html="quote_text">I don't want to be signed to a label. I would lose my
                 <span class="p">artistic freedom</span>, risk losing money, and give up the <span class="c">rights to my
                     music</span>.
             </p>
             <p class="quote-attr" data-i18n="quote_attr">&mdash; Nate Skies, Independent Artist</p>
-        </div>
+        </div> -->
     </section>
 
     <!-- ====== ROULETTE ====== -->
@@ -2301,8 +2301,7 @@
         <div class="label" style="justify-content:center;" data-i18n="roul_label">Spin The Wheel</div>
         <h2 class="title" style="text-align:center;" data-i18n-html="roul_title">WHAT PROBLEMS<br>DOES UNMUTE SOLVE?
         </h2>
-        <p style="color:var(--muted); font-size:0.82rem;" data-i18n="roul_desc">Spin the wheel and discover the issues
-            we're tackling in the music industry.</p>
+        <p style="color:var(--muted); font-size:0.82rem;" data-i18n="roul_desc">Spin the wheel and discover the challenges facing in the music industry.</p>
         <div class="wheel-wrap">
             <div class="wheel-pointer"></div>
             <canvas id="wheelCanvas" width="600" height="600"></canvas>
@@ -2531,13 +2530,13 @@
             </div>
             <div class="future-ev"><span class="future-ev-tag">June 5, 2026</span>
                 <h4>OASYS BARCELONA</h4>
-                <p data-i18n="ev_oasys_desc">Live event in Barcelona. New artists, new city, same energy.</p><a
+                <p data-i18n="ev_oasys_desc">UNMUTE Barcelona Edition. 4 independent artists from Barcelona, vote and win exclusive perks. Rock, Rumba, Reggaeton.</p><a
                     href="https://entradium.com/events/unmute-project-barcelona-edition" target="_blank" rel="noopener"
                     class="ev-ticket" data-i18n="ev_oasys_link">Get Tickets</a>
             </div>
             <div class="future-ev"><span class="future-ev-tag">July 4, 2026</span>
                 <h4>JAGUAR SHOES LONDON</h4>
-                <p data-i18n="ev_jag_desc">Live event in London. Independent artists, real fans, one stage.</p><a
+                <p data-i18n="ev_jag_desc">Live event in London. R&B, Afro, Pop, Hip-Hop. Independent artists.</p><a
                     href="javascript:void(0)" onclick="openM('artist')" class="ev-ticket" data-i18n="ev_jag_link">Apply
                     as Artist</a>
             </div>
@@ -3057,12 +3056,12 @@
             en: {
                 wl_skip: 'Skip →', wl_title: 'JOIN THE MOVEMENT', wl_desc: 'Be among the first when UNMUTE launches. Get early access to the platform, events, and exclusive perks.', wl_ph_name: 'Your name', wl_ph_email: 'Your email', wl_consent: 'I agree to receive emails from UNMUTE about events, updates, and exclusive perks.', wl_btn: 'JOIN WAITLIST', wl_count: '100+ already waiting', wl_success: "You're on the list!", wl_error: 'Something went wrong — try again.',
                 nav_about: 'About', nav_events: 'Events', nav_spin: 'Spin', nav_connect: 'Connect', nav_apply: 'Apply',
-                hero_sub: 'Designing a Fairer Music System', hero_artist: "I'M AN ARTIST", hero_tickets: 'BARCELONA — GET TICKETS', hero_scroll: 'Scroll',
+                hero_sub: 'Designing a Fairer Music System', hero_artist: "I'M AN ARTIST", hero_tickets: 'BARCELONA EDITION TICKETS', hero_scroll: 'Scroll',
                 mq_stars: 'UNMUTE The Stars Of Tomorrow',
                 /*about_label: 'Who We Are',*/ about_title: 'THE AUDIENCE DECIDES.<br>THE ARTIST RISES.',
                 about_body: 'UNMUTE <strong>put the audience at the heart of the music industry</strong>. We connect fans directly to the artists they believe in.<br><br>On our platform, <strong>anyone can discover and support the next wave of talent</strong>. The more an artist is funded, the more visibility they gain. No algorithm decides who gets seen — <strong>the people do</strong>. Fans become the new A&Rs, choosing who rises based on pure talent. When you fund an artist, you collect points — and as more people fund them after you, <span class="hl">your points keep growing</span>. Use them to unlock exclusive perks: unreleased music, concert access, merch, and more.<br><br>We also host <strong>live events</strong> where emerging artists perform on stage and the audience votes for their favourites. Discover new talent in real life, support the artists you believe in, and walk away with <strong>exclusive perks</strong>.',
                 val_equity: 'Every artist deserves a fair chance, regardless of connections or budget.', val_transparency: 'Every contribution is traceable. Artists and fans see where the money goes.', val_belief: 'The public is the best judge of talent.',
-                quote_text: 'I don\'t want to be signed to a label. I would lose my <span class="p">artistic freedom</span>, risk losing money, and give up the <span class="c">rights to my music</span>.', quote_attr: '— Nate Skies, Independent Artist',
+                /* quote_text: 'I don\'t want to be signed to a label. I would lose my <span class="p">artistic freedom</span>, risk losing money, and give up the <span class="c">rights to my music</span>.', quote_attr: '— Nate Skies, Independent Artist',*/
                 /*roul_label: 'Spin The Wheel',*/ roul_title: 'WHAT PROBLEMS<br>DOES UNMUTE SOLVE?', roul_desc: 'Spin the wheel and discover the issues we\'re tackling in the music industry.', roul_spin: 'SPIN', roul_tap: 'Tap to spin again',
                 /*steps_label: 'How It Works',*/ steps_title: 'SIMPLE BY DESIGN.',
                 step1_h: 'DISCOVER AN ARTIST', step1_p: 'Browse emerging independent talent on the platform or at our live events.',
@@ -3071,10 +3070,10 @@
                 step4_h: 'WATCH THE ARTIST RISE', step4_p: 'Your funding directly boosts the artist\'s visibility on the platform. More support means more exposure and a bigger fanbase.',
                 step5_h: 'UNLOCK EXCLUSIVE PERKS', step5_p: 'Use the points you\'ve collected to unlock exclusive rewards — unreleased tracks, concert tickets, backstage access, merch, and more.',
                 /*sup_label: 'Support The Project',*/ sup_title: 'HELP US BUILD<br>THE PLATFORM.', sup_desc: 'Every contribution brings us closer to a fairer music industry.', sup_raised: 'Already raised: <span style="color:var(--cyan);font-weight:700;">£430</span> / £5,000', sup_btn: 'SUPPORT WITH £{val}',
-                /*ev_label: 'Events',*/ ev_title: 'WHERE IT HAPPENS.', ev_launch: 'UNMUTE LAUNCH NIGHT', ev_date: 'April 10, 2026 — Dreambags Jaguar Shoes, London', ev_desc: 'Our first event brought together 5 independent artists performing live on stage. The audience voted in real-time for their favourites — and every voter walked away with exclusive perks from the artists they supported.', ev_lineup: 'The Lineup', ev_perks_tap: 'Tap to reveal the perks', ev_next: 'What\'s Next',
+                /*ev_label: 'Events',*/ ev_title: 'WHERE IT HAPPENS.', ev_launch: 'UNMUTE LAUNCH NIGHT', ev_date: 'April 10, 2026 — Dreambags Jaguar Shoes, London', ev_desc: 'Our first event brought together 5 independent artists performing live on stage. The audience voted in real-time for their favourites. Every voter walked away with exclusive perks from the artists they supported.', ev_lineup: 'The Lineup', ev_perks_tap: 'Tap to reveal the perks', ev_next: 'What\'s Next',
                 ev_prima_desc: 'Selected for Ideas Showroom at one of Europe\'s most prestigious music conferences.', ev_prima_link: 'Learn More', ev_oasys_desc: 'Live event in Barcelona. New artists, new city, same energy.', ev_oasys_link: 'Get Tickets', ev_jag_desc: 'Live event in London. Independent artists, real fans, one stage.', ev_jag_link: 'Apply as Artist',
                 mq2_discover: 'Discover', mq2_support: 'Support', mq2_connect: 'Connect', mq2_grow: 'Grow', mq2_empower: 'Empower', mq2_create: 'Create',
-                /*conn_label: 'Let\'s Connect',*/ conn_title: 'WE WANT TO<br>HEAR FROM YOU.', conn_artist: 'I want funding and visibility without giving up my rights.', conn_fan: 'I want to discover and support emerging talent early.', conn_partner: 'Venues, associations, media — let\'s build together.', conn_investor: 'I want to invest in the future of music.', conn_email: 'Email', conn_insta: 'Instagram', conn_li: 'LinkedIn',
+                /*conn_label: 'Let\'s Connect',*/ conn_title: 'WE WANT TO<br>HEAR FROM YOU.', conn_artist: 'I want to join the platform and perform.', conn_fan: 'I want to discover and support emerging talent.', conn_partner: 'Venues, associations, media.', conn_investor: 'I want to invest in the future of music.', conn_email: 'Email', conn_insta: 'Instagram', conn_li: 'LinkedIn',
                 /*team_label: 'The Team',*/ team_title: 'WHO\'S BEHIND UNMUTE.', team_linkedin: 'View LinkedIn →', role_founder: 'Founder', role_ar: 'Artist Relations', role_community: 'Community', role_event: 'Event', role_pc: 'Project Coordinator',
                 footer_copy: '© 2026 — DESIGNING A FAIRER MUSIC SYSTEM',
                 ma_title: 'HEY ARTIST', ma_sub: 'Interested in being part of UNMUTE Project?', ma_ph_name: 'Your name / artist name *', ma_ph_email: 'Your email *', ma_ph_ig: 'Instagram @ *', ma_ph_spotify: 'Spotify link (optional)', ma_interest: 'I\'m interested in *', ma_opt_both: 'Joining the platform & performing at UNMUTE events', ma_opt_platform: 'Joining the platform', ma_opt_info: 'Just learning more', ma_where: 'Where? <span class="opt-tag">(max 2, optional)</span>', ma_ph_msg: 'Anything else? (optional)', modal_send: 'SEND',
@@ -3084,13 +3083,13 @@
             es: {
                 wl_skip: 'Saltar →', wl_title: 'ÚNETE AL MOVIMIENTO', wl_desc: 'Sé de los primeros en acceder a UNMUTE. Acceso anticipado a la plataforma, eventos y ventajas exclusivas.', wl_ph_name: 'Tu nombre', wl_ph_email: 'Tu email', wl_consent: 'Acepto recibir emails de UNMUTE sobre eventos, novedades y ventajas exclusivas.', wl_btn: 'APUNTARME', wl_count: 'Más de 100 ya apuntados', wl_success: '¡Ya estás dentro!', wl_error: 'Ha habido un error, inténtalo de nuevo.',
                 nav_about: 'Nosotros', nav_events: 'Eventos', nav_spin: 'Ruleta', nav_connect: 'Contacto', nav_apply: 'Participar',
-                hero_sub: 'Por una industria musical más justa', hero_artist: 'SOY ARTISTA', hero_tickets: 'BARCELONA — ENTRADAS', hero_scroll: 'Scroll',
+                hero_sub: 'Por una industria musical más justa', hero_artist: 'SOY ARTISTA', hero_tickets: 'ENTRADAS PARA LA EDICIÓN DE BARCELONA', hero_scroll: 'Scroll',
                 mq_stars: 'UNMUTE Las Estrellas Del Mañana',
                 about_label: 'Quiénes somos', about_title: 'EL PÚBLICO DECIDE.<br>EL ARTISTA CRECE.',
                 about_body: 'UNMUTE <strong>pone al público en el centro de la industria musical</strong>. Conectamos a los fans directamente con los artistas en los que creen.<br><br>En nuestra plataforma, <strong>cualquiera puede descubrir y apoyar a la nueva generación de artistas</strong>. Cuanto más apoyo recibe un artista, más visibilidad consigue. Ningún algoritmo decide quién destaca: <strong>lo decide la gente</strong>. Los fans se convierten en los nuevos A&Rs, eligiendo quién sube según su talento. Cuando apoyas a un artista, acumulas puntos, y cuando otros le apoyan después de ti, <span class="hl">tus puntos siguen subiendo</span>. Úsalos para desbloquear ventajas exclusivas: música inédita, acceso a conciertos, merch y mucho más.<br><br>También organizamos <strong>eventos en directo</strong> donde artistas emergentes suben al escenario y el público vota por sus favoritos. Descubre talento nuevo en persona, apoya a los artistas en los que crees y llévate <strong>ventajas exclusivas</strong>.',
                 val_equity: 'Todo artista merece una oportunidad real, sin importar sus contactos ni su presupuesto.', val_transparency: 'Cada aportación es rastreable.', val_belief: 'El público es el mejor juez del talento.',
-                quote_text: 'No quiero firmar con un sello. Perdería mi <span class="p">libertad artística</span>, arriesgaría mi dinero y cedería los <span class="c">derechos de mi música</span>.', quote_attr: '— Nate Skies, Artista Independiente',
-                roul_label: 'Gira la ruleta', roul_title: '¿QUÉ PROBLEMAS<br>RESUELVE UNMUTE?', roul_desc: 'Gira la ruleta y descubre los retos de la industria musical.', roul_spin: 'SPIN', roul_tap: 'Toca para girar de nuevo',
+                /*quote_text: 'No quiero firmar con un sello. Perdería mi <span class="p">libertad artística</span>, arriesgaría mi dinero y cedería los <span class="c">derechos de mi música</span>.', quote_attr: '— Nate Skies, Artista Independiente',*/
+                roul_label: 'Gira la ruleta', roul_title: '¿QUÉ PROBLEMAS<br>RESUELVE UNMUTE?', roul_desc: 'Gira la ruleta y descubre los desafios de la industria musical.', roul_spin: 'SPIN', roul_tap: 'Toca para girar de nuevo',
                 steps_label: 'Cómo funciona', steps_title: 'SIMPLE POR DISEÑO.',
                 step1_h: 'DESCUBRE UN ARTISTA', step1_p: 'Explora artistas independientes emergentes en la plataforma o en nuestros eventos en directo.',
                 step2_h: 'APORTA LO QUE QUIERAS', step2_p: 'Apoya a un artista en el que crees con la cantidad que quieras. Fácil, directo, sin complicaciones.',
@@ -3111,13 +3110,13 @@
             ca: {
                 wl_skip: 'Saltar →', wl_title: 'UNEIX-TE AL MOVIMENT', wl_desc: 'Sigues dels primers en accedir a UNMUTE. Accés anticipat a la plataforma, als esdeveniments i als avantatges exclusius.', wl_ph_name: 'El teu nom', wl_ph_email: 'El teu email', wl_consent: 'Accepto rebre emails d\'UNMUTE sobre esdeveniments, novetats i avantatges exclusius.', wl_btn: 'APUNTA\'M', wl_count: 'Més de 100 ja apuntats', wl_success: 'Ja hi ets!', wl_error: 'Hi ha hagut un error, torna-ho a provar.',
                 nav_about: 'Nosaltres', nav_events: 'Esdeveniments', nav_spin: 'Ruleta', nav_connect: 'Contacte', nav_apply: 'Participa',
-                hero_sub: 'Per una indústria musical més justa', hero_artist: 'SÓC ARTISTA', hero_tickets: 'BARCELONA — ENTRADES', hero_scroll: 'Scroll',
+                hero_sub: 'Per una indústria musical més justa', hero_artist: 'SÓC ARTISTA', hero_tickets: 'ENTRADES PER L\'EDICIÓ DE BARCELONA', hero_scroll: 'Scroll',
                 mq_stars: 'UNMUTE Les Estrelles Del Demà',
                 about_label: 'Qui som', about_title: 'EL PÚBLIC DECIDEIX.<br>L\'ARTISTA CREIX.',
                 about_body: 'UNMUTE <strong>posa el públic al centre de la indústria musical</strong>. Connectem els fans directament amb els artistes en els quals creuen.<br><br>A la nostra plataforma, <strong>tothom pot descobrir i donar suport a la nova generació d\'artistes</strong>. Com més suport rep un artista, més visibilitat aconsegueix. Cap algoritme decideix qui destaca: <strong>ho decideix la gent</strong>. Els fans es converteixen en els nous A&Rs, triant qui puja pel seu talent. Quan dones suport a un artista, acumules punts, i quan altres també li donen suport després de tu, <span class="hl">els teus punts segueixen pujant</span>. Fes-los servir per desbloquejar avantatges exclusius: música inèdita, accés a concerts, merch i molt més.<br><br>També organitzem <strong>concerts en directe</strong> on artistes emergents pugen a l\'escenari i el públic vota pels seus preferits. Descobreix talent nou en persona, dona suport als artistes en els quals creus i enduu-te <strong>avantatges exclusius</strong>.',
                 val_equity: 'Tot artista mereix una oportunitat real, independentment dels seus contactes o pressupost.', val_transparency: 'Cada aportació és traçable.', val_belief: 'El públic és el millor jutge del talent.',
-                quote_text: 'No vull signar amb cap segell. Perdria la meva <span class="p">llibertat artística</span>, arriscaria els meus diners i cederia els <span class="c">drets de la meva música</span>.', quote_attr: '— Nate Skies, Artista Independent',
-                roul_label: 'Gira la roda', roul_title: 'QUINS PROBLEMES<br>RESOL UNMUTE?', roul_desc: 'Gira la roda i descobreix els reptes de la indústria musical.', roul_spin: 'SPIN', roul_tap: 'Toca per tornar a girar',
+                /*quote_text: 'No vull signar amb cap segell. Perdria la meva <span class="p">llibertat artística</span>, arriscaria els meus diners i cederia els <span class="c">drets de la meva música</span>.', quote_attr: '— Nate Skies, Artista Independent',*/
+                roul_label: 'Gira la roda', roul_title: 'QUINS PROBLEMES<br>RESOL UNMUTE?', roul_desc: 'Gira la roda i descobreix els desafiaments de la indústria musical.', roul_spin: 'SPIN', roul_tap: 'Toca per tornar a girar',
                 steps_label: 'Com funciona', steps_title: 'SIMPLE PER DISSENY.',
                 step1_h: 'DESCOBREIX UN ARTISTA', step1_p: 'Explora artistes independents emergents a la plataforma o als nostres concerts en directe.',
                 step2_h: 'APORTA EL QUE VULGUIS', step2_p: 'Dona suport a un artista en el qual creus amb la quantitat que vulguis. Fàcil, directe, sense complicacions.',
@@ -3143,7 +3142,7 @@
                 about_label: 'Qui sommes-nous', about_title: 'LE PUBLIC DÉCIDE.<br>L\'ARTISTE ÉMERGE.',
                 about_body: 'UNMUTE <strong>place le public au cœur de l\'industrie musicale</strong>. Nous connectons les fans directement aux artistes en qui ils croient.<br><br>Sur notre plateforme, <strong>tout le monde peut découvrir et soutenir la nouvelle vague de talents</strong>. Plus un artiste reçoit de soutien, plus il gagne en visibilité. Aucun algorithme ne décide qui est vu : <strong>c\'est le public qui choisit</strong>. Les fans deviennent les nouveaux A&Rs et misent sur le talent. Quand tu soutiens un artiste, tu accumules des points, et quand d\'autres le soutiennent après toi, <span class="hl">tes points continuent de grimper</span>. Utilise-les pour débloquer des avantages exclusifs : musique inédite, accès aux concerts, merch et bien plus.<br><br>Nous organisons également des <strong>événements live</strong> où des artistes émergents se produisent sur scène et le public vote pour ses favoris. Découvre de nouveaux talents en vrai, soutiens ceux en qui tu crois et repars avec des <strong>avantages exclusifs</strong>.',
                 val_equity: 'Chaque artiste mérite sa chance, peu importe ses contacts ou son budget.', val_transparency: 'Chaque contribution est traçable.', val_belief: 'Le public est le meilleur juge du talent.',
-                quote_text: 'Je ne veux pas signer en label. Je perdrais ma <span class="p">liberté artistique</span>, je risquerais de perdre de l\'argent et je céderais les <span class="c">droits sur ma musique</span>.', quote_attr: '— Nate Skies, Artiste Indépendant',
+                /*quote_text: 'Je ne veux pas signer en label. Je perdrais ma <span class="p">liberté artistique</span>, je risquerais de perdre de l\'argent et je céderais les <span class="c">droits sur ma musique</span>.', quote_attr: '— Nate Skies, Artiste Indépendant',*/
                 roul_label: 'La roue', roul_title: 'QUELS PROBLÈMES<br>UNMUTE RÉSOUT ?', roul_desc: 'Lance la roue et découvre les enjeux de l\'industrie musicale.', roul_spin: 'SPIN', roul_tap: 'Touche pour relancer',
                 steps_label: 'Comment ça marche', steps_title: 'PENSÉ SIMPLE.',
                 step1_h: 'DÉCOUVRE UN ARTISTE', step1_p: 'Explore les talents indépendants sur la plateforme ou lors de nos événements live.',
