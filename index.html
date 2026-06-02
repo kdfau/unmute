@@ -16,15 +16,17 @@
             --cyan: #00C2CB;
             --border: #1a1a1a;
             --text: #eee;
+            --card: #0a0a0a;
+            --muted: #aaa;
         }
-        html { scroll-behavior: smooth; overflow: hidden; }
-        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); overflow: hidden; -webkit-font-smoothing: antialiased; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); -webkit-font-smoothing: antialiased; }
 
         .noise { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.03; mix-blend-mode: overlay; }
         .noise canvas { width: 100%; height: 100%; }
         .gscan { position: fixed; inset: 0; pointer-events: none; z-index: 9997; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); }
 
-        /* ============ CAPÇALERA TOTALMENT FIXADA (Mides clàssiques de la Pàgina 1) ============ */
+        /* ============ CAPÇALERA TOTALMENT FIXADA ============ */
         nav { 
             position: fixed; top: 0; width: 100%; z-index: 100; 
             padding: 14px 20px !important; display: flex; justify-content: space-between; align-items: center; 
@@ -32,7 +34,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.04) !important; height: 48px !important; box-sizing: border-box;
         }
         .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; }
-        .nav-logo img { height: 26px !important; filter: brightness(10); transition: transform 0.3s; }
+        .nav-logo img { height: 26px !important; filter: brightness(10); transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1); display: block; }
         .nav-logo img:hover { transform: scale(1.05); }
         .nav-links { display: flex; gap: 8px !important; align-items: center; }
         .nav-links a { 
@@ -53,13 +55,14 @@
         @media (max-width: 640px) {
             nav { padding: 10px 12px !important; height: auto !important; }
             .nav-logo { position: static; transform: none; }
+            .nav-logo img { height: 18px !important; }
             .lang-sw { margin-left: 2px; gap: 2px !important; }
             .lang-btn { font-size: 7px !important; padding: 3px 6px !important; }
             .nav-links { gap: 2px !important; }
             .nav-links a { font-size: 8px !important; padding: 4px 6px !important; letter-spacing: 0.5px !important; }
         }
 
-        /* HERO INTERACTIU 3D */
+        /* HERO PANTALLA COMPLETA */
         .hero { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
         .tv-wall { 
             position: absolute; inset: -4%; display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(4,1fr); gap: 2px; z-index: 1; 
@@ -77,21 +80,41 @@
         .hero-sub { font-size: clamp(0.55rem,2.2vw,0.85rem); font-weight: 600; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.5); position: relative; z-index: 2; margin-top: 16px; }
         
         .hero-ctas { display: flex; gap: 12px; margin-top: 36px; position: relative; z-index: 2; }
-        .btn { padding: 14px 32px; font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; border: none; border-radius: 52px; transition: all 0.4s; }
+        .btn { padding: 14px 32px; font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; border: none; border-radius: 52px; transition: all 0.4s; cursor: pointer; }
         .btn-fill { background: #fff; color: #000; }
         .btn-fill:hover { background: var(--purple); color: #fff; }
         .btn-wire { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
         .btn-wire:hover { border-color: var(--cyan); color: var(--cyan); }
 
+        /* ============ SECCIÓ DE LA RULETA INTERACTIVA ============ */
+        .roulette-section { padding: 100px 20px 120px; max-width: 800px; margin: 0 auto; text-align: center; border-top: 1px solid var(--border); }
+        .label { font-size: 0.65rem; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; color: var(--purple); margin-bottom: 18px; }
+        .title { font-size: clamp(1.8rem,7vw,3rem); font-weight: 800; line-height: 1.1; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 28px; }
+        
+        .roul-container { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 40px; position: relative; }
+        .wheel-wrapper { position: relative; width: 280px; height: 280px; }
+        .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 24px solid var(--purple); z-index: 10; }
+        .wheel-canvas { width: 100%; height: 100%; border-radius: 50%; border: 4px solid var(--border); box-shadow: 0 0 30px rgba(196,87,215,0.15); transition: transform 5s cubic-bezier(0.15, 1, 0.2, 1); }
+        .wheel-center-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 64px; height: 64px; background: #fff; color: #000; border-radius: 50%; border: 4px solid var(--border); font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform 0.2s; }
+        .wheel-center-btn:active { transform: translate(-50%,-50%) scale(0.9); }
+        
+        .roul-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 32px 24px; max-width: 440px; width: 100%; min-height: 140px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; }
+        .roul-box h3 { font-size: 0.85rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cyan); margin-bottom: 8px; }
+        .roul-box p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+        .roul-box.pulse { animation: containerPulse 0.4s ease-in-out; }
+        @keyframes containerPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); border-color: var(--purple); } 100% { transform: scale(1); } }
+
         @media (max-width: 640px) {
             .hero-ctas { flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 260px; }
             .hero-ctas .btn { width: 100%; text-align: center; }
+            .wheel-wrapper { width: 240px; height: 240px; }
         }
     </style>
 </head>
 <body>
     <div class="noise"><canvas id="noiseC"></canvas></div>
     <div class="gscan"></div>
+    
     <nav>
         <div class="lang-sw" id="langSw">
             <button class="lang-btn active" onclick="setLang('en')">EN</button>
@@ -99,7 +122,11 @@
             <button class="lang-btn" onclick="setLang('ca')">CA</button>
             <button class="lang-btn" onclick="setLang('fr')">FR</button>
         </div>
-        <div class="nav-logo"><a href="index.html"><img src="images/logo.png" alt="UNMUTE"></a></div>
+        <div class="nav-logo">
+            <a href="index.html">
+                <img src="images/logo.png" alt="UNMUTE">
+            </a>
+        </div>
         <div class="nav-links">
             <a href="about.html" data-i18n="nav_about">About</a>
             <a href="events.html" data-i18n="nav_events">Events</a>
@@ -108,6 +135,8 @@
             <a href="connect.html?apply=true" style="color: var(--cyan);" data-i18n="nav_apply">Apply</a>
         </div>
     </nav>
+
+    <!-- HERO SECTION -->
     <section class="hero" id="hero">
         <div class="tv-wall" id="tvWall">
             <div class="tv"><div class="tv-img mouth"><img src="images/mouth-cyan.png"></div></div>
@@ -125,20 +154,41 @@
         </div>
         <div class="hero-fg">
             <img class="hero-logo-img" src="images/logo.png" alt="UNMUTE">
-            <p class="hero-sub" data-i18n="hero_sub">Designing a Fairer Music System</p>
+            <h1 class="hero-sub" data-i18n="hero_sub">Designing a Fairer Music System</h1>
             <div class="hero-ctas">
                 <a href="connect.html?apply=true" class="btn btn-fill" data-i18n="hero_artist">I'M AN ARTIST</a>
-                <a href="events.html" class="btn btn-wire">EXPLORE EVENTS</a>
+                <button onclick="document.getElementById('problems').scrollIntoView();" class="btn btn-wire">WHY UNMUTE?</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- RULETA SECTION -->
+    <section class="roulette-section" id="problems">
+        <div class="label" data-i18n="roul_label">Spin The Wheel</div>
+        <h2 class="title" data-i18n-html="roul_title">WHAT PROBLEMS<br>DOES UNMUTE SOLVE?</h2>
+        
+        <div class="roul-container">
+            <div class="wheel-wrapper">
+                <div class="wheel-pointer"></div>
+                <canvas class="wheel-canvas" id="wheelCanvas" width="500" height="500"></canvas>
+                <button class="wheel-center-btn" id="spinBtn" onclick="spinWheel()" data-i18n="roul_spin">SPIN</button>
+            </div>
+            
+            <div class="roul-box" id="roulBox">
+                <h3 id="roulBoxTitle" data-i18n="roul_label">Spin The Wheel</h3>
+                <p id="roulBoxDesc" data-i18n="roul_desc">Spin the wheel and discover the issues we're tackling in the music industry.</p>
             </div>
         </div>
     </section>
 
     <script src="languages.js"></script>
     <script>
+        // CAPA DE SOROLL ANIMAT
         const nc=document.getElementById('noiseC'),nctx=nc.getContext('2d');
         function renderNoise(){nc.width=window.innerWidth/4;nc.height=window.innerHeight/4;const img=nctx.createImageData(nc.width,nc.height),d=img.data;for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;}nctx.putImageData(img,0,0);}
         renderNoise();setInterval(renderNoise,120);
 
+        // MOVIMENT DINÀMIC 3D DE LES TELEVISIONS
         let currentX = window.innerWidth / 2, currentY = window.innerHeight / 2;
         const wall = document.getElementById('tvWall');
         window.addEventListener('mousemove', (e) => { currentX = e.clientX; currentY = e.clientY; });
@@ -150,11 +200,61 @@
         }
         requestAnimationFrame(updateWallPosition);
 
+        // LÒGICA I DIBUIX DE LA RULETA ORIGINAL
+        const canvas=document.getElementById('wheelCanvas'), ctx=canvas.getContext('2d');
+        const sections=[
+            {label:"01. MIDDLEMEN", color:"#050505", title:{en:"THE EXPLOITATION", es:"LA EXPLOTACIÓN", ca:"L'EXPLOTACIÓ", fr:"L'EXPLOITATION"}, desc:{en:"Record labels take up to 80% of an artist's earnings and own their master rights.", es:"Las discográficas se quedan hasta el 80% de los ingresos y los derechos del artista.", ca:"Els segells es queden fins al 80% dels ingressos i els drets de l'artista.", fr:"Les labels prennent jusqu'à 80% des revenus et les droits de l'artiste."}},
+            {label:"02. ALGORITHMS", color:"#121212", title:{en:"THE ALGORITHM TRAP", es:"LA TRAMPA DEL ALGORITMO", ca:"LA TRAMPA DE L'ALGORITME", fr:"LE PIÈGE DE L'ALGORITHME"}, desc:{en:"Streaming platforms favor top charts, leaving 90% of indie talent completely invisible.", es:"Las plataformas priorizan los grandes éxitos, invisibilizando al 90% del talento indie.", ca:"Les plataformes prioritzen els grans èxits, invisibilitzant el 90% del talent indie.", fr:"Les plateformes s'axent sur les hits, invisibilisant 90% des talents indés."}},
+            {label:"03. LIVESTREAM", color:"#050505", title:{en:"STREAMING CRUMBS", es:"MIGAJAS DEL STREAMING", ca:"MINS DE L'STREAMING", fr:"LES MIETTES DU STREAMING"}, desc:{en:"An artist needs over 3,000 streams just to make enough to buy a single cup of coffee.", es:"Un artista necesita más de 3.000 reproducciones solo para pagarse un café.", ca:"Un artista necessita més de 3.000 reproduccions només per pagar-se un cafè.", fr:"Un artiste a besoin de 3 000 écoutes juste pour s'acheter un café."}},
+            {label:"04. NETWORKING", color:"#121212", title:{en:"THE GATEKEEPERS", es:"LOS FILTROS DE LA INDUSTRIA", ca:"ELS FILTRES DE LA INDÚSTRIA", fr:"LES FILTRES DE L'INDUSTRIE"}, desc:{en:"Success shouldn't depend on who you know, a massive budget, or industry connections.", es:"El éxito no debería depender de a quién conoces, de un gran presupuesto o de contactos.", ca:"L'èxit no hauria de dependre de qui coneixes, d'un gran pressupost o de contactes.", fr:"Le succès ne devrait pas dépendre de tes contacts ou d'un gros budget."}}
+        ];
+        
+        let currentRotation=0, isSpinning=false;
+        function drawWheel() {
+            const numSec=sections.length, arc=2*Math.PI/numSec;
+            sections.forEach((sec,i)=>{
+                const angle=i*arc; ctx.fillStyle=sec.color; ctx.beginPath(); ctx.moveTo(250,250); ctx.arc(250,250,240,angle,angle+arc); ctx.fill();
+                ctx.strokeStyle="rgba(255,255,255,0.03)"; ctx.lineWidth=2; ctx.stroke();
+                ctx.save(); ctx.translate(250,250); ctx.rotate(angle+arc/2); ctx.fillStyle="rgba(255,255,255,0.4)"; ctx.font="bold 12px 'Inter',sans-serif"; ctx.textAlign="right"; ctx.textBaseline="middle"; ctx.fillText(sec.label,210,0); ctx.restore();
+            });
+        }
+        drawWheel();
+
+        function spinWheel() {
+            if(isSpinning) return; isSpinning=true;
+            const spinBtn=document.getElementById('spinBtn'); spinBtn.disabled=true;
+            const extraDegrees=Math.floor(Math.random()*360)+1800, targetRotation=currentRotation+extraDegrees;
+            canvas.style.transform=`rotate(${targetRotation}deg)`; currentRotation=targetRotation;
+            
+            setTimeout(()=>{
+                isSpinning=false; spinBtn.disabled=false;
+                const actualDegrees=currentRotation%360;
+                const normalizedAngle=(360-actualDegrees+270)%360;
+                const secIndex=Math.floor(normalizedAngle/(360/sections.length))%sections.length;
+                const winner=sections[secIndex];
+                
+                const box=document.getElementById('roulBox'), bTitle=document.getElementById('roulBoxTitle'), bDesc=document.getElementById('roulBoxDesc');
+                box.classList.remove('pulse'); void box.offsetWidth; box.classList.add('pulse');
+                
+                bTitle.textContent=winner.title[currentLang] || winner.title.en;
+                bDesc.textContent=winner.desc[currentLang] || winner.desc.en;
+                try { spinBtn.textContent=i18n[currentLang].roul_tap || "SPIN AGAIN"; } catch(e){}
+            },5000);
+        }
+
+        // SISTEMA DE LLENGUATGES
         function setLang(lang){
             currentLang = lang; localStorage.setItem('unmute_lang', lang); document.documentElement.lang = lang; const t = i18n[lang] || i18n.en;
             document.querySelectorAll('.lang-btn').forEach(b => { b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang); });
             document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if(t[k]!==undefined) el.textContent = t[k]; });
             document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if(t[k]!==undefined) el.innerHTML = t[k]; });
+            
+            const btn=document.getElementById('spinBtn');
+            if(!isSpinning && btn.textContent !== "SPIN" && btn.textContent !== "GIRAR") {
+                try { btn.textContent=t.roul_tap; } catch(e){}
+            } else {
+                try { btn.textContent=t.roul_spin; } catch(e){}
+            }
         }
         (function(){ const saved = localStorage.getItem('unmute_lang'); if(saved && i18n[saved]){ setLang(saved); } })();
     </script>
