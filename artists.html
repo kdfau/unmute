@@ -61,48 +61,82 @@
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.03) 2px, rgba(0, 0, 0, 0.03) 4px);
         }
 
-        /* NAV */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        /* ============ NAV (Capçalera definitiva per a PC) ============ */
+        nav { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 100; 
+            padding: 24px 48px; /* Alçada i espai generós a dalt i costats en PC */
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(0,0,0,0.75); /* Fons fosc amb transparència */
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255,255,255,0.04); 
         }
 
-        .nav-logo a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 800;
-            letter-spacing: 4px;
-            font-size: 0.9rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 16px;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
+        .nav-logo a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-weight: 800; 
+            letter-spacing: 5px; 
+            font-size: 1.1rem; 
             text-transform: uppercase;
-            padding: 8px 14px;
-            transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: #fff;
+        .nav-links { 
+            display: flex; 
+            gap: 20px; /* Separació neta entre enllaços */
+        }
+
+        .nav-links a { 
+            color: rgba(255,255,255,0.5); 
+            text-decoration: none; 
+            font-size: 0.85rem; /* Lletra gran i llegible en PC */
+            font-weight: 700; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            padding: 10px 16px; 
+            transition: color 0.3s; 
+        }
+
+        .nav-links a:hover { 
+            color: #fff; 
+        }
+
+        /* Selector d'idiomes gran en PC */
+        .lang-sw { 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+        }
+
+        .lang-btn { 
+            background: none; 
+            border: 1px solid rgba(255,255,255,0.15); 
+            color: rgba(255,255,255,0.4); 
+            font-family: 'Inter',sans-serif; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            padding: 6px 12px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            border-radius: 52px; 
+            text-transform: uppercase; 
+        }
+
+        .lang-btn:hover { 
+            color: #fff; 
+            border-color: rgba(255,255,255,0.4); 
+        }
+
+        .lang-btn.active { 
+            color: #fff; 
+            border-color: var(--purple); 
+            background: rgba(196,87,215,0.2); 
         }
 
         /* HEADER SECCIÓ */
@@ -328,16 +362,23 @@
     <div class="gscan"></div>
 
     <nav>
-        <div class="nav-logo">
-            <a href="index.html">UNMUTE</a>
-        </div>
-        <div class="nav-links">
-            <a href="index.html#about">About</a>
-            <a href="index.html#events">Events</a>
-            <a href="artists.html" style="color: var(--purple);">Artists</a>
-            <a href="index.html#connect">Connect</a>
-        </div>
-    </nav>
+    <!-- Idiomes a l'esquerra -->
+    <div class="lang-sw" id="langSw">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" onclick="setLang('ca')">CA</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
+    
+    <!-- Enllaços a la dreta -->
+    <div class="nav-links">
+        <a href="about.html" data-i18n="nav_about">About</a>
+        <a href="events.html" data-i18n="nav_events">Events</a>
+        <a href="artists.html">Artists</a>
+        <a href="connect.html" data-i18n="nav_connect">Connect</a>
+        <a href="connect.html?apply=true" style="color:var(--cyan);" data-i18n="nav_apply">Apply</a>
+    </div>
+</nav>
 
     <section class="header-section">
         <div class="label">The Next Wave</div>
