@@ -2223,19 +2223,24 @@
     <div class="bg-glitch" id="bgGlitch"></div>
 
     <nav>
-        <div class="lang-sw" id="langSw">
-            <button class="lang-btn active" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" onclick="setLang('es')">ES</button>
-            <button class="lang-btn" onclick="setLang('ca')">CA</button>
-            <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        <div class="nav-logo"><a href="index.html"><img src="images/logo.png" alt="UNMUTE"></a></div>
+        <div class="nav-responsive-container" id="navContainer">
+            <div class="lang-sw" id="langSw">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('es')">ES</button>
+                <button class="lang-btn" onclick="setLang('ca')">CA</button>
+                <button class="lang-btn" onclick="setLang('fr')">FR</button>
+            </div>
+            <div class="nav-links">
+                <a href="about.html" data-i18n="nav_about">About</a>
+                <a href="events.html" data-i18n="nav_events">Events</a>
+                <a href="artists.html">Artists</a>
+                <a href="connect.html" data-i18n="nav_connect">Connect</a>
+                <a href="connect.html?apply=true" style="color: var(--cyan);" data-i18n="nav_apply">Apply</a>
+            </div>
         </div>
-        <div class="nav-links">
-            <a href="about.html" style="color:var(--purple);" data-i18n="nav_about">About</a>
-            <a href="events.html" data-i18n="nav_events">Events</a>
-            <a href="artists.html">Artists</a>
-            <a href="connect.html" data-i18n="nav_connect">Connect</a>
-            <a href="connect.html?apply=true" style="color: var(--cyan);" data-i18n="nav_apply">Apply</a>
-        </div>
+        <button class="menu-toggle" id="menuToggle"
+            onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </nav>
 
     <!-- ====== HERO ====== -->
@@ -2836,6 +2841,16 @@
     </div>
 
     <script>
+        function toggleMenu() {
+            document.getElementById('navContainer').classList.toggle('open');
+            document.getElementById('menuToggle').classList.toggle('open');
+        }
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navContainer').classList.remove('open');
+                document.getElementById('menuToggle').classList.remove('open');
+            });
+        });
         // NOISE
         const nc = document.getElementById('noiseC'), nctx = nc.getContext('2d');
         function renderNoise() { nc.width = window.innerWidth / 4; nc.height = window.innerHeight / 4; const img = nctx.createImageData(nc.width, nc.height), d = img.data; for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } nctx.putImageData(img, 0, 0); }
