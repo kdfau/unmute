@@ -151,12 +151,27 @@
             box-sizing: border-box;
         }
 
-        .nav-responsive-container {
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* El contenidor principal en mòbil ara distribueix l'espai correctament */
+            .nav-responsive-container { 
+                position: fixed; 
+                top: 0; 
+                right: -100%; 
+                width: 100%; 
+                height: 100vh; 
+                height: 100svh; 
+                background: rgba(0, 0, 0, 0.98); 
+                backdrop-filter: blur(30px); 
+                -webkit-backdrop-filter: blur(30px); 
+                display: flex;
+                flex-direction: column; 
+                justify-content: flex-start; /* 🌟 CANVI: Empeny tot el contingut cap a dalt de tot */
+                align-items: center; 
+                gap: 40px; 
+                padding: 100px 0 60px; /* 🌟 Farcit generós: 100px lliures a dalt per no tapar el logo */
+                transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+                z-index: 100; 
+                box-sizing: border-box; 
+            }
 
         .nav-logo {
             position: absolute;
