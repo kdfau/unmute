@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EVENTS — UNMUTE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
@@ -27,20 +25,17 @@
         }
 
         html {
-            scroll-behavior: smooth;
             font-size: 18px;
+            scroll-behavior: smooth;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--black);
             color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            line-height: 1.7;
+            padding-top: 140px;
         }
 
-        /* EFFECTES DE SOROLL I ESCAN */
         .noise {
             position: fixed;
             inset: 0;
@@ -55,95 +50,62 @@
             height: 100%;
         }
 
-        .gscan {
+        nav {
             position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9997;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.03) 2px, rgba(0, 0, 0, 0.03) 4px);
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        /* ============ NAV (Capçalera definitiva per a PC) ============ */
-        nav { 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            z-index: 100; 
-            padding: 24px 48px; /* Alçada i espai generós a dalt i costats en PC */
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: rgba(0,0,0,0.75); /* Fons fosc amb transparència */
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border-bottom: 1px solid rgba(255,255,255,0.04); 
+        .nav-links {
+            display: flex;
+            gap: 20px;
         }
 
-        .nav-logo a { 
-            color: #fff; 
-            text-decoration: none; 
-            font-weight: 800; 
-            letter-spacing: 5px; 
-            font-size: 1.1rem; 
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 16px;
+        }
+
+        .lang-sw {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 52px;
             text-transform: uppercase;
         }
 
-        .nav-links { 
-            display: flex; 
-            gap: 20px; /* Separació neta entre enllaços */
+        .lang-btn.active {
+            color: #fff;
+            border-color: var(--purple);
+            background: rgba(196, 87, 215, 0.2);
         }
 
-        .nav-links a { 
-            color: rgba(255,255,255,0.5); 
-            text-decoration: none; 
-            font-size: 0.85rem; /* Lletra gran i llegible en PC */
-            font-weight: 700; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            padding: 10px 16px; 
-            transition: color 0.3s; 
-        }
-
-        .nav-links a:hover { 
-            color: #fff; 
-        }
-
-        /* Selector d'idiomes gran en PC */
-        .lang-sw { 
-            display: flex; 
-            gap: 8px; 
-            align-items: center; 
-        }
-
-        .lang-btn { 
-            background: none; 
-            border: 1px solid rgba(255,255,255,0.15); 
-            color: rgba(255,255,255,0.4); 
-            font-family: 'Inter',sans-serif; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            letter-spacing: 1px; 
-            padding: 6px 12px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            border-radius: 52px; 
-            text-transform: uppercase; 
-        }
-
-        .lang-btn:hover { 
-            color: #fff; 
-            border-color: rgba(255,255,255,0.4); 
-        }
-
-        .lang-btn.active { 
-            color: #fff; 
-            border-color: var(--purple); 
-            background: rgba(196,87,215,0.2); 
-        }
-
-        /* SECCIÓ CONTENIDORA PRINCIPAL */
         .main-container {
-            padding: 140px 20px 80px;
+            padding: 40px 20px 80px;
             max-width: 900px;
             margin: 0 auto;
         }
@@ -160,13 +122,10 @@
         .title {
             font-size: clamp(2rem, 7vw, 3.5rem);
             font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 36px;
         }
 
-        /* EVENT CAROUSEL (Més gran en PC) */
         .ev-carousel {
             position: relative;
             width: 100%;
@@ -227,14 +186,12 @@
             font-size: 1.6rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .ev-carousel-overlay .ev-date {
             font-size: 0.7rem;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 1px;
             margin-top: 6px;
         }
 
@@ -252,15 +209,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 800;
-            transition: all 0.3s;
             border-radius: 50%;
-        }
-
-        .ev-carousel-nav:hover {
-            background: var(--purple);
-            border-color: var(--purple);
         }
 
         .ev-carousel-nav.prev {
@@ -271,7 +220,6 @@
             right: 16px;
         }
 
-        /* STATS */
         .ev-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -308,7 +256,6 @@
         .ev-desc {
             font-size: 0.95rem;
             color: var(--muted);
-            margin-bottom: 48px;
         }
 
         .event-subtitle {
@@ -322,7 +269,6 @@
             padding-left: 10px;
         }
 
-        /* LINEUP */
         .lineup {
             display: flex;
             flex-direction: column;
@@ -341,42 +287,12 @@
             border-top: 1px solid var(--border);
         }
 
-        .lineup-artist:hover .la-name {
-            color: var(--purple);
-            padding-left: 8px;
-        }
-
         .la-name {
             font-size: 1.4rem;
             font-weight: 800;
             text-transform: uppercase;
-            transition: all 0.3s;
         }
 
-        .la-links {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .al {
-            display: inline-flex;
-            align-items: center;
-            opacity: 0.3;
-            transition: opacity 0.3s;
-        }
-
-        .al:hover {
-            opacity: 1;
-        }
-
-        .al svg {
-            width: 24px;
-            height: 24px;
-            fill: #fff;
-        }
-
-        /* PROXIMS CONCERTS */
         .future-events {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -387,26 +303,8 @@
             border: 1px solid var(--border);
             padding: 32px 24px;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
             background: var(--card);
             border-radius: 16px;
-        }
-
-        .future-ev::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--purple), var(--cyan));
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .future-ev:hover::before {
-            transform: scaleX(1);
         }
 
         .future-ev:hover {
@@ -417,8 +315,6 @@
         .future-ev-tag {
             font-size: 0.6rem;
             font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
             color: var(--cyan);
             margin-bottom: 12px;
             display: block;
@@ -434,7 +330,6 @@
         .future-ev p {
             font-size: 0.75rem;
             color: var(--muted);
-            line-height: 1.6;
         }
 
         .ev-ticket {
@@ -442,22 +337,14 @@
             margin-top: 16px;
             font-size: 0.55rem;
             font-weight: 700;
-            letter-spacing: 1px;
             text-transform: uppercase;
             text-decoration: none;
             color: var(--cyan);
             border: 1px solid var(--cyan);
             padding: 8px 18px;
-            transition: all 0.3s;
             border-radius: 52px;
         }
 
-        .ev-ticket:hover {
-            background: var(--cyan);
-            color: #000;
-        }
-
-        /* RESPONSIVE MÒBIL */
         @media (max-width: 640px) {
             html {
                 font-size: 15px;
@@ -472,8 +359,13 @@
                 padding: 4px 6px;
             }
 
+            .lang-btn {
+                font-size: 0.4rem;
+                padding: 3px 6px;
+            }
+
             .main-container {
-                padding: 100px 16px 60px;
+                padding: 40px 16px 60px;
             }
 
             .ev-carousel-track img {
@@ -494,47 +386,40 @@
 </head>
 
 <body>
-
     <div class="noise"><canvas id="noiseC"></canvas></div>
-    <div class="gscan"></div>
-
     <nav>
-    <!-- Idiomes a l'esquerra -->
-    <div class="lang-sw" id="langSw">
-        <button class="lang-btn active" onclick="setLang('en')">EN</button>
-        <button class="lang-btn" onclick="setLang('es')">ES</button>
-        <button class="lang-btn" onclick="setLang('ca')">CA</button>
-        <button class="lang-btn" onclick="setLang('fr')">FR</button>
-    </div>
-    
-    <!-- Enllaços a la dreta -->
-    <div class="nav-links">
-        <a href="about.html" data-i18n="nav_about">About</a>
-        <a href="events.html" data-i18n="nav_events">Events</a>
-        <a href="artists.html">Artists</a>
-        <a href="connect.html" data-i18n="nav_connect">Connect</a>
-        <a href="connect.html?apply=true" style="color:var(--cyan);" data-i18n="nav_apply">Apply</a>
-    </div>
-</nav>
+        <div class="lang-sw" id="langSw">
+            <button class="lang-btn active" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('es')">ES</button>
+            <button class="lang-btn" onclick="setLang('ca')">CA</button>
+            <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        </div>
+        <div class="nav-links">
+            <a href="about.html" data-i18n="nav_about">About</a>
+            <a href="events.html" style="color: var(--purple);" data-i18n="nav_events">Events</a>
+            <a href="artists.html">Artists</a>
+            <a href="connect.html" data-i18n="nav_connect">Connect</a>
+        </div>
+    </nav>
 
     <main class="main-container">
-        <div class="label">Live Experiences</div>
-        <h1 class="title">Where Beats Meet Reality</h1>
+        <div class="label" data-i18n="ev_label">Live Experiences</div>
+        <h1 class="title" data-i18n="ev_title">Where Beats Meet Reality</h1>
 
         <div class="ev-carousel" id="evCarousel">
             <div class="ev-carousel-track" id="evTrack">
-                <img src="images/party-crowd.jpg" alt="Launch Night Crowd">
-                <img src="images/party-live.jpg" alt="Live Performance">
-                <img src="images/party-perform.jpg" alt="Artist Performing">
-                <img src="images/party-dj.jpg" alt="DJ Set">
-                <img src="images/party-stage.jpg" alt="Stage">
-                <img src="images/party-sing.jpg" alt="Singing">
-                <img src="images/party-fans.jpg" alt="Fans">
-                <img src="images/party-mic.jpg" alt="On the Mic">
+                <img src="images/party-crowd.jpg">
+                <img src="images/party-live.jpg">
+                <img src="images/party-perform.jpg">
+                <img src="images/party-dj.jpg">
+                <img src="images/party-stage.jpg">
+                <img src="images/party-sing.jpg">
+                <img src="images/party-fans.jpg">
+                <img src="images/party-mic.jpg">
             </div>
             <div class="ev-carousel-overlay">
-                <h3>UNMUTE LAUNCH NIGHT</h3>
-                <div class="ev-date">Dreambags Jaguar Shoes, London</div>
+                <h3 data-i18n="ev_launch">UNMUTE LAUNCH NIGHT</h3>
+                <div class="ev-date" data-i18n="ev_date">Dreambags Jaguar Shoes, London</div>
             </div>
             <div class="ev-carousel-dots" id="evDots"></div>
             <button class="ev-carousel-nav prev" onclick="slideEv(-1)">←</button>
@@ -556,105 +441,57 @@
             </div>
         </div>
 
-        <p class="ev-desc">Our launch night event brought together independent talent performing live on stage. The
-            audience voted in real-time for their favourites — and every single voter walked away with exclusive digital
-            perks from the artists they backed.</p>
+        <p class="ev-desc" data-i18n="ev_desc">Our launch night event brought together independent talent performing
+            live on stage. The audience voted in real-time for their favourites — and every single voter walked away
+            with exclusive digital perks from the artists they backed.</p>
 
-        <div class="event-subtitle">Past Lineup</div>
+        <div class="event-subtitle" data-i18n="ev_lineup">Past Lineup</div>
         <div class="lineup">
-            <div class="lineup-artist"><span class="la-name">Nate Skies</span><span class="la-links"><a href="#"
-                        class="al"><svg viewBox="0 0 24 24">
-                            <path
-                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                        </svg></a></span></div>
-            <div class="lineup-artist"><span class="la-name">Jada Maya</span><span class="la-links"><a href="#"
-                        class="al"><svg viewBox="0 0 24 24">
-                            <path
-                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                        </svg></a></span></div>
-            <div class="lineup-artist"><span class="la-name">WKDAIZ</span><span class="la-links"><a href="#"
-                        class="al"><svg viewBox="0 0 24 24">
-                            <path
-                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                        </svg></a></span></div>
+            <div class="lineup-artist"><span class="la-name">Nate Skies</span></div>
+            <div class="lineup-artist"><span class="la-name">Jada Maya</span></div>
+            <div class="lineup-artist"><span class="la-name">WKDAIZ</span></div>
         </div>
 
-        <div class="event-subtitle">What's Next</div>
+        <div class="event-subtitle" data-i18n="ev_next">What's Next</div>
         <div class="future-events">
             <div class="future-ev"><span class="future-ev-tag">June 2026</span>
                 <h4>PRIMAVERA PRO</h4>
-                <p>Selected for Ideas Showroom at Primavera Sound music conference.</p><a
-                    href="https://www.primaverasound.com" target="_blank" class="ev-ticket">Learn More</a>
+                <p data-i18n="ev_prima_desc">Selected for Ideas Showroom at Primavera Sound music conference.</p><a
+                    href="https://www.primaverasound.com" target="_blank" class="ev-ticket"
+                    data-i18n="ev_prima_link">Learn More</a>
             </div>
             <div class="future-ev"><span class="future-ev-tag">June 5, 2026</span>
                 <h4>OASYS BARCELONA</h4>
-                <p>Live event in Barcelona. New artists, new city, same digital energy.</p><a
-                    href="https://entradium.com" target="_blank" class="ev-ticket">Get Tickets</a>
+                <p data-i18n="ev_oasys_desc">Live event in Barcelona. New artists, new city, same digital energy.</p><a
+                    href="https://entradium.com" target="_blank" class="ev-ticket" data-i18n="ev_oasys_link">Get
+                    Tickets</a>
             </div>
             <div class="future-ev"><span class="future-ev-tag">July 4, 2026</span>
                 <h4>JAGUAR SHOES LONDON</h4>
-                <p>Live concert showcase in Shoreditch. Real talent, real community.</p><a href="index.html#connect"
-                    class="ev-ticket">Apply</a>
+                <p data-i18n="ev_jag_desc">Live concert showcase in Shoreditch. Real talent, real community.</p><a
+                    href="connect.html" class="ev-ticket" data-i18n="ev_jag_link">Apply</a>
             </div>
         </div>
     </main>
 
+    <script src="languages.js"></script>
     <script>
-        // CAPA DE SOROLL ANIMAT
         const nc = document.getElementById('noiseC'), nctx = nc.getContext('2d');
         function renderNoise() { nc.width = window.innerWidth / 4; nc.height = window.innerHeight / 4; const img = nctx.createImageData(nc.width, nc.height), d = img.data; for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } nctx.putImageData(img, 0, 0); }
         renderNoise(); setInterval(renderNoise, 120);
 
-        // LOGICA INTERACTIVA DEL CARRUSEL
         let evIdx = 0; const evTrack = document.getElementById('evTrack'), evSlides = evTrack.querySelectorAll('img'), evDotsC = document.getElementById('evDots');
         evSlides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'ev-dot' + (i === 0 ? ' active' : ''); d.onclick = () => goEv(i); evDotsC.appendChild(d); });
-        let evAuto = setInterval(() => slideEv(1), 3500);
-
-        function goEv(i) {
-            evIdx = i; evTrack.style.transform = `translateX(-${evIdx * 100}%)`;
-            evDotsC.querySelectorAll('.ev-dot').forEach((d, j) => d.classList.toggle('active', j === evIdx));
-        }
+        function goEv(i) { evIdx = i; evTrack.style.transform = `translateX(-${evIdx * 100}%)`; evDotsC.querySelectorAll('.ev-dot').forEach((d, j) => d.classList.toggle('active', j === evIdx)); }
         function slideEv(dir) { goEv((evIdx + dir + evSlides.length) % evSlides.length); }
-        <!-- Enllaçem primer el fitxer compartit de traduccions -->
-    </script>
-    <script src="languages.js"></script>
 
-    <script>
         function setLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('unmute_lang', lang);
-            document.documentElement.lang = lang;
-            const t = i18n[lang] || i18n.en;
-
-            // 1. Activa l'estat visual del botó clicat
-            document.querySelectorAll('.lang-btn').forEach(b => {
-                b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
-            });
-
-            // 2. Tradueix els textos simples (About, Connect...)
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const k = el.getAttribute('data-i18n');
-                if (t[k] !== undefined) el.textContent = t[k];
-            });
-
-            // 3. Tradueix els blocs amb estils HTML (Títols negreta...)
-            document.querySelectorAll('[data-i18n-html]').forEach(el => {
-                const k = el.getAttribute('data-i18n-html');
-                if (t[k] !== undefined) el.innerHTML = t[k];
-            });
-
-            // 4. Tradueix els placeholders dels formularis (Your name...)
-            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-                const k = el.getAttribute('data-i18n-ph');
-                if (t[k] !== undefined) el.placeholder = t[k];
-            });
+            currentLang = lang; localStorage.setItem('unmute_lang', lang); document.documentElement.lang = lang; const t = i18n[lang] || i18n.en;
+            document.querySelectorAll('.lang-btn').forEach(b => { b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang); });
+            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (t[k] !== undefined) el.textContent = t[k]; });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if (t[k] !== undefined) el.innerHTML = t[k]; });
         }
-
-        // En carregar qualsevol pàgina, recorda l'últim idioma guardat al navegador de l'usuari
-        (function () {
-            const saved = localStorage.getItem('unmute_lang');
-            if (saved && i18n[saved]) { setLang(saved); }
-        })();
+        (function () { const saved = localStorage.getItem('unmute_lang'); if (saved && i18n[saved]) { setLang(saved); } })();
     </script>
 </body>
 
