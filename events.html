@@ -15,18 +15,45 @@
         .noise canvas { width: 100%; height: 100%; }
 
         /* ============ CAPÇALERA ORIGINAL RECONVERTIDA ============ */
-        nav { 
-            position: fixed; top: 0; width: 100%; z-index: 100; padding: 14px 20px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border-bottom: 1px solid rgba(255,255,255,0.04); 
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; }
-        .nav-logo img { height: 18px; filter: brightness(10); transition: transform 0.3s; }
-        .nav-logo img:hover { transform: scale(1.05); }
-        .nav-links { display: flex; gap: 4px; }
-        .nav-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.55rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 6px 10px; transition: color 0.3s; }
-        .nav-links a:hover { color: #fff; }
+
+        .nav-logo img {
+            height: 26px;
+            filter: brightness(10);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
         .lang-sw { display: flex; gap: 2px; align-items: center; }
         .lang-btn { background: none; border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); font-family: 'Inter',sans-serif; font-size: 0.45rem; font-weight: 700; letter-spacing: 1px; padding: 4px 7px; cursor: pointer; transition: all 0.3s; border-radius: 52px; text-transform: uppercase; }
         .lang-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
