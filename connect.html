@@ -1,300 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CONNECT — UNMUTE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --black: #000; --purple: #C457D7; --cyan: #00C2CB; --card: #0a0a0a; --border: #1a1a1a; --text: #eee; --muted: #aaa; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); padding-top: 80px; -webkit-font-smoothing: antialiased; }
+        
+        .noise { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.03; mix-blend-mode: overlay; }
+        .noise canvas { width: 100%; height: 100%; }
 
-        :root {
-            --black: #000;
-            --purple: #C457D7;
-            --cyan: #00C2CB;
-            --card: #0a0a0a;
-            --border: #1a1a1a;
-            --text: #eee;
-            --muted: #aaa;
+        /* ============ CAPÇALERA TOTALMENT FIXADA ============ */
+        nav { 
+            position: fixed; top: 0; width: 100%; z-index: 100; 
+            padding: 14px 20px !important; display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(0,0,0,0.6) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important; height: 48px !important; box-sizing: border-box;
         }
-
-        html {
-            scroll-behavior: smooth;
+        .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; }
+        .nav-logo img { height: 18px !important; filter: brightness(10); transition: transform 0.3s; }
+        .nav-logo img:hover { transform: scale(1.05); }
+        .nav-links { display: flex; gap: 8px !important; align-items: center; }
+        .nav-links a { 
+            color: rgba(255,255,255,0.4) !important; text-decoration: none; font-size: 9px !important; 
+            font-weight: 700 !important; letter-spacing: 2px !important; text-transform: uppercase; 
+            padding: 6px 10px !important; transition: color 0.3s; line-height: 1 !important;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--black);
-            color: var(--text);
-            padding-top: 80px;
-            -webkit-font-smoothing: antialiased;
+        .nav-links a:hover { color: #fff !important; }
+        .lang-sw { display: flex; gap: 4px !important; align-items: center; }
+        .lang-btn { 
+            background: none !important; border: 1px solid rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.3) !important; 
+            font-family: 'Inter',sans-serif; font-size: 8px !important; font-weight: 700 !important; letter-spacing: 1px !important; 
+            padding: 4px 8px !important; cursor: pointer; transition: all 0.3s; border-radius: 52px !important; text-transform: uppercase; line-height: 1 !important;
         }
-
-        .noise {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9998;
-            opacity: 0.03;
-            mix-blend-mode: overlay;
-        }
-
-        .noise canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* ============ CAPÇALERA ORIGINAL RECONVERTIDA ============ */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 24px 48px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .nav-logo img {
-            height: 26px;
-            filter: brightness(10);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 10px 16px;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #fff;
-        }
-        .lang-sw {
-            display: flex;
-            gap: 2px;
-            align-items: center;
-        }
-
-        .lang-btn {
-            background: none;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.3);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.45rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            padding: 4px 7px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 52px;
-            text-transform: uppercase;
-        }
-
-        .lang-btn:hover {
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .lang-btn.active {
-            color: #fff;
-            border-color: var(--purple);
-            background: rgba(196, 87, 215, 0.15);
-        }
+        .lang-btn:hover { color: #fff !important; border-color: rgba(255,255,255,0.2) !important; }
+        .lang-btn.active { color: #fff !important; border-color: var(--purple) !important; background: rgba(196,87,215,0.15) !important; }
 
         @media (max-width: 640px) {
-            .nav-logo {
-                position: static;
-                transform: none;
-            }
-
-            .lang-sw {
-                margin-left: 4px;
-                gap: 1px;
-            }
-
-            .lang-btn {
-                font-size: 0.4rem;
-                padding: 3px 5px;
-            }
-
-            .nav-links a {
-                font-size: 0.5rem;
-                padding: 4px 6px;
-                letter-spacing: 0.5px;
-            }
+            nav { padding: 10px 12px !important; height: auto !important; }
+            .nav-logo { position: static; transform: none; }
+            .lang-sw { margin-left: 2px; gap: 2px !important; }
+            .lang-btn { font-size: 7px !important; padding: 3px 6px !important; }
+            .nav-links { gap: 2px !important; }
+            .nav-links a { font-size: 8px !important; padding: 4px 6px !important; letter-spacing: 0.5px !important; }
         }
 
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            text-align: center;
-        }
+        .content { max-width: 800px; margin: 0 auto; padding: 60px 20px; text-align: center; }
+        .title { font-size: clamp(1.8rem,7vw,3rem); font-weight: 800; line-height: 1.1; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 28px; }
+        .profiles { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 36px; }
+        .prof { border: 1px solid var(--border); padding: 40px 18px; text-align: center; cursor: pointer; transition: all 0.4s; border-radius: 52px; background: var(--card); }
+        .prof:hover { background: #060606; border-color: var(--purple); }
+        .prof h3 { font-size: 0.7rem; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; color: var(--cyan); }
+        .prof p { font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
 
-        .title {
-            font-size: clamp(1.8rem, 7vw, 3rem);
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 28px;
-        }
+        .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
+        .modal-bg.on { display: flex; }
+        .mdl { background: var(--card); border: 1px solid var(--border); padding: 44px 28px; max-width: 400px; width: 100%; text-align: center; position: relative; }
+        .mdl-x { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #666; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
+        .mdl h2 { font-size: 1rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
+        .mdl form { display: flex; flex-direction: column; gap: 8px; }
+        .mdl input, .mdl textarea { background: #000; border: 1px solid var(--border); padding: 13px 14px; color: var(--text); font-family: 'Inter',sans-serif; font-size: 0.75rem; outline: none; border-radius: 52px; width: 100%; }
+        .mdl textarea { border-radius: 20px; min-height: 56px; resize: vertical; }
+        .btn-send { padding: 14px 32px; font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; background: #fff; color: #000; border: none; border-radius: 52px; cursor: pointer; }
+        .btn-send:hover { background: var(--purple); color: #fff; }
 
-        .profiles {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 36px;
-        }
-
-        .prof {
-            border: 1px solid var(--border);
-            padding: 40px 18px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s;
-            border-radius: 52px;
-            background: var(--card);
-        }
-
-        .prof:hover {
-            background: #060606;
-            border-color: var(--purple);
-        }
-
-        .prof h3 {
-            font-size: 0.7rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            color: var(--cyan);
-        }
-
-        .prof p {
-            font-size: 0.68rem;
-            color: var(--muted);
-            line-height: 1.5;
-        }
-
-        .modal-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 200;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-bg.on {
-            display: flex;
-        }
-
-        .mdl {
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 44px 28px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-        }
-
-        .mdl-x {
-            position: absolute;
-            top: 14px;
-            right: 18px;
-            background: none;
-            border: none;
-            color: #666;
-            font-size: 0.65rem;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .mdl h2 {
-            font-size: 1rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .mdl form {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .mdl input,
-        .mdl textarea {
-            background: #000;
-            border: 1px solid var(--border);
-            padding: 13px 14px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            outline: none;
-            border-radius: 52px;
-            width: 100%;
-        }
-
-        .mdl textarea {
-            border-radius: 20px;
-            min-height: 56px;
-            resize: vertical;
-        }
-
-        .btn-send {
-            padding: 14px 32px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            background: #fff;
-            color: #000;
-            border: none;
-            border-radius: 52px;
-            cursor: pointer;
-        }
-
-        .btn-send:hover {
-            background: var(--purple);
-            color: #fff;
-        }
-
-        @media (max-width: 640px) {
-            .profiles {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 640px) { .profiles { grid-template-columns: 1fr; } }
     </style>
 </head>
-
 <body>
     <div class="noise"><canvas id="noiseC"></canvas></div>
     <nav>
@@ -306,8 +82,8 @@
         </div>
         <div class="nav-logo"><a href="index.html"><img src="images/logo.png" alt="UNMUTE"></a></div>
         <div class="nav-links">
-            <a href="about.html">About</a>
-            <a href="events.html">Events</a>
+            <a href="about.html" data-i18n="nav_about">About</a>
+            <a href="events.html" data-i18n="nav_events">Events</a>
             <a href="artists.html">Artists</a>
             <a href="connect.html" style="color: var(--purple);" data-i18n="nav_connect">Connect</a>
             <a href="connect.html?apply=true" style="color: var(--cyan);" data-i18n="nav_apply">Apply</a>
@@ -317,24 +93,12 @@
     <main class="content">
         <div class="label" data-i18n="conn_label">Let's Connect</div>
         <h1 class="title" data-i18n-html="conn_title">WE WANT TO<br>HEAR FROM YOU.</h1>
-
+        
         <div class="profiles">
-            <div class="prof" onclick="openM('artist')">
-                <h3>ARTIST</h3>
-                <p data-i18n="conn_artist">I want funding and visibility without giving up my rights.</p>
-            </div>
-            <div class="prof" onclick="openM('partner')">
-                <h3>PARTNER</h3>
-                <p data-i18n="conn_partner">Venues, associations, media — let's build together.</p>
-            </div>
-            <div class="prof" onclick="openM('investor')">
-                <h3>INVESTOR</h3>
-                <p data-i18n="conn_investor">I want to invest in the future of music.</p>
-            </div>
-            <div class="prof" onclick="openM('artist')">
-                <h3>APPLY</h3>
-                <p>Submit your application or request verification status.</p>
-            </div>
+            <div class="prof" onclick="openM('artist')"><h3>ARTIST</h3><p data-i18n="conn_artist">I want funding and visibility without giving up my rights.</p></div>
+            <div class="prof" onclick="openM('partner')"><h3>PARTNER</h3><p data-i18n="conn_partner">Venues, associations, media — let's build together.</p></div>
+            <div class="prof" onclick="openM('investor')"><h3>INVESTOR</h3><p data-i18n="conn_investor">I want to invest in the future of music.</p></div>
+            <div class="prof" onclick="openM('artist')"><h3>APPLY</h3><p>Submit your application or request verification status.</p></div>
         </div>
     </main>
 
@@ -363,36 +127,35 @@
 
     <script src="languages.js"></script>
     <script>
-        const nc = document.getElementById('noiseC'), nctx = nc.getContext('2d');
-        function renderNoise() { nc.width = window.innerWidth / 4; nc.height = window.innerHeight / 4; const img = nctx.createImageData(nc.width, nc.height), d = img.data; for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } nctx.putImageData(img, 0, 0); }
-        renderNoise(); setInterval(renderNoise, 120);
+        const nc=document.getElementById('noiseC'),nctx=nc.getContext('2d');
+        function renderNoise(){nc.width=window.innerWidth/4;nc.height=window.innerHeight/4;const img=nctx.createImageData(nc.width,nc.height),d=img.data;for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;}nctx.putImageData(img,0,0);}
+        renderNoise();setInterval(renderNoise,120);
 
-        const ARTIST_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwfnAwgiejAxJez-NTcWNA1ZbZL7R4eFf9CPbajtdrUANAZ9AEE0mG6Wx2D5qZZw8GJ/exec'; //
-        const PARTNER_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyzl_cepE4_3kYRjBsoH9RuPYI9fYonfaEtyFzPs-aq01Ti-AuOxqtf_WTIsCZAUxWcSQ/exec'; //
+        const ARTIST_SHEET_URL='https://script.google.com/macros/s/AKfycbwfnAwgiejAxJez-NTcWNA1ZbZL7R4eFf9CPbajtdrUANAZ9AEE0mG6Wx2D5qZZw8GJ/exec'; //
+        const PARTNER_SHEET_URL='https://script.google.com/macros/s/AKfycbyzl_cepE4_3kYRjBsoH9RuPYI9fYonfaEtyFzPs-aq01Ti-AuOxqtf_WTIsCZAUxWcSQ/exec'; //
 
-        function openM(t) {
+        function openM(t){
             document.getElementById('mBg').classList.add('on');
-            document.querySelectorAll('.mdl').forEach(m => m.style.display = 'none');
-            if (t === 'artist') document.getElementById('mdlArtist').style.display = 'block';
-            if (t === 'partner') document.getElementById('mdlPartner').style.display = 'block';
+            document.querySelectorAll('.mdl').forEach(m=>m.style.display='none');
+            if(t==='artist') document.getElementById('mdlArtist').style.display='block';
+            if(t==='partner') document.getElementById('mdlPartner').style.display='block';
         }
-        function closeM() { document.getElementById('mBg').classList.remove('on'); }
+        function closeM(){ document.getElementById('mBg').classList.remove('on'); }
 
-        function submitArtist(e) {
-            e.preventDefault(); const f = e.target, b = document.getElementById('btnArt'); b.textContent = 'SENDING...';
-            fetch(ARTIST_SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name: f.name.value, email: f.email.value, instagram: f.instagram.value, date: new Date().toISOString() }) })
-                .then(() => { b.textContent = 'SENT ✓'; f.reset(); setTimeout(closeM, 1500); });
+        function submitArtist(e){
+            e.preventDefault(); const f=e.target, b=document.getElementById('btnArt'); b.textContent='SENDING...';
+            fetch(ARTIST_SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({name:f.name.value,email:f.email.value,instagram:f.instagram.value,date:new Date().toISOString()})})
+            .then(()=>{ b.textContent='SENT ✓'; f.reset(); setTimeout(closeM,1500); });
         }
-        if (window.location.search.includes('apply=true')) { openM('artist'); }
+        if(window.location.search.includes('apply=true')){ openM('artist'); }
 
-        function setLang(lang) {
+        function setLang(lang){
             currentLang = lang; localStorage.setItem('unmute_lang', lang); document.documentElement.lang = lang; const t = i18n[lang] || i18n.en;
             document.querySelectorAll('.lang-btn').forEach(b => { b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang); });
-            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (t[k] !== undefined) el.textContent = t[k]; });
-            document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if (t[k] !== undefined) el.innerHTML = t[k]; });
+            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if(t[k]!==undefined) el.textContent = t[k]; });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if(t[k]!==undefined) el.innerHTML = t[k]; });
         }
-        (function () { const saved = localStorage.getItem('unmute_lang'); if (saved && i18n[saved]) { setLang(saved); } })();
+        (function(){ const saved = localStorage.getItem('unmute_lang'); if(saved && i18n[saved]){ setLang(saved); } })();
     </script>
 </body>
-
 </html>
