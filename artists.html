@@ -49,6 +49,7 @@
             height: 100%;
         }
 
+        /* NAV */
         nav {
             position: fixed;
             top: 0;
@@ -58,9 +59,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-logo img {
+            height: 26px;
+            filter: brightness(10);
         }
 
         .nav-links {
@@ -76,31 +83,55 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             padding: 10px 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
         }
 
         .lang-sw {
             display: flex;
-            gap: 8px;
+            gap: 2px;
             align-items: center;
         }
 
         .lang-btn {
             background: none;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.3);
             font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            padding: 6px 12px;
+            letter-spacing: 1px;
+            padding: 10px 14px;
             cursor: pointer;
+            transition: all 0.3s;
             border-radius: 52px;
             text-transform: uppercase;
+        }
+
+        .lang-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .lang-btn.active {
             color: #fff;
             border-color: var(--purple);
-            background: rgba(196, 87, 215, 0.2);
+            background: rgba(196, 87, 215, 0.15);
+        }
+
+        @media (max-width: 640px) {
+            .lang-sw {
+                margin-left: 4px;
+                gap: 1px;
+            }
+
+            .lang-btn {
+                font-size: 0.4rem;
+                padding: 3px 5px;
+            }
         }
 
         .header-section {
@@ -242,6 +273,11 @@
             <button class="lang-btn" onclick="setLang('es')">ES</button>
             <button class="lang-btn" onclick="setLang('ca')">CA</button>
             <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        </div>
+        <div class="nav-logo">
+            <a href="index.html">
+                <img src="images/logo.png" alt="UNMUTE">
+            </a>
         </div>
         <div class="nav-links">
             <a href="about.html">About</a>
