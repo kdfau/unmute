@@ -14,35 +14,87 @@
         .noise { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.03; mix-blend-mode: overlay; }
         .noise canvas { width: 100%; height: 100%; }
 
-        /* ============ CAPÇALERA TOTALMENT FIXADA ============ */
+        /* ============ CAPÇALERA CORREGIDA (Logo gran i visible) ============ */
         nav { 
-            position: fixed; top: 0; width: 100%; z-index: 100; 
-            padding: 14px 20px !important; display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(0,0,0,0.6) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border-bottom: 1px solid rgba(255,255,255,0.04) !important; height: 48px !important; box-sizing: border-box;
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 100; 
+            padding: 0 20px !important; /* Traiem el padding vertical perquè centri per alçada */
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(0,0,0,0.75) !important; /* Una mica més fosc perquè contrasti millor */
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important; 
+            height: 64px !important; /* Augmentem l'alçada de la barra de 48px a 64px perquè el logo pugui créixer */
+            box-sizing: border-box;
         }
-        .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; }
-        .nav-logo img { height: 26px !important; filter: brightness(10); transition: transform 0.3s; }
-        .nav-logo img:hover { transform: scale(1.05); }
-        .nav-links { display: flex; gap: 8px !important; align-items: center; }
+
+        /* Centrat absolut del logotip */
+        .nav-logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-logo img { 
+            height: 38px !important; /* 🚀 MULTIPLICAT! Passem de 18px/26px a 38px d'alçada perquè es vegi espectacular */
+            width: auto !important;
+            filter: brightness(10); 
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            display: block;
+        }
+        .nav-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links { 
+            display: flex; 
+            gap: 8px !important; 
+            align-items: center;
+        }
+
         .nav-links a { 
-            color: rgba(255,255,255,0.4) !important; text-decoration: none; font-size: 9px !important; 
-            font-weight: 700 !important; letter-spacing: 2px !important; text-transform: uppercase; 
-            padding: 6px 10px !important; transition: color 0.3s; line-height: 1 !important;
+            color: rgba(255,255,255,0.4) !important; 
+            text-decoration: none; 
+            font-size: 9px !important; 
+            font-weight: 700 !important; 
+            letter-spacing: 2px !important; 
+            text-transform: uppercase; 
+            padding: 6px 10px !important; 
+            transition: color 0.3s; 
+            line-height: 1 !important;
         }
         .nav-links a:hover { color: #fff !important; }
+
         .lang-sw { display: flex; gap: 4px !important; align-items: center; }
         .lang-btn { 
-            background: none !important; border: 1px solid rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.3) !important; 
-            font-family: 'Inter',sans-serif; font-size: 8px !important; font-weight: 700 !important; letter-spacing: 1px !important; 
-            padding: 4px 8px !important; cursor: pointer; transition: all 0.3s; border-radius: 52px !important; text-transform: uppercase; line-height: 1 !important;
+            background: none !important; 
+            border: 1px solid rgba(255,255,255,0.08) !important; 
+            color: rgba(255,255,255,0.3) !important; 
+            font-family: 'Inter',sans-serif; 
+            font-size: 8px !important; 
+            font-weight: 700 !important; 
+            letter-spacing: 1px !important; 
+            padding: 4px 8px !important; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            border-radius: 52px !important; 
+            text-transform: uppercase; 
+            line-height: 1 !important;
         }
         .lang-btn:hover { color: #fff !important; border-color: rgba(255,255,255,0.2) !important; }
         .lang-btn.active { color: #fff !important; border-color: var(--purple) !important; background: rgba(196,87,215,0.15) !important; }
 
+        /* AJUST PER A MÒBILS */
         @media (max-width: 640px) {
             nav { padding: 10px 12px !important; height: auto !important; }
-            .nav-logo { position: static; transform: none; }
+            .nav-logo { position: static; transform: none; } 
+            .nav-logo img { height: 22px !important; } /* Mida mòbil adaptada proporcional */
             .lang-sw { margin-left: 2px; gap: 2px !important; }
             .lang-btn { font-size: 7px !important; padding: 3px 6px !important; }
             .nav-links { gap: 2px !important; }
