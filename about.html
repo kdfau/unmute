@@ -22,21 +22,22 @@
             border-bottom: 1px solid rgba(255,255,255,0.04) !important; height: 64px !important; box-sizing: border-box;
         }
         .nav-responsive-container { display: flex; width: 100%; justify-content: space-between; align-items: center; }
-        .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; z-index: 105; }
-        .nav-logo img { height: 150px !important; width: auto !important; filter: brightness(10); transition: transform 0.3s; display: block; }
+        .nav-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; z-index: 105; }
+        .nav-logo img { height: 34px !important; width: auto !important; filter: brightness(10); transition: transform 0.3s; display: block; }
         .nav-logo img:hover { transform: scale(1.05); }
         .nav-links { display: flex; gap: 8px !important; }
         .nav-links a { color: rgba(255,255,255,0.4) !important; text-decoration: none; font-size: 9px !important; font-weight: 700 !important; letter-spacing: 2px !important; text-transform: uppercase; padding: 6px 10px !important; transition: color 0.3s; }
         .nav-links a:hover { color: #fff !important; }
         .lang-sw { display: flex; gap: 4px !important; align-items: center; }
-        .lang-btn { background: none; border: 1px solid rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.3) !important; font-family: 'Inter',sans-serif; font-size: 8px !important; font-weight: 700 !important; padding: 4px 8px !important; cursor: pointer; border-radius: 52px !important; text-transform: uppercase; }
+        .lang-btn { background: none; border: 1px solid rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.3) !important; font-family: 'Inter',sans-serif; font-size: 8px !important; font-weight: 700 !important; padding: 4px 8px !important; cursor: pointer; border-radius: 52px !important; text-transform: uppercase; line-height: 1 !important; transition: all 0.3s; }
+        .lang-btn:hover { color: #fff !important; border-color: rgba(255,255,255,0.2) !important; }
         .lang-btn.active { color: #fff !important; border-color: var(--purple) !important; background: rgba(196,87,215,0.15) !important; }
         .menu-toggle { display: none; flex-direction: column; justify-content: space-between; width: 22px; height: 14px; background: none; border: none; cursor: pointer; z-index: 110; }
         .menu-toggle span { width: 100%; height: 2px; background-color: #fff; transition: all 0.3s ease; }
 
         @media (max-width: 768px) {
             nav { padding: 0 20px !important; }
-            .nav-logo { position: static; transform: none; }
+            .nav-logo { position: static; transform: none; display: flex; align-items: center; height: 100%; }
             .nav-logo img { height: 24px !important; }
             .menu-toggle { display: flex; }
             .nav-responsive-container { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; height: 100svh; background: rgba(0, 0, 0, 0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); flex-direction: column; justify-content: center; align-items: center; gap: 50px; padding: 80px 0 40px; transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1); z-index: 100; box-sizing: border-box; }
@@ -75,14 +76,14 @@
 <body>
     <div class="noise"><canvas id="noiseC"></canvas></div>
     <nav>
-        <div class="lang-sw" id="langSw">
-            <button class="lang-btn active" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" onclick="setLang('es')">ES</button>
-            <button class="lang-btn" onclick="setLang('ca')">CA</button>
-            <button class="lang-btn" onclick="setLang('fr')">FR</button>
-        </div>
         <div class="nav-logo"><a href="index.html"><img src="images/logo.png" alt="UNMUTE"></a></div>
         <div class="nav-responsive-container" id="navContainer">
+            <div class="lang-sw" id="langSw">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('es')">ES</button>
+                <button class="lang-btn" onclick="setLang('ca')">CA</button>
+                <button class="lang-btn" onclick="setLang('fr')">FR</button>
+            </div>
             <div class="nav-links">
                 <a href="about.html" style="color:var(--purple);" data-i18n="nav_about">About</a>
                 <a href="events.html" data-i18n="nav_events">Events</a>
