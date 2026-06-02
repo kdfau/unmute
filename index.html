@@ -458,7 +458,7 @@
             font-weight: 700;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .scroll-cue .bar {
@@ -2131,14 +2131,18 @@
             <button class="lang-btn" onclick="setLang('ca')">CA</button>
             <button class="lang-btn" onclick="setLang('fr')">FR</button>
         </div>
-        <div class="nav-links">
-            <a href="#about" data-i18n="nav_about">About</a>
-            <a href="#events" data-i18n="nav_events">Events</a>
-            <a href="artists.html" style="color: var(--purple);">Artists</a>
-            <a href="#connect" data-i18n="nav_connect">Connect</a>
-            <a href="javascript:void(0)" onclick="openM('artist')" style="color:var(--cyan);"
-                data-i18n="nav_apply">Apply</a>
+
+        <div class="nav-logo">
+            <a href="index.html">UNMUTE</a>
         </div>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="events.html">Events</a>
+            <a href="artists.html">Artists</a>
+            <a href="connect.html">Connect</a>
+            <a href="connect.html?apply=true" style="color:var(--cyan);">Apply</a>
+        </div>
+
     </nav>
 
     <!-- ====== HERO ====== -->
@@ -2299,7 +2303,8 @@
     <section id="play" class="roulette rv">
         <h2 class="title" style="text-align:center;" data-i18n-html="roul_title">WHAT PROBLEMS<br>DOES UNMUTE SOLVE?
         </h2>
-        <p style="color:var(--muted); font-size:0.82rem;" data-i18n="roul_desc">Spin the wheel and discover the challenges facing in the music industry.</p>
+        <p style="color:var(--muted); font-size:0.82rem;" data-i18n="roul_desc">Spin the wheel and discover the
+            challenges facing in the music industry.</p>
         <div class="wheel-wrap">
             <div class="wheel-pointer"></div>
             <canvas id="wheelCanvas" width="600" height="600"></canvas>
@@ -2525,7 +2530,8 @@
             </div>
             <div class="future-ev"><span class="future-ev-tag">June 5, 2026</span>
                 <h4>OASYS BARCELONA</h4>
-                <p data-i18n="ev_oasys_desc">UNMUTE Barcelona Edition. 4 independent artists from Barcelona, vote and win exclusive perks. Rock, Rumba, Reggaeton.</p><a
+                <p data-i18n="ev_oasys_desc">UNMUTE Barcelona Edition. 4 independent artists from Barcelona, vote and
+                    win exclusive perks. Rock, Rumba, Reggaeton.</p><a
                     href="https://entradium.com/events/unmute-project-barcelona-edition" target="_blank" rel="noopener"
                     class="ev-ticket" data-i18n="ev_oasys_link">Get Tickets</a>
             </div>
