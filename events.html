@@ -555,8 +555,8 @@
         <h1 class="title" data-i18n="ev_title">Where Beats Meet Reality</h1>
         
         <h1 class="title" data-i18n="ev_title">Past Events</h1>
-        <div class="ev-carousel" id="evCarousel">
-            <div class="ev-carousel-track" id="evTrack">
+        <div class="ev-carousel">
+            <div class="ev-carousel-track">
                 <img src="images/party-crowd.jpg">
                 <img src="images/party-live.jpg">
                 <img src="images/party-perform.jpg">
@@ -570,9 +570,9 @@
                 <h3 data-i18n="ev_launch">UNMUTE LAUNCH NIGHT</h3>
                 <div class="ev-date" data-i18n="ev_date">Dreambags Jaguar Shoes, London - 10th April</div>
             </div>
-            <div class="ev-carousel-dots" id="evDots"></div>
-            <button class="ev-carousel-nav prev" onclick="slideEv(-1)">←</button>
-            <button class="ev-carousel-nav next" onclick="slideEv(1)">→</button>
+            <div class="ev-carousel-dots"></div>
+            <button class="ev-carousel-nav prev">←</button>
+            <button class="ev-carousel-nav next">→</button>
         </div>
 
         <div class="ev-stats">
@@ -603,9 +603,8 @@
         </div>
 
         <h1 class="title" data-i18n="ev_title">Primavera Pro</h1>
-
-        <div class="ev-carousel" id="evCarousel">
-            <div class="ev-carousel-track" id="evTrack">
+        <div class="ev-carousel">
+            <div class="ev-carousel-track">
                 <img src="images/pro-1.JPG">
                 <img src="images/pro-2.JPG">
                 <img src="images/pro-3.JPG">
@@ -619,9 +618,9 @@
                 <h3 data-i18n="ev_launch">UNMUTE at PRIMAVERA PRO</h3>
                 <div class="ev-date" data-i18n="ev_date">CCCB, Barcelona - 3TH to 5th June</div>
             </div>
-            <div class="ev-carousel-dots" id="evDots"></div>
-            <button class="ev-carousel-nav prev" onclick="slideEv(-1)">←</button>
-            <button class="ev-carousel-nav next" onclick="slideEv(1)">→</button>
+            <div class="ev-carousel-dots"></div>
+            <button class="ev-carousel-nav prev">←</button>
+            <button class="ev-carousel-nav next">→</button>
         </div>
 
         <div class="ev-stats">
@@ -638,24 +637,24 @@
         <p class="ev-desc" data-i18n="ev_desc">We had the opportunity to present our project at Primavera Pro. In the Ideas Showroom space, we talked about the project and answered some questions about it.</p>
 
         <h1 class="title" data-i18n="ev_title">Where Beats Meet Reality</h1>
-
-        <div class="ev-carousel" id="evCarousel">
-            <div class="ev-carousel-track" id="evTrack">
+        <div class="ev-carousel">
+            <div class="ev-carousel-track">
                 <img src="images/bcn-1.JPG">
                 <img src="images/bcn-2.JPG">
                 <img src="images/bcn-3.JPG">
-                <img src="images/bcn-4.JPG">
+                <img src="images/bcn-4.jpeg">
                 <img src="images/bcn-5.JPG">
                 <img src="images/bcn-6.JPG">
                 <img src="images/bcn-7.JPG">
+                <img src="images/bcn-8.JPG">
             </div>
             <div class="ev-carousel-overlay">
                 <h3 data-i18n="ev_launch">UNMUTE BARCELONA EDITION</h3>
                 <div class="ev-date" data-i18n="ev_date">Sala Oasys, Barcelona - 5th June</div>
             </div>
-            <div class="ev-carousel-dots" id="evDots"></div>
-            <button class="ev-carousel-nav prev" onclick="slideEv(-1)">←</button>
-            <button class="ev-carousel-nav next" onclick="slideEv(1)">→</button>
+            <div class="ev-carousel-dots"></div>
+            <button class="ev-carousel-nav prev">←</button>
+            <button class="ev-carousel-nav next">→</button>
         </div>
 
         <div class="ev-stats">
@@ -709,18 +708,57 @@
 
     <script src="languages.js"></script>
     <script>
+        // --- 1. SCRIPT DE SOROLL (NOISE) ---
         const nc = document.getElementById('noiseC'), nctx = nc.getContext('2d');
         function renderNoise() { nc.width = window.innerWidth / 4; nc.height = window.innerHeight / 4; const img = nctx.createImageData(nc.width, nc.height), d = img.data; for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } nctx.putImageData(img, 0, 0); }
         renderNoise(); setInterval(renderNoise, 120);
 
-        let evIdx = 0; const evTrack = document.getElementById('evTrack'), evSlides = evTrack.querySelectorAll('img'), evDotsC = document.getElementById('evDots');
-        evSlides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'ev-dot' + (i === 0 ? ' active' : ''); d.onclick = () => goEv(i); evDotsC.appendChild(d); });
-        function goEv(i) { evIdx = i; evTrack.style.transform = `translateX(-${evIdx * 100}%)`; evDotsC.querySelectorAll('.ev-dot').forEach((d, j) => d.classList.toggle('active', j === evIdx)); }
-        function slideEv(dir) { goEv((evIdx + dir + evSlides.length) % evSlides.length); }
+        // --- 2. SCRIPT DE MULTI-CARRUSELS INTEL·LIGENTS ---
+        // Busquem tots els blocs de carrusel que hi hagi a la pàgina
+        const carousels = document.querySelectorAll('.ev-carousel');
 
+        carousels.forEach((carousel) => {
+            let evIdx = 0;
+            const evTrack = carousel.querySelector('.ev-carousel-track');
+            const evSlides = evTrack.querySelectorAll('img');
+            const evDotsC = carousel.querySelector('.ev-carousel-dots');
+            const prevBtn = carousel.querySelector('.ev-carousel-nav.prev');
+            const nextBtn = carousel.querySelector('.ev-carousel-nav.next');
+
+            // Creem els puntets dinàmicament per a AQUEST carrusel en concret
+            evSlides.forEach((_, i) => {
+                const d = document.createElement('div');
+                d.className = 'ev-dot' + (i === 0 ? ' active' : '');
+                d.onclick = () => goEv(i);
+                evDotsC.appendChild(d);
+            });
+
+            function goEv(i) {
+                evIdx = i;
+                evTrack.style.transform = `translateX(-${evIdx * 100}%)`;
+                evDotsC.querySelectorAll('.ev-dot').forEach((d, j) => d.classList.toggle('active', j === evIdx));
+            }
+
+            // Assignem els esdeveniments click als botons prev/next d'aquest carrusel
+            if (prevBtn) {
+                prevBtn.onclick = () => {
+                    evIdx = (evIdx - 1 + evSlides.length) % evSlides.length;
+                    goEv(evIdx);
+                };
+            }
+            if (nextBtn) {
+                nextBtn.onclick = () => {
+                    evIdx = (evIdx + 1) % evSlides.length;
+                    goEv(evIdx);
+                };
+            }
+        });
+
+        // --- 3. SCRIPT DEL MENÚ RESPONSIVE MÒBIL ---
         function toggleMenu() { document.getElementById('navContainer').classList.toggle('open'); document.getElementById('menuToggle').classList.toggle('open'); }
         document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { document.getElementById('navContainer').classList.remove('open'); document.getElementById('menuToggle').classList.remove('open'); }); });
 
+        // --- 4. SCRIPT D'IDIOMES ---
         function setLang(lang) {
             currentLang = lang; localStorage.setItem('unmute_lang', lang); document.documentElement.lang = lang; const t = i18n[lang] || i18n.en;
             document.querySelectorAll('.lang-btn').forEach(b => { b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang); });
