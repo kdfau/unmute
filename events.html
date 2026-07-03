@@ -636,7 +636,7 @@
 
         <p class="ev-desc" data-i18n="ev_desc">We had the opportunity to present our project at Primavera Pro. In the Ideas Showroom space, we talked about the project and answered some questions about it.</p>
 
-        <h1 class="title" data-i18n="ev_title">Where Beats Meet Reality</h1>
+        <h1 class="title" data-i18n="ev_title">Where it happens</h1>
         <div class="ev-carousel">
             <div class="ev-carousel-track">
                 <img src="images/bcn-1.JPG">
@@ -708,13 +708,10 @@
 
     <script src="languages.js"></script>
     <script>
-        // --- 1. SCRIPT DE SOROLL (NOISE) ---
         const nc = document.getElementById('noiseC'), nctx = nc.getContext('2d');
         function renderNoise() { nc.width = window.innerWidth / 4; nc.height = window.innerHeight / 4; const img = nctx.createImageData(nc.width, nc.height), d = img.data; for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } nctx.putImageData(img, 0, 0); }
         renderNoise(); setInterval(renderNoise, 120);
 
-        // --- 2. SCRIPT DE MULTI-CARRUSELS INTEL·LIGENTS ---
-        // Busquem tots els blocs de carrusel que hi hagi a la pàgina
         const carousels = document.querySelectorAll('.ev-carousel');
 
         carousels.forEach((carousel) => {
@@ -725,7 +722,6 @@
             const prevBtn = carousel.querySelector('.ev-carousel-nav.prev');
             const nextBtn = carousel.querySelector('.ev-carousel-nav.next');
 
-            // Creem els puntets dinàmicament per a AQUEST carrusel en concret
             evSlides.forEach((_, i) => {
                 const d = document.createElement('div');
                 d.className = 'ev-dot' + (i === 0 ? ' active' : '');
@@ -739,7 +735,6 @@
                 evDotsC.querySelectorAll('.ev-dot').forEach((d, j) => d.classList.toggle('active', j === evIdx));
             }
 
-            // Assignem els esdeveniments click als botons prev/next d'aquest carrusel
             if (prevBtn) {
                 prevBtn.onclick = () => {
                     evIdx = (evIdx - 1 + evSlides.length) % evSlides.length;
