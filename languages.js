@@ -116,7 +116,9 @@ const i18n = {
         art_alimo_bio: "Visceral rumba made at home and meant for the neighborhood. A fresh and honest project blending flamenco, Cuban son, soul, and blues into a high-energy live show.",
         art_quitus_bio: "Born from a digital connection on Vampr, this band delivers powerful, fresh, and modern garage rock. Their live performance is bound to get you straight into the mosh pit.",
         art_relda_bio: "Singer-songwriter from Barcelona with roots in Equatorial Guinea. Influenced by IAMDDB and Rihanna, her style blends R&B, trap, and drill with a unique voice and sensitivity.",
-        mq2_discover: 'Discover', mq2_support: 'Support', // ... segueix el codi
+        art_elli_bio: "Originally from Wales and based in London, Elli Glyn is a singer-songwriter known for her emotional, cinematic pop based on real experiences, which has earned her a spot on the BBC Radio Wales A-List.",
+        art_kin_bio: "Originally from Tottenham, KIN is a London-based artist who channels themes of gentrification and isolation into a nostalgic blend of hip-hop, R&B, and jazz inspired by the 2000s.",
+        art_smooriba_bio: "smooriba is a London-based singer-songwriter who makes emotional pop and dance music, supported by BBC Radio 1 and Polydor."
         mq2_discover: 'Discover', mq2_support: 'Support', mq2_connect: 'Connect', mq2_grow: 'Grow', mq2_empower: 'Empower', mq2_create: 'Create',
                 /*conn_label: 'Let\'s Connect',*/ conn_title: 'WE WANT TO<br>HEAR FROM YOU.', conn_artist: 'I want to join the platform and perform.', conn_fan: 'I want to discover and support emerging talent.', conn_partner: 'Venues, associations, media.', conn_investor: 'I want to invest in the future of music.', conn_email: 'Email', conn_insta: 'Instagram', conn_li: 'LinkedIn',
                 /*team_label: 'The Team',*/ team_title: 'WHO\'S BEHIND UNMUTE.', team_linkedin: 'View LinkedIn →', role_founder: 'Founder', role_ar: 'Artist Relations', role_community: 'Community', role_event: 'Event', role_pc: 'Project Coordinator',
@@ -155,6 +157,9 @@ const i18n = {
         art_alimo_bio: "Rumba visceral hecha en casa y pensada para el barrio. Un proyecto fresco y honesto que fusiona flamenco, son cubano, soul y blues en un directo de alta energía.",
         art_quitus_bio: "Nacidos de una conexión digital en Vampr, esta banda ofrece un garage rock potente, fresco y moderno. Su directo te meterá de cabeza en el mosh pit.",
         art_relda_bio: "Cantautora de Barcelona con raíces en Guinea Ecuatorial. Influenciada por IAMDDB y Rihanna, su estilo fusiona R&B, trap y drill con una voz y sensibilidad únicas.",
+        art_elli_bio: "Elli Glyn es una cantautora originaria de Gales y afincada en Londres que destaca por su pop emotivo y cinematográfico basado en experiencias reales, propuesta que la ha llevado a la A-List de BBC Radio Wales.",
+        art_kin_bio: "Originaria de Tottenham, KIN es una artista afincada en Londres que canaliza temas como la gentrificación y el aislamiento en una mezcla nostálgica de hip-hop, R&B y jazz inspirada en los años 2000.",
+        art_smooriba_bio: "smooriba es una cantautora afincada en Londres que hace pop emotivo y música dance, con el apoyo de BBC Radio 1 y Polydor."
         mq2_discover: 'Descubrir', mq2_support: 'Apoyar', // ... segueix el codi
         mq2_discover: 'Descubrir', mq2_support: 'Apoyar', mq2_connect: 'Conectar', mq2_grow: 'Crecer', mq2_empower: 'Impulsar', mq2_create: 'Crear',
         conn_label: 'Hablemos', conn_title: 'CONTÁCTANOS.', conn_artist: 'Quiero financiación y visibilidad sin ceder mis derechos.', conn_fan: 'Quiero descubrir y apoyar artistas emergentes desde el principio.', conn_partner: 'Salas, asociaciones, medios: construyamos juntos.', conn_investor: 'Quiero invertir en el futuro de la música.', conn_email: 'Email', conn_insta: 'Instagram', conn_li: 'LinkedIn',
@@ -195,6 +200,9 @@ const i18n = {
         art_alimo_bio: "Rumba visceral feta a casa i pensada per al barri. Un projecte fresc i honest que fusiona flamenco, son cubà, soul i blues en un directe d'alta energia.",
         art_quitus_bio: "Nascuts d'una編 connexió digital a Vampr, aquesta banda ofereix un garage rock potent, fresc i modern. El seu directe et ficarà de cap al mosh pit.",
         art_relda_bio: "Cantautora de Barcelona amb arrels a Guinea Equatorial. Influenciada per IAMDDB i Rihanna, el seu estil fusiona R&B, trap i drill amb una veu i sensibilitat úniques.",
+        art_elli_bio: "Elli Glyn és una cantautora originària de Gal·les i establerta a Londres que destaca pel seu pop emotiu i cinematogràfic basat en experiències reals, una proposta que l'ha portat a la A-List de BBC Radio Wales.",
+        art_kin_bio: "Originària de Tottenham, KIN és una artista establerta a Londres que canalitza temes com la gentrificació i l'aïllament en una barreja nostàlgica d'hip-hop, R&B i jazz inspirada en els anys 2000.",
+        art_smooriba_bio: "smooriba és una cantautora establerta a Londres que fa pop emotiu i música dance, amb el suport de BBC Radio 1 i Polydor."
         mq2_discover: 'Descobrir', mq2_support: 'Donar suport', // ... segueix el codi
         mq2_discover: 'Descobrir', mq2_support: 'Donar suport', mq2_connect: 'Connectar', mq2_grow: 'Créixer', mq2_empower: 'Impulsar', mq2_create: 'Crear',
         conn_label: 'Parlem', conn_title: 'CONTACTA\'NS.', conn_artist: 'Vull finançament i visibilitat sense cedir els meus drets.', conn_fan: 'Vull descobrir i donar suport a artistes emergents des del principi.', conn_partner: 'Sales, associacions, mitjans: construïm junts.', conn_investor: 'Vull invertir en el futur de la música.', conn_email: 'Email', conn_insta: 'Instagram', conn_li: 'LinkedIn',
@@ -234,6 +242,10 @@ const i18n = {
         art_alimo_bio: "Une rumba viscérale faite maison et pensée pour le quartier. Un projet frais et honnête mêlant flamenco, son cubain, soul et blues dans un live ultra-énergique.",
         art_quitus_bio: "Né d'une connexion digitale sur Vampr, ce groupe propose un garage rock puissant, frais et moderne. Leur performance live va vous plonger direct dans le mosh pit.",
         art_relda_bio: "Auteure-compositrice-interprète de Barcelone originaire de Guinée équatoriale. Influencée par IAMDDB et Rihanna, son style mêle R&B, trap et drill avec une voix et une sensibilité uniques.",
+        art_relda_bio: "Auteure-compositrice-interprète de Barcelone avec des racines en Guinée équatoriale. Influencée par IAMDDB et Rihanna, son style mêle R&B, trap et drill avec une voix et une sensibilité uniques.",
+        art_elli_bio: "Originaire du Pays de Galles et basée à Londres, Elli Glyn se distingue par sa pop émouvante et cinématographique inspirée d'expériences réelles, ce qui lui a valu une place sur la A-List de la BBC Radio Wales.",
+        art_kin_bio: "Originaire de Tottenham, KIN est une artiste basée à Londres qui transforme les thèmes de la gentrification et de l'isolement en un mélange nostalgique de hip-hop, R&B et jazz inspiré des années 2000.",
+        art_smooriba_bio: "smooriba est une auteure-compositrice basée à Londres qui fait de la pop émouvante et de la dance, soutenue par BBC Radio 1 et Polydor."
         mq2_discover: 'Découvrir', mq2_support: 'Soutenir', // ... segueix el codi
         mq2_discover: 'Découvrir', mq2_support: 'Soutenir', mq2_connect: 'Connecter', mq2_grow: 'Grandir', mq2_empower: 'Propulser', mq2_create: 'Créer',
         conn_label: 'Contacte-nous', conn_title: 'CONTACTEZ-<br>NOUS.', conn_artist: 'Je veux du financement et de la visibilité sans céder mes droits.', conn_fan: 'Je veux découvrir et soutenir des talents émergents avant tout le monde.', conn_partner: 'Salles, associations, médias : construisons ensemble.', conn_investor: 'Je veux investir dans l\'avenir de la musique.', conn_email: 'Email', conn_insta: 'Instagram', conn_li: 'LinkedIn',
