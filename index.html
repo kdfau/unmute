@@ -2662,16 +2662,20 @@
         statNums.forEach(el => statObs.observe(el));
 
         // SUPPORT SLIDER
+                // SUPPORT SLIDER
         const supSlider = document.getElementById('supSlider'), supAmount = document.getElementById('supAmount'), supBtn = document.getElementById('supBtn');
-        let currentLang = 'en';
-        function updateSupport(val) {
-            supAmount.textContent = '£' + val;
-            let tpl = 'SUPPORT WITH £{val}'; try { tpl = i18n[currentLang].sup_btn; } catch (e) { }
-            supBtn.textContent = tpl.replace('{val}', val);
-            supAmount.classList.add('bump'); setTimeout(() => supAmount.classList.remove('bump'), 150);
-        }
-        supSlider.addEventListener('input', () => updateSupport(parseInt(supSlider.value)));
-        updateSupport(5);
+let currentLang = 'en';
+function updateSupport(val) {
+    if (!supAmount || !supBtn) return;
+    supAmount.textContent = '£' + val;
+    let tpl = 'SUPPORT WITH £{val}'; try { tpl = i18n[currentLang].sup_btn; } catch (e) { }
+    supBtn.textContent = tpl.replace('{val}', val);
+    supAmount.classList.add('bump'); setTimeout(() => supAmount.classList.remove('bump'), 150);
+}
+if (supSlider) {
+    supSlider.addEventListener('input', () => updateSupport(parseInt(supSlider.value)));
+    updateSupport(5);
+}
 
         // WHEEL
         const wheelData = [
