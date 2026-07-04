@@ -2345,9 +2345,10 @@
             <div class="hero-ctas">
                 <a href="javascript:void(0)" onclick="openM('artist')" class="btn btn-fill" data-i18n="hero_artist">I'M
                     AN ARTIST</a>
-                <a href="https://dice.fm/partner/tickets/event/q2pn2o-unmute-project-london-edition-4th-jul-dream-bags-jaguar-shoes-london-tickets?dice_id=9624915&dice_channel=web&dice_tags=organic&dice_campaign=UNMUTE+Project+&dice_feature=mio_marketing&_branch_match_id=1550481862215025168&utm_source=web&utm_campaign=UNMUTE+Project&utm_medium=mio_marketing&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXz8nMy9ZLyUxO1UvL1U9KSUxJMUxOMTa0SLSvK0pNSy0qysxLj08qyi8vTi2y9S9ILUoEAKItyog6AAAA" target="_blank" rel="noopener"
-                    class="btn btn-wire" style="border-color:var(--cyan);color:var(--cyan);"
-                    data-i18n="hero_tickets">LONDON EDITION TICKETS</a>
+                <a href="https://dice.fm/partner/tickets/event/q2pn2o-unmute-project-london-edition-4th-jul-dream-bags-jaguar-shoes-london-tickets?dice_id=9624915&dice_channel=web&dice_tags=organic&dice_campaign=UNMUTE+Project+&dice_feature=mio_marketing&_branch_match_id=1550481862215025168&utm_source=web&utm_campaign=UNMUTE+Project&utm_medium=mio_marketing&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXz8nMy9ZLyUxO1UvL1U9KSUxJMUxOMTa0SLSvK0pNSy0qysxLj08qyi8vTi2y9S9ILUoEAKItyog6AAAA"
+                    target="_blank" rel="noopener" class="btn btn-wire"
+                    style="border-color:var(--cyan);color:var(--cyan);" data-i18n="hero_tickets">LONDON EDITION
+                    TICKETS</a>
             </div>
         </div>
         <div class="scroll-cue"><span data-i18n="hero_scroll">Scroll</span>
@@ -2368,7 +2369,7 @@
         </div>
     </div>
 
-<!-- ====== ROULETTE ====== -->
+    <!-- ====== ROULETTE ====== -->
     <section id="play" class="roulette rv">
         <div class="label" style="justify-content:center;" data-i18n="roul_label">Spin The Wheel</div>
         <h2 class="title" style="text-align:center;" data-i18n-html="roul_title">WHAT PROBLEMS<br>DOES UNMUTE SOLVE?
@@ -2662,20 +2663,20 @@
         statNums.forEach(el => statObs.observe(el));
 
         // SUPPORT SLIDER
-                // SUPPORT SLIDER
+        // SUPPORT SLIDER
         const supSlider = document.getElementById('supSlider'), supAmount = document.getElementById('supAmount'), supBtn = document.getElementById('supBtn');
-let currentLang = 'en';
-function updateSupport(val) {
-    if (!supAmount || !supBtn) return;
-    supAmount.textContent = '£' + val;
-    let tpl = 'SUPPORT WITH £{val}'; try { tpl = i18n[currentLang].sup_btn; } catch (e) { }
-    supBtn.textContent = tpl.replace('{val}', val);
-    supAmount.classList.add('bump'); setTimeout(() => supAmount.classList.remove('bump'), 150);
-}
-if (supSlider) {
-    supSlider.addEventListener('input', () => updateSupport(parseInt(supSlider.value)));
-    updateSupport(5);
-}
+        let currentLang = 'en';
+        function updateSupport(val) {
+            if (!supAmount || !supBtn) return;
+            supAmount.textContent = '£' + val;
+            let tpl = 'SUPPORT WITH £{val}'; try { tpl = i18n[currentLang].sup_btn; } catch (e) { }
+            supBtn.textContent = tpl.replace('{val}', val);
+            supAmount.classList.add('bump'); setTimeout(() => supAmount.classList.remove('bump'), 150);
+        }
+        if (supSlider) {
+            supSlider.addEventListener('input', () => updateSupport(parseInt(supSlider.value)));
+            updateSupport(5);
+        }
 
         // WHEEL
         const wheelData = [

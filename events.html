@@ -531,6 +531,7 @@
 <body>
     <div class="noise"><canvas id="noiseC"></canvas></div>
     <nav>
+        <div class="nav-logo"><a href="index.html"><img src="images/logo.png" alt="UNMUTE"></a></div>
         <div class="nav-responsive-container" id="navContainer">
             <div class="lang-sw" id="langSw">
                 <button class="lang-btn active" onclick="setLang('en')">EN</button>
@@ -540,14 +541,13 @@
             </div>
             <div class="nav-links">
                 <a href="about.html" data-i18n="nav_about">About</a>
-                <a href="events.html" style="color: var(--purple);" data-i18n="nav_events">Events</a>
-                <a href="artists.html">Artists</a>
+                <a href="events.html" data-i18n="nav_events">Events</a>
+                <a href="artists.html" style="color: var(--purple);">Artists</a>
                 <a href="connect.html" data-i18n="nav_connect">Connect</a>
                 <a href="connect.html?apply=true" style="color: var(--cyan);" data-i18n="nav_apply">Apply</a>
             </div>
         </div>
-        <button class="menu-toggle" id="menuToggle"
-            onclick="toggleMenu()"><span></span><span></span><span></span></button>
+        <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </nav>
 
     <main class="main-container">
