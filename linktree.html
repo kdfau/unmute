@@ -392,7 +392,7 @@
   </div>
   <!-- Bouche de marque en fond (respire + glitche) -->
   <div class="bg-mouth" aria-hidden="true">
-    <img src="Images/MouthTransparent.png" alt="">
+    <img src="images/MouthTransparent.png" alt="">
   </div>
   <main class="wrap">
 
@@ -526,7 +526,7 @@ const EVENTS = [
        addArtist("NOM", "Genre", "https://open.spotify.com/...");
 
    Options facultatives : 4e arg = photo, 5e arg = extrait mp3.
-       addArtist("NOM", "Genre", "https://...", "Images/NOM.png", "nom.mp3");
+       addArtist("NOM", "Genre", "https://...", "images/NOM.png", "nom.mp3");
 
    La carte, le carrousel et les points se mettent à jour tout seuls.
    ===================================================================== */
@@ -544,18 +544,18 @@ const ARTISTS = [];                                   // <- la "ArrayList"
 const addArtist = (...args) => ARTISTS.push(new Artist(...args));
 
 /* ---------- LISTE DES ARTISTES (une ligne = un artiste) ---------- */
-addArtist("NATE SKIES", "Hip-Hop / Soul",        "https://open.spotify.com/intl-fr/artist/2z9rKAkIEPRUMT5iTcpUrh", "Images/NATE SKIES.png", "demo.mp3");
-addArtist("WKDAIZ",     "Hyperpop / Glitchcore", "https://open.spotify.com/intl-fr/artist/3Zg04x26SD7cdVSZYzjCO4", "Images/WKDAIZ.png");
-addArtist("WELLASBLUE", "French pop / Alt-pop",  "https://open.spotify.com/intl-fr/artist/1YHyUzrIIToqHSkzuFV6ic", "Images/WELLASBLUE.png");
-addArtist("JADA MAYA",  "Neo-soul / R&B",        "https://open.spotify.com/intl-fr/artist/33iyjx9ITm80DGVXUmZLL8", "Images/JADA MAYA.png");
-addArtist("PLA MOGUDA", "Catalan Rock", "https://open.spotify.com/artist/1zt358GharxTzEBhRdVtws", "Images/PLA MOGUDA.png");
-addArtist("ALIMOCHAOS", "Rumba / Fusion", "", "Images/ALIMOCHAOS.png");
-addArtist("QUITUS", "Garage Rock", "https://open.spotify.com/artist/0EZH8VFhYxnVmqjJoIstwL", "Images/QUITUS.png");
-addArtist("RELDA", "R&B / Trap / Drill", "https://open.spotify.com/artist/25pMYboaOqdlm6ZRZmTvfe", "Images/RELDA.png");
-addArtist("ELLI GLYN", "Pop / Folk / Soul", "https://open.spotify.com/artist/3ttYdVCrxxeUrC6yEYiC21", "Images/ELLI GLYN.png");
-addArtist("MAXI STARR", "R&B / Trap / Drill", "https://open.spotify.com/artist/7zdtkXLw328ra6zOdmsesj", "Images/MAXI STARR.png");
-addArtist("SMOORIBA", "Pop / Dance / R&B", "https://open.spotify.com/artist/1CMsNzudMd14qTGeFs2Uvk", "Images/SMOORIBA.png");
-addArtist("KINSOUL", "R&B / Hip-Hop / Jazz", "", "Images/KINSOUL.png");
+addArtist("NATE SKIES", "Hip-Hop / Soul",        "https://open.spotify.com/intl-fr/artist/2z9rKAkIEPRUMT5iTcpUrh", "images/NATE SKIES.png", "demo.mp3");
+addArtist("WKDAIZ",     "Hyperpop / Glitchcore", "https://open.spotify.com/intl-fr/artist/3Zg04x26SD7cdVSZYzjCO4", "images/WKDAIZ.png");
+addArtist("WELLASBLUE", "French pop / Alt-pop",  "https://open.spotify.com/intl-fr/artist/1YHyUzrIIToqHSkzuFV6ic", "images/WELLASBLUE.png");
+addArtist("JADA MAYA",  "Neo-soul / R&B",        "https://open.spotify.com/intl-fr/artist/33iyjx9ITm80DGVXUmZLL8", "images/JADA MAYA.png");
+addArtist("PLA MOGUDA", "Catalan Rock", "https://open.spotify.com/artist/1zt358GharxTzEBhRdVtws", "images/PLA MOGUDA.png");
+addArtist("ALIMOCHAOS", "Rumba / Fusion", "", "images/ALIMOCHAOS.png");
+addArtist("QUITUS", "Garage Rock", "https://open.spotify.com/artist/0EZH8VFhYxnVmqjJoIstwL", "images/QUITUS.png");
+addArtist("RELDA", "R&B / Trap / Drill", "https://open.spotify.com/artist/25pMYboaOqdlm6ZRZmTvfe", "images/RELDA.png");
+addArtist("ELLI GLYN", "Pop / Folk / Soul", "https://open.spotify.com/artist/3ttYdVCrxxeUrC6yEYiC21", "images/ELLI GLYN.png");
+addArtist("MAXI STARR", "R&B / Trap / Drill", "https://open.spotify.com/artist/7zdtkXLw328ra6zOdmsesj", "images/MAXI STARR.png");
+addArtist("SMOORIBA", "Pop / Dance / R&B", "https://open.spotify.com/artist/1CMsNzudMd14qTGeFs2Uvk", "images/SMOORIBA.png");
+addArtist("KINSOUL", "R&B / Hip-Hop / Jazz", "", "images/KINSOUL.png");
 
 let i = 0;
 const card = document.getElementById('artistCard');
