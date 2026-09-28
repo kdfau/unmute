@@ -68,7 +68,6 @@
             box-sizing: border-box;
         }
 
-        /* Contenidor horitzontal natiu per a pantalles grans (PC) */
         .nav-responsive-container {
             display: flex;
             width: 100%;
@@ -76,7 +75,6 @@
             align-items: center;
         }
 
-        /* Logotip perfectament clavat al centre absolut a l'ordinador */
         .nav-logo {
             position: absolute;
             left: 50%;
@@ -100,7 +98,6 @@
             transform: scale(1.05);
         }
 
-        /* Enllaços de la dreta en format línia horitzontal (PC) */
         .nav-links {
             display: flex;
             gap: 12px;
@@ -121,7 +118,6 @@
             color: #fff;
         }
 
-        /* Idiomes de l'esquerra en format línia horitzontal (PC) */
         .lang-sw {
             display: flex;
             gap: 4px;
@@ -154,7 +150,6 @@
             background: rgba(196, 87, 215, 0.15);
         }
 
-        /* Botó de les 3 ratlles del mòbil (Amagat a PC) */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -174,14 +169,12 @@
             transition: all 0.3s ease;
         }
 
-
-        /* ============ 🌟 INTERRUPTOR @MEDIA MÒBILS ============ */
+        /* ============ INTERRUPTOR @MEDIA MÒBILS ============ */
         @media (max-width: 768px) {
             nav {
                 padding: 0 20px;
             }
 
-            /* El logo canvia de posició i es fa petit només al mòbil */
             .nav-logo {
                 position: static;
                 transform: none;
@@ -194,12 +187,10 @@
                 height: 24px;
             }
 
-            /* S'activen les 3 ratlles horitzontals */
             .menu-toggle {
                 display: flex;
             }
 
-            /* El menú horitzontal de PC es transforma en una paret vertical amagada */
             .nav-responsive-container {
                 position: fixed;
                 top: 0;
@@ -220,12 +211,10 @@
                 box-sizing: border-box;
             }
 
-            /* Lliscar cap a l'esquerra en obrir */
             .nav-responsive-container.open {
                 right: 0;
             }
 
-            /* Reordenem els elements: Enllaços a dalt, idiomes a baix */
             .nav-links {
                 flex-direction: column;
                 align-items: center;
@@ -252,7 +241,6 @@
                 padding: 6px 12px;
             }
 
-            /* Animació a fons de la X */
             .menu-toggle.open span:nth-child(1) {
                 transform: translateY(6px) rotate(45deg);
             }
@@ -288,6 +276,11 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 28px;
+        }
+
+        .section-separator {
+            border-top: 1px solid var(--border);
+            margin: 70px 0 50px;
         }
 
         .ev-carousel {
@@ -462,7 +455,8 @@
         .future-events {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
+            gap: 12px;
+            margin-bottom: 40px;
         }
 
         .future-ev {
@@ -470,10 +464,12 @@
             padding: 28px 20px;
             transition: all 0.3s;
             background: var(--card);
+            border-radius: 8px;
         }
 
         .future-ev:hover {
             background: #060606;
+            border-color: var(--purple);
         }
 
         .future-ev-tag {
@@ -490,7 +486,7 @@
             font-size: 0.85rem;
             font-weight: 800;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .future-ev p {
@@ -501,7 +497,7 @@
 
         .ev-ticket {
             display: inline-block;
-            margin-top: 12px;
+            margin-top: 14px;
             font-size: 0.55rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -510,6 +506,13 @@
             color: var(--cyan);
             border: 1px solid var(--cyan);
             padding: 6px 16px;
+            border-radius: 52px;
+            transition: all 0.3s;
+        }
+
+        .ev-ticket:hover {
+            background: var(--cyan);
+            color: #000;
         }
 
         @media (max-width: 640px) {
@@ -542,7 +545,7 @@
             <div class="nav-links">
                 <a href="about.html" data-i18n="nav_about">About</a>
                 <a href="events.html" data-i18n="nav_events" style="color: var(--purple);">Events</a>
-                <a href="artists.html" ata-i18n="nav_artists">Artists</a>
+                <a href="artists.html" data-i18n="nav_artists">Artists</a>
                 <a href="connect.html" data-i18n="nav_connect">Connect</a>
                 <a href="connect.html?apply=true" style="color: var(--cyan);" data-i18n="nav_apply">Apply</a>
             </div>
@@ -551,20 +554,135 @@
     </nav>
 
     <main class="main-container">
-        <div class="label" data-i18n="ev_label">Live Experiences</div>
-        <h1 class="title" data-i18n="ev_title">Where Beats Meet Reality</h1>
-        
-        <h1 class="title" data-i18n="ev_title">Past Events</h1>
+        <!-- 1. BLOC PRINCIPAL: ESDEVENIMENTS PROPERS I RECENTS -->
+        <div class="label" data-i18n="ev_upcoming_label">Upcoming & Recent</div>
+        <h1 class="title" data-i18n="ev_upcoming_title">Where Beats Meet Reality</h1>
+
+        <div class="future-events">
+            <div class="future-ev">
+                <span class="future-ev-tag">3rd October 2026</span>
+                <h4>FREEDONIA BARCELONA</h4>
+                <p data-i18n="ev_freedonia_desc">Live showcase featuring Paule & Berta Garrido. Real talent, real community.</p>
+                <a href="https://entradium.com/events/unmute-project-paule-berta-garrido" target="_blank" class="ev-ticket" data-i18n="ev_ticket_get">GET TICKETS</a>
+            </div>
+            <div class="future-ev">
+                <span class="future-ev-tag">6th November 2026</span>
+                <h4>THE FIDDLER'S ELBOW LONDON</h4>
+                <p data-i18n="ev_fiddlers_desc">Live event in Camden, London. Independent artists taking the stage.</p>
+                <a href="connect.html" class="ev-ticket" data-i18n="ev_ticket_soon">TICKETS SOON</a>
+            </div>
+            <div class="future-ev">
+                <span class="future-ev-tag">November 2026</span>
+                <h4>PARIS</h4>
+                <p data-i18n="ev_paris_desc">Stay tuned. UNMUTE lands in France.</p>
+                <a href="connect.html?apply=true" class="ev-ticket" data-i18n="ev_ticket_apply">APPLY AS ARTIST</a>
+            </div>
+        </div>
+
+        <div class="section-separator"></div>
+
+        <!-- 2. BLOC D'ESDEVENIMENTS PASSATS: CRONOLOGIA INVERSA -->
+        <div class="label" style="color: var(--cyan);" data-i18n="ev_past_label">Archive</div>
+        <h2 class="title" data-i18n="ev_past_title">Past Events</h2>
+
+        <!-- Passat 1: Sala Oasys (Barcelona) -->
+        <h3 class="title" style="font-size: 1.3rem; margin-bottom: 14px;" data-i18n="ev_bcn_title">Where it happens</h3>
         <div class="ev-carousel">
             <div class="ev-carousel-track">
-                <img src="images/party-crowd.jpg">
-                <img src="images/party-live.jpg">
-                <img src="images/party-perform.jpg">
-                <img src="images/party-dj.jpg">
-                <img src="images/party-stage.jpg">
-                <img src="images/party-sing.jpg">
-                <img src="images/party-fans.jpg">
-                <img src="images/party-mic.jpg">
+                <img src="images/bcn-1.JPG" alt="Barcelona Live 1">
+                <img src="images/bcn-2.JPG" alt="Barcelona Live 2">
+                <img src="images/bcn-3.JPG" alt="Barcelona Live 3">
+                <img src="images/bcn-4.jpeg" alt="Barcelona Live 4">
+                <img src="images/bcn-5.JPG" alt="Barcelona Live 5">
+                <img src="images/bcn-6.JPG" alt="Barcelona Live 6">
+                <img src="images/bcn-7.JPG" alt="Barcelona Live 7">
+                <img src="images/bcn-8.JPG" alt="Barcelona Live 8">
+            </div>
+            <div class="ev-carousel-overlay">
+                <h3 data-i18n="ev_bcn_launch">UNMUTE BARCELONA EDITION</h3>
+                <div class="ev-date" data-i18n="ev_bcn_date">Sala Oasys, Barcelona - 5th June</div>
+            </div>
+            <div class="ev-carousel-dots"></div>
+            <button class="ev-carousel-nav prev">←</button>
+            <button class="ev-carousel-nav next">→</button>
+        </div>
+
+        <div class="ev-stats">
+            <div class="ev-stat">
+                <div class="ev-stat-num">4</div>
+                <div class="ev-stat-label">Independent Artists</div>
+            </div>
+            <div class="ev-stat">
+                <div class="ev-stat-num">80+</div>
+                <div class="ev-stat-label">Real Fans Attended</div>
+            </div>
+            <div class="ev-stat">
+                <div class="ev-stat-num">100%</div>
+                <div class="ev-stat-label">Audience Voted</div>
+            </div>
+        </div>
+
+        <p class="ev-desc" data-i18n="ev_bcn_desc">Our first night event in Barcelona brought together independent talent performing live on stage. The audience voted in real-time for their favourites — and every single voter walked away with exclusive digital perks from the artists they backed.</p>
+
+        <div class="event-subtitle" data-i18n="ev_lineup">Lineup</div>
+        <div class="lineup">
+            <div class="lineup-artist"><span class="la-name">Pla Moguda</span></div>
+            <div class="lineup-artist"><span class="la-name">Quitus</span></div>
+            <div class="lineup-artist"><span class="la-name">Alimochaos</span></div>
+            <div class="lineup-artist"><span class="la-name">Relda</span></div>
+        </div>
+
+        <!-- Passat 2: Primavera Pro -->
+        <h3 class="title" style="font-size: 1.3rem; margin-bottom: 14px; margin-top: 48px;" data-i18n="ev_prima_title">Primavera Pro</h3>
+        <div class="ev-carousel">
+            <div class="ev-carousel-track">
+                <img src="images/pro-1.JPG" alt="Primavera Pro 1">
+                <img src="images/pro-2.JPG" alt="Primavera Pro 2">
+                <img src="images/pro-3.JPG" alt="Primavera Pro 3">
+                <img src="images/pro-4.JPG" alt="Primavera Pro 4">
+                <img src="images/pro-5.JPG" alt="Primavera Pro 5">
+                <img src="images/pro-6.JPG" alt="Primavera Pro 6">
+                <img src="images/pro-7.JPG" alt="Primavera Pro 7">
+                <img src="images/pro-8.JPG" alt="Primavera Pro 8">
+            </div>
+            <div class="ev-carousel-overlay">
+                <h3 data-i18n="ev_prima_launch">UNMUTE at PRIMAVERA PRO</h3>
+                <div class="ev-date" data-i18n="ev_prima_date">CCCB, Barcelona - 3rd to 5th June</div>
+            </div>
+            <div class="ev-carousel-dots"></div>
+            <button class="ev-carousel-nav prev">←</button>
+            <button class="ev-carousel-nav next">→</button>
+        </div>
+
+        <div class="ev-stats">
+            <div class="ev-stat">
+                <div class="ev-stat-num">3</div>
+                <div class="ev-stat-label">Days Explaining The Project</div>
+            </div>
+            <div class="ev-stat">
+                <div class="ev-stat-num">80+</div>
+                <div class="ev-stat-label">Interested Professionals</div>
+            </div>
+            <div class="ev-stat">
+                <div class="ev-stat-num">100%</div>
+                <div class="ev-stat-label">Independent Spirit</div>
+            </div>
+        </div>
+
+        <p class="ev-desc" data-i18n="ev_prima_full_desc">We had the opportunity to present our project at Primavera Pro. In the Ideas Showroom space, we talked about the project and answered questions about the platform.</p>
+
+        <!-- Passat 3: Launch Night London -->
+        <h3 class="title" style="font-size: 1.3rem; margin-bottom: 14px; margin-top: 48px;" data-i18n="ev_launch_title">UNMUTE Launch Night</h3>
+        <div class="ev-carousel">
+            <div class="ev-carousel-track">
+                <img src="images/party-crowd.jpg" alt="Party Crowd">
+                <img src="images/party-live.jpg" alt="Party Live">
+                <img src="images/party-perform.jpg" alt="Party Perform">
+                <img src="images/party-dj.jpg" alt="Party DJ">
+                <img src="images/party-stage.jpg" alt="Party Stage">
+                <img src="images/party-sing.jpg" alt="Party Sing">
+                <img src="images/party-fans.jpg" alt="Party Fans">
+                <img src="images/party-mic.jpg" alt="Party Mic">
             </div>
             <div class="ev-carousel-overlay">
                 <h3 data-i18n="ev_launch">UNMUTE LAUNCH NIGHT</h3>
@@ -590,9 +708,7 @@
             </div>
         </div>
 
-        <p class="ev-desc" data-i18n="ev_desc">Our launch night event brought together independent talent performing
-            live on stage. The audience voted in real-time for their favourites — and every single voter walked away
-            with exclusive digital perks from the artists they backed.</p>
+        <p class="ev-desc" data-i18n="ev_desc">Our launch night event brought together independent talent performing live on stage. The audience voted in real-time for their favourites — and every single voter walked away with exclusive digital perks from the artists they backed.</p>
 
         <div class="event-subtitle" data-i18n="ev_lineup">Past Lineup</div>
         <div class="lineup">
@@ -600,109 +716,6 @@
             <div class="lineup-artist"><span class="la-name">Jada Maya</span></div>
             <div class="lineup-artist"><span class="la-name">WKDAIZ</span></div>
             <div class="lineup-artist"><span class="la-name">CHARLIEBLITZZ</span></div>
-        </div>
-
-        <h1 class="title" data-i18n="ev_title">Primavera Pro</h1>
-        <div class="ev-carousel">
-            <div class="ev-carousel-track">
-                <img src="images/pro-1.JPG">
-                <img src="images/pro-2.JPG">
-                <img src="images/pro-3.JPG">
-                <img src="images/pro-4.JPG">
-                <img src="images/pro-5.JPG">
-                <img src="images/pro-6.JPG">
-                <img src="images/pro-7.JPG">
-                <img src="images/pro-8.JPG">
-            </div>
-            <div class="ev-carousel-overlay">
-                <h3 data-i18n="ev_launch">UNMUTE at PRIMAVERA PRO</h3>
-                <div class="ev-date" data-i18n="ev_date">CCCB, Barcelona - 3TH to 5th June</div>
-            </div>
-            <div class="ev-carousel-dots"></div>
-            <button class="ev-carousel-nav prev">←</button>
-            <button class="ev-carousel-nav next">→</button>
-        </div>
-
-        <div class="ev-stats">
-            <div class="ev-stat">
-                <div class="ev-stat-num">3</div>
-                <div class="ev-stat-label">days explaining the Project</div>
-            </div>
-            <div class="ev-stat">
-                <div class="ev-stat-num">80+</div>
-                <div class="ev-stat-label">interested professionals</div>
-            </div>
-        </div>
-
-        <p class="ev-desc" data-i18n="ev_desc">We had the opportunity to present our project at Primavera Pro. In the Ideas Showroom space, we talked about the project and answered some questions about it.</p>
-
-        <h1 class="title" data-i18n="ev_title">Where it happens</h1>
-        <div class="ev-carousel">
-            <div class="ev-carousel-track">
-                <img src="images/bcn-1.JPG">
-                <img src="images/bcn-2.JPG">
-                <img src="images/bcn-3.JPG">
-                <img src="images/bcn-4.jpeg">
-                <img src="images/bcn-5.JPG">
-                <img src="images/bcn-6.JPG">
-                <img src="images/bcn-7.JPG">
-                <img src="images/bcn-8.JPG">
-            </div>
-            <div class="ev-carousel-overlay">
-                <h3 data-i18n="ev_launch">UNMUTE BARCELONA EDITION</h3>
-                <div class="ev-date" data-i18n="ev_date">Sala Oasys, Barcelona - 5th June</div>
-            </div>
-            <div class="ev-carousel-dots"></div>
-            <button class="ev-carousel-nav prev">←</button>
-            <button class="ev-carousel-nav next">→</button>
-        </div>
-
-        <div class="ev-stats">
-            <div class="ev-stat">
-                <div class="ev-stat-num">4</div>
-                <div class="ev-stat-label">Independent Artists</div>
-            </div>
-            <div class="ev-stat">
-                <div class="ev-stat-num">80+</div>
-                <div class="ev-stat-label">Real Fans Attended</div>
-            </div>
-            <div class="ev-stat">
-                <div class="ev-stat-num">100%</div>
-                <div class="ev-stat-label">Audience Voted</div>
-            </div>
-        </div>
-
-        <p class="ev-desc" data-i18n="ev_desc">Our first night event in BArcelona brought together independent talent performing
-            live on stage. The audience voted in real-time for their favourites — and every single voter walked away
-            with exclusive digital perks from the artists they backed.</p>
-
-        <div class="event-subtitle" data-i18n="ev_lineup">Past Lineup</div>
-        <div class="lineup">
-            <div class="lineup-artist"><span class="la-name">Pla Moguda</span></div>
-            <div class="lineup-artist"><span class="la-name">Quitus</span></div>
-            <div class="lineup-artist"><span class="la-name">Alimochaos</span></div>
-            <div class="lineup-artist"><span class="la-name">Relda</span></div>
-        </div>
-
-        <div class="event-subtitle" data-i18n="ev_next">What's Next</div>
-        <div class="future-events">
-            <div class="future-ev"><span class="future-ev-tag">June 2026</span>
-                <h4>PRIMAVERA PRO</h4>
-                <p data-i18n="ev_prima_desc">Selected for Ideas Showroom at Primavera Sound music conference.</p><a
-                    href="https://www.primaverasound.com" target="_blank" class="ev-ticket"
-                    data-i18n="ev_prima_link">Learn More</a>
-            </div>
-            <div class="future-ev"><span class="future-ev-tag">June 5, 2026</span>
-                <h4>OASYS BARCELONA</h4>
-                <p data-i18n="ev_oasys_desc">Live event in Barcelona. New artists, new city, same digital energy.</p><a
-                    href="https://entradium.com" target="_blank" class="ev-ticket" data-i18n="ev_oasys_link">Get
-                    Tickets</a>
-            </div>
-            <div class="future-ev"><span class="future-ev-tag">July 4, 2026</span>
-                <h4>JAGUAR SHOES LONDON</h4>
-                <p data-i18n="ev_jag_desc">Live concert showcase in Shoreditch. Real talent, real community.</p><a
-                    href="connect.html" class="ev-ticket" data-i18n="ev_jag_link">Apply</a>
-            </div>
         </div>
     </main>
 
@@ -713,7 +726,6 @@
         renderNoise(); setInterval(renderNoise, 120);
 
         const carousels = document.querySelectorAll('.ev-carousel');
-
         carousels.forEach((carousel) => {
             let evIdx = 0;
             const evTrack = carousel.querySelector('.ev-carousel-track');
@@ -749,11 +761,9 @@
             }
         });
 
-        // --- 3. SCRIPT DEL MENÚ RESPONSIVE MÒBIL ---
         function toggleMenu() { document.getElementById('navContainer').classList.toggle('open'); document.getElementById('menuToggle').classList.toggle('open'); }
         document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { document.getElementById('navContainer').classList.remove('open'); document.getElementById('menuToggle').classList.remove('open'); }); });
 
-        // --- 4. SCRIPT D'IDIOMES ---
         function setLang(lang) {
             currentLang = lang; localStorage.setItem('unmute_lang', lang); document.documentElement.lang = lang; const t = i18n[lang] || i18n.en;
             document.querySelectorAll('.lang-btn').forEach(b => { b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang); });
