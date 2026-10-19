@@ -114,6 +114,7 @@ const i18n = {
         art_jada_bio: "Velvety R&B vocals mixed with deep jazz arrangements that explore modern human connection.",
         art_wkdaiz_bio: "High energy beats, heavily distorted vocals and synthesizers that capture the internet era.",
         art_wellas_bio: "An emerging French pop artist, wellasblue crafts her universe between her diary pages and a dreamt-up stage. Immersed in pop stories and rap boldness, her songs speak of love, emancipation, and choosing oneself.",
+        art_charlie_bio: "South East London rapper blending soulful melodies with punchy, thought-provoking lyrics and undeniable stage energy.",
         art_pla_bio: "Born in Les Masies de Voltregà, they deliver direct, high-character rock with no filters. With their new five-track EP, they showcase an attitude that asks no one for permission.",
         art_alimo_bio: "Visceral rumba made at home and meant for the neighborhood. A fresh and honest project blending flamenco, Cuban son, soul, and blues into a high-energy live show.",
         art_quitus_bio: "Born from a digital connection on Vampr, this band delivers powerful, fresh, and modern garage rock. Their live performance is bound to get you straight into the mosh pit.",
@@ -179,6 +180,7 @@ const i18n = {
         art_jada_bio: "Voces aterciopeladas de R&B mezcladas con profundos arreglos de jazz que exploran la conexión humana moderna.",
         art_wkdaiz_bio: "Ritmos de alta energía, voces fuertemente distorsionadas y sintetizadores que capturan la era del internet.",
         art_wellas_bio: "Artista emergente del pop francés, wellasblue moldea su universo entre las páginas de su diario y un escenario imaginado. Inmersa en historias pop y el descaro del rap, sus canciones hablan de amor, emancipación y de elegirse a uno mismo.",
+        art_charlie_bio: "Rapero del sureste de Londres que fusiona melodías llenas de soul con letras contundentes y una energía en directo que invita a reflexionar.",
         art_pla_bio: "Nacidos en Les Masies de Voltregà, ofrecen un rock directo, con mucho carácter y sin filtros. Con su nuevo EP de cinco temas, muestran una actitud que no pide permiso a nadie.",
         art_alimo_bio: "Rumba visceral hecha en casa y pensada para el barrio. Un proyecto fresco y honesto que fusiona flamenco, son cubano, soul y blues en un directo de alta energía.",
         art_quitus_bio: "Nacidos de una conexión digital en Vampr, esta banda ofrece un garage rock potente, fresco y moderno. Su directo te meterá de cabeza en el mosh pit.",
@@ -244,6 +246,7 @@ const i18n = {
         art_jada_bio: "Veus de vellut R&B barrejades amb profunds arranjaments de jazz que exploren la connexió humana moderna.",
         art_wkdaiz_bio: "Ritmes d'alta energia, veus fortament distorsionades i sintetitzadors que capturen l'era d'internet.",
         art_wellas_bio: "Artista emergent del pop francès, wellasblue modela el seu univers entre les pàgines del seu diari i un escenari imaginat. Immersa en històries pop i el descaro del rap, les seves cançons parlen d'amor, emancipació i d'escollir-se a un mateix.",
+        art_charlie_bio: "Raper del sud-est de Londres que fusiona melodies plenes de soul amb lletres contundents i una energia vibrant que fa reflexionar."
         art_pla_bio: "Nascuts a Les Masies de Voltregà, ofereixen un rock directe, amb molt de caràcter i sense filtres. Amb el seu nou EP de cinc temes, mostren una actitud que no demana permís a ningú.",
         art_alimo_bio: "Rumba visceral feta a casa i pensada per al barri. Un projecte fresc i honest que fusiona flamenco, son cubà, soul i blues en un directe d'alta energia.",
         art_quitus_bio: "Nascuts d'una connexió digital a Vampr, aquesta banda ofereix un garage rock potent, fresc i modern. El seu directe et ficarà de cap al mosh pit.",
@@ -309,6 +312,7 @@ const i18n = {
         art_jada_bio: "Des voix R&B veloutées mêlées à des arrangements jazz profonds qui explorent les connexions humaines modernes.",
         art_wkdaiz_bio: "Des rythmes survoltés, des voix fortement saturées et des synthétiseurs qui capturent l'essence de l'ère internet.",
         art_wellas_bio: "Artiste émergente de la pop française, wellasblue façonne son univers entre les pages de son journal intime et une scène rêvée. Imprégnée d'histoires pop et de l'audace du rap, ses chansons parlent d'amour, d'émancipation et du choix de soi.",
+        art_charlie_bio: "Rappeur du sud-est de Londres mêlant mélodies soul, punchlines percutantes et une énergie scénique qui donne à réfléchir."
         art_pla_bio: "Originaires de Les Masies de Voltregà, ils délivrent un rock direct, authentique et sans filtre. Avec leur nouvel EP de cinq titres, ils affichent une attitude qui ne demande la permission à personne.",
         art_alimo_bio: "Une rumba viscérale faite maison et pensée pour le quartier. Un projet frais et honnête mêlant flamenco, son cubain, soul et blues dans un live ultra-énergique.",
         art_quitus_bio: "Né d'une connexion digitale sur Vampr, ce groupe propose un garage rock puissant, frais et moderne. Leur performance live va vous plonger direct dans le mosh pit.",
